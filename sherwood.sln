@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sherwood", "Sherwood\Sherwood.vcxproj", "{5B3E194E-299D-47D3-8E78-1C552097EAE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D4CF9B05-6654-4A0F-8815-21B9F6FA3AE5}"
+	ProjectSection(SolutionItems) = preProject
+		README.txt = README.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Debug|x64.ActiveCfg = Debug|x64
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Debug|x64.Build.0 = Debug|x64
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Debug|x86.ActiveCfg = Debug|Win32
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Debug|x86.Build.0 = Debug|Win32
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Release|x64.ActiveCfg = Release|x64
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Release|x64.Build.0 = Release|x64
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Release|x86.ActiveCfg = Release|Win32
+		{5B3E194E-299D-47D3-8E78-1C552097EAE2}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0600F39E-A18A-4076-9BA3-5BFE0F56362B}
+	EndGlobalSection
+EndGlobal
