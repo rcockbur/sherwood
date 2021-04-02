@@ -1,13 +1,17 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "entity_manager.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(200, 200), "Sherwood");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
-	bool has_printed = false;
+	bool hasPrinted = false;
+	EntityManager em;
+	em.createEntity(ET::DEER, Vec2i(1, 2));
+
 	while (window.isOpen()) {
 		sf::Clock clock;
 		sf::Event event;
@@ -83,11 +87,12 @@ int main()
 		}
 
 		window.clear();
+		em.updateEntities();
 		window.draw(shape);
 		window.display();
-		if (has_printed)
+		if (hasPrinted)
 			std::cout << "---------------------------------------------------------" << std::endl;
-		has_printed = false;
+		hasPrinted = false;
 	}
 
     return 0;

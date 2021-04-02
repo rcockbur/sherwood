@@ -1,16 +1,34 @@
 #include <SFML/Graphics.hpp>
 #include "entity_manager.h"
-#include "typedefs.h"
 
-Entity* EntityManager::createEntity(Position _pos) {
-	Entity* entity = new Entity(id_index++);
+
+
+EntityManager::EntityManager()
+{
+	createEntityType(ET::DEER, "deer", sf::Color::Blue);
+}
+
+EntityType* EntityManager::createEntityType(ET id, std::string name, sf::Color color) 
+{
+	entityTypes.insert(std::pair<ET, EntityType>(id, EntityType(id, name, color)));
+
+	return &entityTypes.at(id);
+}
+
+Entity* EntityManager::createEntity(ET et, Vec2i _tile) 
+{
+	Entity entity(&entityTypes.at(et), entityIndex++, _tile);
+
+	entity.color = entity.type->color;
+
 	entities.push_back(entity);
 
-	Position* position = new Position(_pos);
-	entity->position = position;
+	return &entities.back();
+}
 
-	Actor* actor = new Actor(sf::Color::Blue);
-	entity->actor = actor;
-
-	return entity;
+void EntityManager::updateEntities()
+{
+	for (auto& entity : entities) {
+		entity.update();
+	}
 }
