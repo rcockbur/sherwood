@@ -1,16 +1,20 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "entity_manager.h"
+#include "graphics.h"
+
+extern sf::RenderWindow window;
+extern Vec2f cameraPos;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "Sherwood");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
+	initGraphics();
 	bool hasPrinted = false;
-	EntityManager em;
-	em.createEntity(ET::DEER, Vec2i(1, 2));
+	//EntityManager em;
+	//em.createEntity(ET::DEER, Vec2i(1, 2));
 
 	while (window.isOpen()) {
 		sf::Clock clock;
@@ -49,19 +53,19 @@ int main()
 					break;
 				}
 				if (event.key.code == sf::Keyboard::Up) {
-					//camera_pos.y = camera_pos.y - 5;
+					cameraPos.y = cameraPos.y - 5;
 					break;
 				}
 				if (event.key.code == sf::Keyboard::Down) {
-					//camera_pos.y = camera_pos.y + 5;
+					cameraPos.y = cameraPos.y + 5;
 					break;
 				}
 				if (event.key.code == sf::Keyboard::Left) {
-					//camera_pos.x = camera_pos.x - 5;
+					cameraPos.x = cameraPos.x - 5;
 					break;
 				}
 				if (event.key.code == sf::Keyboard::Right) {
-					//camera_pos.x = camera_pos.x + 5;
+					cameraPos.x = cameraPos.x + 5;
 					break;
 				}
 				if (event.key.code == sf::Keyboard::B) {
@@ -87,8 +91,9 @@ int main()
 		}
 
 		window.clear();
-		em.updateEntities();
-		window.draw(shape);
+		//em.updateEntities();
+		//window.draw(shape);
+		drawMap();
 		window.display();
 		if (hasPrinted)
 			std::cout << "---------------------------------------------------------" << std::endl;

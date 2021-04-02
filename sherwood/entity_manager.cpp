@@ -1,10 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include "entity_manager.h"
+#include <iostream>
 
 
 
 EntityManager::EntityManager()
 {
+	std::cout << "Entity Manager created\n";
 	createEntityType(ET::DEER, "deer", sf::Color::Blue);
 }
 
