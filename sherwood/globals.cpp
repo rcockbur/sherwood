@@ -5,18 +5,19 @@
 #include <list>
 #include <iostream>
 
-sf::RenderWindow window(sf::VideoMode(400, 400), "Sherwood");
-sf::Color Grey(100, 100, 100);
-Map map({ 10,10 }, { 15., 15. }, 1., Grey);
+
+
 EntityManager em = EntityManager();
-Vec2f cameraPos{ -21, -21 };
 uint tic(0);
-uint targetFPS(60);
+uint targetFPS(10);
+float actualFPS(targetFPS);
+
+Colors colors;
 
 void initGlobals() {
-	window.setFramerateLimit(targetFPS);
+	
 
-	em.createEntityType(ET::DEER, "deer", sf::Color::Blue, 60);
+	em.createEntityType(ET::DEER, "deer", colors.blue, 30);
 	 
 	Entity* entity = em.createEntity(ET::DEER, Vec2i(0, 0));
 

@@ -1,6 +1,10 @@
 #include "map.h"
 #include <iostream>
 
+extern Colors colors;
+
+Map map({ 10,10 }, { 15., 15. }, 1., colors.grey);
+
 Map::Map(Vec2i _tileCount, Vec2f _tileSize, float _lineWidth, sf::Color _color)
 	: tileCount(_tileCount), tileSize(_tileSize), color(_color), lineWidth(_lineWidth),
 	lineWidthHalf(_lineWidth / 2), gridSize(calculateGridSize(_tileCount, _tileSize)) 

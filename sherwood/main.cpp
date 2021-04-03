@@ -4,18 +4,20 @@
 #include "graphics.h"
 
 extern sf::RenderWindow window;
-extern Vec2f cameraPos;
+extern sf::View mapView;
 extern EntityManager em;
 extern uint tic;
 extern uint targetFPS;
+extern float actualFPS;
+sf::Clock deltaClock;
 
 int main()
 {
 	initGlobals();
 	initGraphics();
-
-	bool hasPrinted = false;
 	
+	bool hasPrinted = false;
+	sf::Time dt = deltaClock.restart();
 	while (window.isOpen()) {
 		sf::Clock clock;
 		sf::Event event;
@@ -44,22 +46,22 @@ int main()
 				case(sf::Keyboard::D):
 					break;
 				case(sf::Keyboard::Up):
-					cameraPos.y = cameraPos.y - 5;
+					mapView.move(Vec2f(0, -5));
 					break;
 				case(sf::Keyboard::Down):
-					cameraPos.y = cameraPos.y + 5;
+					mapView.move(Vec2f(0, 5));
 					break;
 				case(sf::Keyboard::Left):
-					cameraPos.x = cameraPos.x - 5;
+					mapView.move(Vec2f(-5, 0));
 					break;
 				case(sf::Keyboard::Right):
-					cameraPos.x = cameraPos.x + 5;
+					mapView.move(Vec2f(5, 0));
 					break;
 				case(sf::Keyboard::Add):
-					targetFPS++;
+					updateFPS(targetFPS + 1);
 					break;
 				case(sf::Keyboard::Subtract):
-					targetFPS--;
+					updateFPS(targetFPS - 1);
 					break;
 				default:
 					break;
@@ -81,16 +83,16 @@ int main()
 			} //switch (event.type)
 		}
 
-		window.clear();
+		
 		em.updateEntities();
-		drawMap();
-		drawEntities();
-		drawText();
-		window.display();
+		drawAll();
+		
 		if (hasPrinted)
 			std::cout << "---------------------------------------------------------" << std::endl;
 		hasPrinted = false;
 		++tic;
+		dt = deltaClock.restart();
+		actualFPS = 1 / dt.asSeconds();
 	}
 
     return 0;
