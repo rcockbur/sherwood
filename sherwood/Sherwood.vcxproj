@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ability.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_manager.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ability.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />

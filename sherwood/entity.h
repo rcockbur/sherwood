@@ -1,15 +1,21 @@
 #pragma once
+#include <vector>
 #include "globals.h"
 #include "entity_type.h"
+#include "ability.h"
 #include <SFML/Graphics.hpp>
 
-struct Entity {
-	unsigned int id;
+
+class Entity {
+public:
+	uint id;
 	EntityType* type;
 	Vec2i tile;
 	sf::Color color;
-	Entity(EntityType* , unsigned int, Vec2i);
+	std::vector<Ability*> abilityQueue;
+	uint canMoveAt;
+	Entity(EntityType* _type, uint _id, const Vec2i& _tile);
 	void update();
-	void draw();
+	void addAbility(Ability* ability);
 };
 

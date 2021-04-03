@@ -5,17 +5,17 @@
 
 extern sf::RenderWindow window;
 extern Vec2f cameraPos;
+extern EntityManager em;
+extern uint tic;
+extern uint targetFPS;
 
 int main()
 {
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
+	initGlobals();
 	initGraphics();
-	bool hasPrinted = false;
-	//EntityManager em;
-	//em.createEntity(ET::DEER, Vec2i(1, 2));
 
+	bool hasPrinted = false;
+	
 	while (window.isOpen()) {
 		sf::Clock clock;
 		sf::Event event;
@@ -28,76 +28,69 @@ int main()
 				window.close();
 				break;
 			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::Escape) {
+				switch (event.key.code) {
+				case(sf::Keyboard::Escape):
 					window.close();
 					break;
-				}
-				if (event.key.code == sf::Keyboard::Q) {
+				case(sf::Keyboard::Q):
 					window.close();
 					break;
-				}
-				if (event.key.code == sf::Keyboard::W) {
-					//move_selected_by(sf::Vector2f(0, -1));
+				case(sf::Keyboard::W):
 					break;
-				}
-				if (event.key.code == sf::Keyboard::A) {
-					//move_selected_by(sf::Vector2f(-1, 0));
+				case(sf::Keyboard::A):
 					break;
-				}
-				if (event.key.code == sf::Keyboard::S) {
-					//move_selected_by(sf::Vector2f(0, 1));
+				case(sf::Keyboard::S):
 					break;
-				}
-				if (event.key.code == sf::Keyboard::D) {
-					//move_selected_by(sf::Vector2f(1, 0));
+				case(sf::Keyboard::D):
 					break;
-				}
-				if (event.key.code == sf::Keyboard::Up) {
+				case(sf::Keyboard::Up):
 					cameraPos.y = cameraPos.y - 5;
 					break;
-				}
-				if (event.key.code == sf::Keyboard::Down) {
+				case(sf::Keyboard::Down):
 					cameraPos.y = cameraPos.y + 5;
 					break;
-				}
-				if (event.key.code == sf::Keyboard::Left) {
+				case(sf::Keyboard::Left):
 					cameraPos.x = cameraPos.x - 5;
 					break;
-				}
-				if (event.key.code == sf::Keyboard::Right) {
+				case(sf::Keyboard::Right):
 					cameraPos.x = cameraPos.x + 5;
 					break;
-				}
-				if (event.key.code == sf::Keyboard::B) {
-					//try_spawn_block(tile);
+				case(sf::Keyboard::Add):
+					targetFPS++;
 					break;
-				}
-				if (event.key.code == sf::Keyboard::U) {
-					//try_spawn_unit(tile);
+				case(sf::Keyboard::Subtract):
+					targetFPS--;
 					break;
-				}
-				break;
+				default:
+					break;
+				} //switch (event.key.code)
 			case sf::Event::MouseButtonPressed:
-				if (event.mouseButton.button == sf::Mouse::Left) {
+				switch (event.mouseButton.button) {
+				case(sf::Mouse::Left):
 					//has_printed = true;
 					//std::cout << "screen_pos:" << screen_pos.x << ", " << screen_pos.y << std::endl;
 					//std::cout << "world_pos: " << world_pos.x << ", " << world_pos.y << std::endl;
 					//std::cout << "tile:   " << tile.x << ", " << tile.y << std::endl;
 					//select_entity(world_pos);
-				}
+					break;
+				default:
+					break;
+				} //switch (event.mouseButton.button)
 			default:
 				break;
-			}
+			} //switch (event.type)
 		}
 
 		window.clear();
-		//em.updateEntities();
-		//window.draw(shape);
+		em.updateEntities();
 		drawMap();
+		drawEntities();
+		drawText();
 		window.display();
 		if (hasPrinted)
 			std::cout << "---------------------------------------------------------" << std::endl;
 		hasPrinted = false;
+		++tic;
 	}
 
     return 0;

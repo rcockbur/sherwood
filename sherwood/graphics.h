@@ -4,3 +4,5 @@
 
 void initGraphics();
 void drawMap();
+void drawEntities();
+void drawText();

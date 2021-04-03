@@ -3,7 +3,7 @@
 
 Map::Map(Vec2i _tileCount, Vec2f _tileSize, float _lineWidth, sf::Color _color)
 	: tileCount(_tileCount), tileSize(_tileSize), color(_color), lineWidth(_lineWidth),
-	gridSize(calculateGridSize(_tileCount, _tileSize)) 
+	lineWidthHalf(_lineWidth / 2), gridSize(calculateGridSize(_tileCount, _tileSize)) 
 {
 	std::cout << "Map created with size: " << tileCount.x << ", " << tileCount.y << "\n";
 	terrain_grid.resize(tileCount.x);

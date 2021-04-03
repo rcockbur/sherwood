@@ -1,36 +1,45 @@
 #include <SFML/Graphics.hpp>
+#include <assert.h>
 #include "entity_manager.h"
+#include "map.h"
 #include <iostream>
 
-
+extern Map map;
 
 EntityManager::EntityManager()
+	: entityIndex(0)
 {
 	std::cout << "Entity Manager created\n";
-	createEntityType(ET::DEER, "deer", sf::Color::Blue);
 }
 
-EntityType* EntityManager::createEntityType(ET id, std::string name, sf::Color color) 
+void EntityManager::createEntityType(ET id, std::string name, sf::Color color, uint movePeriod) 
 {
-	entityTypes.insert(std::pair<ET, EntityType>(id, EntityType(id, name, color)));
+	EntityType* entityType = new EntityType(id, name, color, movePeriod);
 
-	return &entityTypes.at(id);
+	entityTypes.insert(std::pair<ET, EntityType*>(id, entityType));
 }
 
 Entity* EntityManager::createEntity(ET et, Vec2i _tile) 
 {
-	Entity entity(&entityTypes.at(et), entityIndex++, _tile);
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y) 
+		throw std::logic_error("tile is out of bounds");
+	
+	Entity* entity = new Entity(entityTypes.at(et), entityIndex++, _tile);
 
-	entity.color = entity.type->color;
+	entity->color = entity->type->color;
 
 	entities.push_back(entity);
 
-	return &entities.back();
+	return entity;
 }
 
 void EntityManager::updateEntities()
 {
-	for (auto& entity : entities) {
-		entity.update();
-	}
+	for (auto& entity : entities) 
+		entity->update();
+	
+}
+
+std::list<Entity*> EntityManager::getEntities() {
+	return entities;
 }

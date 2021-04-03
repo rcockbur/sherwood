@@ -7,6 +7,6 @@ struct EntityType {
 	ET id;
 	std::string name;
 	sf::Color color;
-
-	EntityType(ET, std::string, sf::Color);
+	uint movePeriod;
+	EntityType(ET, std::string, sf::Color, uint _movePeriod);
 };

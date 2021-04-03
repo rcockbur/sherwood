@@ -8,11 +8,13 @@
 class EntityManager {
 public:
 	EntityManager();
-	EntityType* createEntityType(ET, std::string, sf::Color);
+	void createEntityType(ET, std::string, sf::Color, uint);
 	Entity* createEntity(ET, Vec2i);
 	void updateEntities();
+	std::list<Entity*> getEntities();
 private:
-	unsigned int entityIndex;
-	std::list<Entity> entities;
-	std::map<ET, EntityType> entityTypes;
+	uint entityIndex;
+	
+	std::map<ET, EntityType*> entityTypes;
+	std::list<Entity*> entities;
 };
