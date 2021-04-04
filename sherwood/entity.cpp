@@ -12,7 +12,7 @@ void Entity::update()
 		Ability* ability = abilityQueue.front();
 		bool isComplete = ability->execute();
 		if (isComplete)
-			abilityQueue.pop_back();
+			abilityQueue.pop_front();
 	}
 }
 

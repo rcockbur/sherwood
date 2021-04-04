@@ -9,11 +9,11 @@ extern EntityManager em;
 
 uint tic(0);
 uint targetFPS(10);
-float actualFPS(targetFPS);
+float actualFPS((float)targetFPS);
 
 int main()
 {
-	initGlobals();
+	//initGlobals();
 	initEntities();
 	initGraphics();
 	
@@ -21,7 +21,7 @@ int main()
 
 	sf::Clock deltaClock;
 	sf::Time dt = deltaClock.restart();
-
+	std::cout << "Mainloop started\n";
 	while (window.isOpen()) {
 		sf::Clock clock;
 		sf::Event event;

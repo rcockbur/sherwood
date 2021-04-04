@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "graphics.h"
 #include <assert.h>
 #include "entity_manager.h"
 #include "map.h"
@@ -11,22 +12,26 @@ EntityManager em = EntityManager();
 
 void initEntities()
 {
-	em.createEntityType(ET::DEER, "deer", colors.yellow, 30);
+	em.createEntityType(ET::DEER, "deer", colors.yellow, 10);
 
 	Entity* entity = em.createEntity(ET::DEER, Vec2i(0, 0));
 
 	em.createEntity(ET::DEER, Vec2i(2, 0));
-	em.createEntity(ET::DEER, Vec2i(9, 0));
+	em.createEntity(ET::DEER, Vec2i(3, 0));
 
 	std::list<Vec2i> path{ Vec2i(0,1), Vec2i(0,2), Vec2i(0,3), Vec2i(0,4), Vec2i(0,5) };
 	Move* move = new Move(*entity, path);
 	entity->addAbility(move);
+
+	std::list<Vec2i> path2{ Vec2i(1,5), Vec2i(2,5), Vec2i(3,5), Vec2i(4,5), Vec2i(5,5) };
+	Move* move2 = new Move(*entity, path2);
+	entity->addAbility(move2);
 }
 
 EntityManager::EntityManager()
 	: entityIndex(0)
 {
-	std::cout << "Entity Manager created\n";
+	std::cout << "EntityManager created\n";
 }
 
 void EntityManager::createEntityType(ET id, std::string name, sf::Color color, uint movePeriod) 

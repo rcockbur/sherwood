@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <deque>
 #include "globals.h"
 #include "entity_type.h"
 #include "ability.h"
@@ -12,7 +12,7 @@ public:
 	EntityType* type;
 	Vec2i tile;
 	sf::Color color;
-	std::vector<Ability*> abilityQueue;
+	std::deque<Ability*> abilityQueue;
 	uint canMoveAt;
 	Entity(EntityType* _type, uint _id, const Vec2i& _tile);
 	void update();
