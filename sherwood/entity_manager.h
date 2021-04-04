@@ -5,6 +5,8 @@
 #include "entity.h"
 #include "entity_type.h"
 
+void initEntities();
+
 class EntityManager {
 public:
 	EntityManager();
@@ -14,7 +16,6 @@ public:
 	std::list<Entity*> getEntities();
 private:
 	uint entityIndex;
-	
 	std::map<ET, EntityType*> entityTypes;
 	std::list<Entity*> entities;
 };

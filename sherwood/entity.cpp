@@ -16,6 +16,7 @@ void Entity::update()
 	}
 }
 
-void Entity::addAbility(Ability* ability) {
+void Entity::addAbility(Ability* ability) 
+{
 	abilityQueue.push_back(ability);
 }

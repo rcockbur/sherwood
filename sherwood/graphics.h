@@ -4,7 +4,8 @@
 
 void initGraphics();
 void drawAll();
-void drawMap();
+void drawTerrain();
+void drawGrid();
 void drawEntities();
 void drawText();
 void drawViewportOutline();

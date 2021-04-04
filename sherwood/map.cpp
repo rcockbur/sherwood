@@ -1,5 +1,7 @@
 #include "map.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 extern Colors colors;
 
@@ -20,7 +22,7 @@ Map::Map(Vec2i _tileCount, Vec2f _tileSize, float _lineWidth, sf::Color _color)
 			entity_grid[x][y] = nullptr;
 		}
 	}
-	
+	readMapFile();
 }
 
 Vec2f Map::calculateGridSize(const Vec2i& _tileCount, const Vec2f& _tileSize) {
@@ -34,3 +36,23 @@ Vec2f Map::calculateGridSize(const Vec2i& _tileCount, const Vec2f& _tileSize) {
 //Entity* Map::getEntityAt(Vec2i tile) {
 //	return entity_grid[tile.x][tile.y];
 //}
+
+void Map::readMapFile() {
+	std::ifstream inFile("data/map.txt");
+	int x = 0;
+	int y = 0;
+	//int one_count = 0;
+	if (inFile.is_open()) {
+		std::string line;
+		while (std::getline(inFile, line)) {
+			std::stringstream ss(line);
+			std::string sym;
+			x = 0;
+			while (std::getline(ss, sym, ',')) {
+				x++;
+				terrain_grid[x][y] = std::stoi(sym);
+			}
+			++y;
+		}
+	}
+}

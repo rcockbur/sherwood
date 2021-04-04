@@ -9,8 +9,8 @@ extern Map map;
 extern EntityManager em;
 extern uint targetFPS;
 extern float actualFPS;
-extern Colors colors;
 
+Colors colors;
 Vec2f windowSize(600, 600);
 Vec2f viewSize(300, 380);
 Vec2f hudOffset(10, 5);
@@ -22,6 +22,8 @@ sf::RenderWindow window(sf::VideoMode(windowSize.x, windowSize.y), "Sherwood");
 sf::View mapView(sf::FloatRect(0, 0, viewSize.x, viewSize.y));
 sf::RectangleShape verticalLine;
 sf::RectangleShape horizontalLine;
+sf::RectangleShape grassRect;
+sf::RectangleShape waterRect;
 sf::RectangleShape viewportRect;
 sf::RectangleShape square;
 sf::Font arial;
@@ -45,6 +47,12 @@ void initGraphics() {
 	horizontalLine.setSize(Vec2f(map.gridSize.x + map.lineWidth, map.lineWidth));
 	horizontalLine.setFillColor(map.color);
 
+	grassRect.setSize(map.tileSize);
+	grassRect.setFillColor(colors.green);
+
+	waterRect.setSize(map.tileSize);
+	waterRect.setFillColor(colors.blue);
+
 	square.setSize(Vec2f(map.tileSize) - Vec2f(map.lineWidth, map.lineWidth));
 	square.setFillColor(colors.white);
 
@@ -59,7 +67,8 @@ void initGraphics() {
 void drawAll() {
 	window.clear();
 	window.setView(mapView);
-	drawMap();
+	drawTerrain();
+	drawGrid();
 	drawEntities();
 	window.setView(window.getDefaultView());
 	drawViewportOutline();
@@ -67,7 +76,22 @@ void drawAll() {
 	window.display();
 }
 
-void drawMap() {
+void drawTerrain() {
+	
+	for (int x = 0; x < map.terrain_grid.size(); ++x) {
+		for (int y = 0; y < map.terrain_grid[x].size(); ++y) {
+			if (map.terrain_grid[x][y] == 0) {
+				waterRect.setPosition(Vec2f(map.tileSize.x * float(x), map.tileSize.y * (float)y));
+				window.draw(waterRect);
+			} else {
+				grassRect.setPosition(Vec2f(map.tileSize.x * float(x), map.tileSize.y * (float)y));
+				window.draw(grassRect);
+			}
+		}
+	}
+}
+
+void drawGrid() {
 	for (int i = 0; i < map.tileCount.x + 1; i++) {
 		verticalLine.setPosition(Vec2f(map.tileSize.x * i - map.lineWidthHalf, -map.lineWidthHalf));
 		window.draw(verticalLine);

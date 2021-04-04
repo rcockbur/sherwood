@@ -6,18 +6,22 @@
 extern sf::RenderWindow window;
 extern sf::View mapView;
 extern EntityManager em;
-extern uint tic;
-extern uint targetFPS;
-extern float actualFPS;
-sf::Clock deltaClock;
+
+uint tic(0);
+uint targetFPS(10);
+float actualFPS(targetFPS);
 
 int main()
 {
 	initGlobals();
+	initEntities();
 	initGraphics();
 	
 	bool hasPrinted = false;
+
+	sf::Clock deltaClock;
 	sf::Time dt = deltaClock.restart();
+
 	while (window.isOpen()) {
 		sf::Clock clock;
 		sf::Event event;

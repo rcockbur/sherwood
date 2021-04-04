@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "entity.h"
 #include <vector>
+#include <string>
 #include <SFML/Graphics.hpp>
 
 class Map {
@@ -15,8 +16,10 @@ public:
 	const float lineWidth;
 	const float lineWidthHalf;
 	const sf::Color color;
-private:
-	Vec2f calculateGridSize(const Vec2i& tileCount, const Vec2f& tileSize);
 	std::vector<std::vector<int>> terrain_grid;
 	std::vector<std::vector<Entity*>> entity_grid;
+private:
+	Vec2f calculateGridSize(const Vec2i& tileCount, const Vec2f& tileSize);
+	
+	void readMapFile();
 };
