@@ -1,6 +1,6 @@
 #pragma once
-#include "globals.h"
 #include <list>
+#include "globals.h"
 
 class Entity;
 

@@ -155,7 +155,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ability.cpp" />
-    <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="colors.cpp" />
+    <ClCompile Include="graphics_manager.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_manager.cpp" />
     <ClCompile Include="entity_type.cpp" />
@@ -165,7 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ability.h" />
-    <ClInclude Include="graphics.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="graphics_manager.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="entity_type.h" />

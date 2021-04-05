@@ -1,21 +1,25 @@
 #pragma once
 #include <deque>
 #include "globals.h"
-#include "entity_type.h"
-#include "ability.h"
-#include <SFML/Graphics.hpp>
 
+class Map;
+class Ability;
+class EntityType;
 
 class Entity {
 public:
-	uint id;
-	EntityType* type;
+	const uint id;
+	const EntityType& type;
 	Vec2i tile;
 	sf::Color color;
 	std::deque<Ability*> abilityQueue;
 	uint canMoveAt;
-	Entity(EntityType* _type, uint _id, const Vec2i& _tile);
+
+	Entity(Map& map, EntityType& _type, uint _id, const Vec2i& _tile);
 	void update();
 	void addAbility(Ability* ability);
+	void move(const Vec2i tile);
+private:
+	Map& map;
 };
 

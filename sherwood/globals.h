@@ -1,7 +1,8 @@
 #pragma once
-
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <string>
 
 typedef sf::Vector2f Vec2f;
 typedef sf::Vector2i Vec2i;

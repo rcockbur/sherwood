@@ -1,6 +1,5 @@
 #pragma once
-#include "map.h"
-#include "entity_manager.h"
+#include <SFML/Graphics.hpp>
 
 struct Colors {
 	sf::Color blue = sf::Color::Blue;
@@ -13,11 +12,4 @@ struct Colors {
 	sf::Color transparent = sf::Color(0, 0, 0, 0);
 };
 
-void initGraphics();
-void drawAll();
-void drawTerrain();
-void drawGrid();
-void drawEntities();
-void drawViewportOutline();
-void drawText();
-void updateFPS(uint);
+extern Colors colors;

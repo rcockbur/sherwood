@@ -1,7 +1,6 @@
-#include "globals.h"
 #include "ability.h"
-#include <list>
 #include "entity.h"
+#include "entity_type.h"
 
 extern uint tic;
 
@@ -15,8 +14,8 @@ bool Move::execute()
 {
 	if (path.size() > 0) {
 		if (tic >= entity.canMoveAt) {
-			entity.canMoveAt = tic + entity.type->movePeriod;
-			entity.tile = path.front();
+			entity.canMoveAt = tic + entity.type.movePeriod;
+			entity.move(path.front());
 			path.pop_front();
 		}
 	}

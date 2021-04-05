@@ -30,13 +30,16 @@
     <ClCompile Include="map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics.cpp">
+    <ClCompile Include="graphics_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ability.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,13 +59,16 @@
     <ClInclude Include="map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics.h">
+    <ClInclude Include="graphics_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ability.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

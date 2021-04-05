@@ -1,9 +1,12 @@
-#include "globals.h"
 #include "entity.h"
+#include "ability.h"
+#include "map.h"
+#include "entity_type.h"
 
-Entity::Entity(EntityType* _type, uint _id, const Vec2i& _tile)
-	: type(_type), id(_id), tile(_tile), color(NULL) 
+Entity::Entity(Map& _map, EntityType& _type, uint _id, const Vec2i& _tile)
+	: map(_map), type(_type), id(_id), tile(_tile), color(NULL) 
 {
+	map.entity_grid[tile.x][tile.y] = this;
 }
 
 void Entity::update()
@@ -19,4 +22,11 @@ void Entity::update()
 void Entity::addAbility(Ability* ability) 
 {
 	abilityQueue.push_back(ability);
+}
+
+void Entity::move(const Vec2i _tile)
+{
+	map.entity_grid[tile.x][tile.y] = nullptr;
+	tile = _tile;
+	map.entity_grid[tile.x][tile.y] = this;
 }

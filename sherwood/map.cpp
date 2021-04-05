@@ -1,17 +1,12 @@
-#include "map.h"
-#include "graphics.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <assert.h>
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include "map.h"
 
-extern Colors colors;
-
-Map map("data/map.txt", { 15., 15. }, 1., colors.grey);
-
-Map::Map(std::string fileName, Vec2f _tileSize, float _lineWidth, sf::Color _color)
-	: tileCount(calculateTileCount(fileName)), tileSize(_tileSize), color(_color), lineWidth(_lineWidth),
-	lineWidthHalf(_lineWidth / 2), gridSize(calculateGridSize(tileCount, _tileSize))
+Map::Map(std::string fileName)
+	: tileCount(calculateTileCount(fileName))
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
 	terrain_grid.resize(tileCount.x);
@@ -22,10 +17,6 @@ Map::Map(std::string fileName, Vec2f _tileSize, float _lineWidth, sf::Color _col
 	}
 	loadMapData("data/map.txt");
 	std::cout << "Map data loaded\n";
-}
-
-Vec2f Map::calculateGridSize(const Vec2i& _tileCount, const Vec2f& _tileSize) {
-	return Vec2f(((float)_tileCount.x) * _tileSize.x, ((float)_tileCount.y) * _tileSize.y);
 }
 
 Vec2i Map::calculateTileCount(std::string fileName) {
@@ -46,7 +37,6 @@ Vec2i Map::calculateTileCount(std::string fileName) {
 			if (x != prevX && prevX != 0)
 				throw std::logic_error("map rows are of different sizes");
 			prevX = x;
-
 		}
 	}
 	return Vec2i(x, y);

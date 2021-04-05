@@ -1,9 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <string>
 #include "globals.h"
 
-struct EntityType {
+class EntityType {
+public:
 	ET id;
 	std::string name;
 	sf::Color color;

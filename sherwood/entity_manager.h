@@ -1,20 +1,19 @@
 #pragma once
 #include <list>
-#include <vector>
 #include "globals.h"
-#include "entity.h"
-#include "entity_type.h"
 
-void initEntities();
+class EntityType;
+class Map;
+class Entity;
 
 class EntityManager {
 public:
-	EntityManager();
+	EntityManager(Map& map);
 	void createEntityType(ET, std::string, sf::Color, uint);
 	Entity* createEntity(ET, Vec2i);
 	void updateEntities();
-	std::list<Entity*> getEntities();
 private:
+	Map& map;
 	uint entityIndex;
 	std::map<ET, EntityType*> entityTypes;
 	std::list<Entity*> entities;
