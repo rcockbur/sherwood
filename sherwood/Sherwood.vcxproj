@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ability.cpp" />
+    <ClCompile Include="actions.cpp" />
     <ClCompile Include="colors.cpp" />
     <ClCompile Include="graphics_manager.cpp" />
     <ClCompile Include="entity.cpp" />
@@ -162,10 +163,10 @@
     <ClCompile Include="entity_type.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
-    <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ability.h" />
+    <ClInclude Include="actions.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="graphics_manager.h" />
     <ClInclude Include="entity.h" />
@@ -173,7 +174,6 @@
     <ClInclude Include="entity_type.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="map.h" />
-    <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

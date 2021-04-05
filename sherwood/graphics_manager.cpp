@@ -7,27 +7,34 @@
 
 extern uint targetFPS;
 extern float actualFPS;
+extern bool showGrid;
 
-const Vec2u windowSize(600, 600);
-const Vec2f viewSize(300, 380);
-const Vec2f hudOffset(10, 5);
-const Vec2f viewportOffset(hudOffset + Vec2f(0,20));
+const Vec2f tileSize{ 24,24 };
+const Vec2u windowSize(800, 450);
+const float windowPaddingTop = 5;
+const float windowPaddingLeft = 5;
+const float windowPaddingBot = 10;
+const float topPanelHeight = 20;
+const float viewportWidth = 580;
+const float lineWidthHalf = 1;
+const float lineWidth = lineWidthHalf * 2;
+
+const Vec2f viewportSize(viewportWidth, windowSize.y - windowPaddingTop - windowPaddingBot - topPanelHeight);
+const Vec2f viewportOffset(Vec2f(windowPaddingLeft, windowPaddingTop + topPanelHeight));
 const Vec2f viewportOffsetRatio(viewportOffset.x / windowSize.x, viewportOffset.y / windowSize.y);
-const Vec2f viewportSizeRatio(viewSize.x / windowSize.x, viewSize.y / windowSize.y);
-const float lineWidth = 1;
-const float lineWidthHalf = lineWidth / 2;
-const Vec2f tileSize{ 15,15 };
+const Vec2f viewportSizeRatio(viewportSize.x / windowSize.x, viewportSize.y / windowSize.y);
+const Vec2f viewSize(viewportSize);
 
 sf::RenderWindow window(sf::VideoMode(windowSize.x, windowSize.y), "Sherwood");
 sf::View mapView(sf::FloatRect(0, 0, viewSize.x, viewSize.y));
 sf::RectangleShape verticalLine;
 sf::RectangleShape horizontalLine;
 
-sf::RectangleShape viewportRect;
-sf::RectangleShape square;
+sf::RectangleShape viewportShape;
+sf::RectangleShape entityShape;
 sf::Font arial;
 sf::Text text;
-std::vector<sf::RectangleShape> terrainRects;
+std::vector<sf::RectangleShape> terrainShapes;
 
 GraphicsManager::GraphicsManager(const Map& _map, sf::Color _color)
 	: map(_map), gridColor(_color), gridSize(calculateGridSize(_map.tileCount))
@@ -36,11 +43,11 @@ GraphicsManager::GraphicsManager(const Map& _map, sf::Color _color)
 
 	mapView.setViewport(sf::FloatRect(viewportOffsetRatio.x, viewportOffsetRatio.y, viewportSizeRatio.x, viewportSizeRatio.y));
 	
-	viewportRect.setSize(viewSize);
-	viewportRect.setPosition(viewportOffset + Vec2f(1,1));
-	viewportRect.setOutlineColor(colors.red);
-	viewportRect.setOutlineThickness(1);
-	viewportRect.setFillColor(colors.transparent);
+	viewportShape.setSize(viewportSize);
+	viewportShape.setPosition(viewportOffset);
+	viewportShape.setOutlineColor(colors.red);
+	viewportShape.setOutlineThickness(1);
+	viewportShape.setFillColor(colors.transparent);
 
 	verticalLine.setSize(Vec2f(lineWidth, gridSize.y + lineWidth));
 	verticalLine.setFillColor(gridColor);
@@ -53,21 +60,21 @@ GraphicsManager::GraphicsManager(const Map& _map, sf::Color _color)
 
 	grassRect.setSize(tileSize);
 	grassRect.setFillColor(colors.green);
-	terrainRects.push_back(grassRect);
+	terrainShapes.push_back(grassRect);
 
 	waterRect.setSize(tileSize);
 	waterRect.setFillColor(colors.blue);
-	terrainRects.push_back(waterRect);
+	terrainShapes.push_back(waterRect);
 
-	square.setSize(Vec2f(tileSize) - Vec2f(lineWidth, lineWidth));
-	square.setFillColor(colors.white);
+	entityShape.setSize(tileSize);
+	entityShape.setFillColor(colors.white);
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
 	text.setFont(arial);
 	text.setCharacterSize(14);
 	text.setFillColor(sf::Color::White);
-	text.setPosition(hudOffset);
+	text.setPosition(Vec2f(windowPaddingLeft, windowPaddingTop));
 }
 
 void GraphicsManager::draw() {
@@ -75,8 +82,10 @@ void GraphicsManager::draw() {
 
 	window.setView(mapView);
 	drawMap();
-	drawGrid();
-
+	if (showGrid) {
+		drawGrid();
+	}
+	
 	window.setView(window.getDefaultView());
 	drawViewportOutline();
 	drawText();
@@ -85,16 +94,15 @@ void GraphicsManager::draw() {
 }
 
 void GraphicsManager::drawMap() {
-	
 	for (int x = 0; x < map.terrain_grid.size(); ++x) {
 		for (int y = 0; y < map.terrain_grid[x].size(); ++y) {
-			terrainRects.at(map.terrain_grid[x][y]).
+			terrainShapes.at(map.terrain_grid[x][y]).
 				setPosition(Vec2f(tileSize.x * float(x), tileSize.y * (float)y));
-			window.draw(terrainRects.at(map.terrain_grid[x][y]));
+			window.draw(terrainShapes.at(map.terrain_grid[x][y]));
 			if (map.entity_grid[x][y] != nullptr) {
-				square.setPosition(tileToWorld(map.entity_grid[x][y]->tile));
-				square.setFillColor(map.entity_grid[x][y]->color);
-				window.draw(square);
+				entityShape.setPosition(tileToWorld(map.entity_grid[x][y]->tile));
+				entityShape.setFillColor(map.entity_grid[x][y]->color);
+				window.draw(entityShape);
 			}
 		}
 	}
@@ -121,13 +129,34 @@ void GraphicsManager::drawText() {
 }
 
 void GraphicsManager::drawViewportOutline() {
-	window.draw(viewportRect);
+	window.draw(viewportShape);
 }
 
 Vec2f GraphicsManager::tileToWorld(const Vec2i tile) {
-	return Vec2f((float)tile.x * tileSize.x + lineWidthHalf, (float)tile.y * tileSize.y + lineWidthHalf);
+	return Vec2f((float)tile.x * tileSize.x, (float)tile.y * tileSize.y);
+}
+
+Vec2i GraphicsManager::worldToTile(const Vec2f pos) {
+	return Vec2i((int)(pos.x / tileSize.x), (int)(pos.y / tileSize.y));
 }
 
 Vec2f GraphicsManager::calculateGridSize(const Vec2i& _tileCount) {
 	return Vec2f(((float)_tileCount.x) * tileSize.x, ((float)_tileCount.y) * tileSize.y);
+}
+
+void GraphicsManager::handleClick(const Vec2f screenPosition)
+{
+	std::cout << "ScreenPosition:" << screenPosition.x << "," << screenPosition.y << "\n";
+
+	sf::Rect<float> viewportRect(viewportOffset, viewportSize + Vec2f(0,0));
+
+	if (viewportRect.contains(screenPosition)) {
+		Vec2f worldPosition = window.mapPixelToCoords(Vec2i((int)(screenPosition.x + 0.5f), (int)(screenPosition.y + 0.5f)), mapView);
+		std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
+		Vec2i clickedTile = worldToTile(worldPosition);
+		std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
+	}
+	else {
+		std::cout << "Out of bounds\n";
+	}
 }

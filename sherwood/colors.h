@@ -1,15 +1,16 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "globals.h"
 
 struct Colors {
-	sf::Color blue = sf::Color::Blue;
-	sf::Color black = sf::Color::Black;
-	sf::Color green = sf::Color::Green;
-	sf::Color red = sf::Color::Red;
-	sf::Color white = sf::Color::White;
-	sf::Color yellow = sf::Color::Yellow;
-	sf::Color grey = sf::Color(100, 100, 100);
-	sf::Color transparent = sf::Color(0, 0, 0, 0);
+	Color blue = Color::Blue;
+	Color black = Color::Black;
+	Color green = Color::Green;
+	Color red = Color::Red;
+	Color white = Color::White;
+	Color yellow = Color::Yellow;
+	Color grey = Color(100, 100, 100);
+	Color transparent = Color(0, 0, 0, 0);
 };
 
 extern Colors colors;

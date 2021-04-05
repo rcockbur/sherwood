@@ -1,8 +1,6 @@
 #pragma once
-#include <vector>
 #include "globals.h"
-#include "map.h"
-
+#include <vector>
 
 class Entity;
 

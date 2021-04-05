@@ -1,6 +1,6 @@
 #pragma once
-#include <deque>
 #include "globals.h"
+#include <deque>
 
 class Map;
 class Ability;

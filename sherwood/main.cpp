@@ -1,10 +1,10 @@
-#include <list>
 #include "entity_manager.h"
 #include "graphics_manager.h"
 #include "colors.h"
 #include "ability.h"
 #include "map.h"
 #include "entity.h"
+#include <list>
 
 extern sf::RenderWindow window;
 extern sf::View mapView;
@@ -13,6 +13,7 @@ extern Colors colors;
 uint tic(0);
 uint targetFPS;
 float actualFPS;
+bool showGrid = true;
 
 void updateFPS(uint fps) {
 	targetFPS = fps;
@@ -25,14 +26,20 @@ int main()
 	EntityManager em(map);
 	GraphicsManager gm(map, colors.grey);
 	
-	em.createEntityType(ET::DEER, "deer", colors.yellow, 10);
+	em.createEntityType(ET::DEER, "deer", colors.yellow, 60);
 
-	Entity* entity = em.createEntity(ET::DEER, Vec2i(0, 0));
+	
 
-	em.createEntity(ET::DEER, Vec2i(2, 0));
-	em.createEntity(ET::DEER, Vec2i(3, 0));
+	em.createEntity(ET::DEER, Vec2i(0, 0));
+	em.createEntity(ET::DEER, Vec2i(0, 1));
+	em.createEntity(ET::DEER, Vec2i(1, 0));
+	em.createEntity(ET::DEER, Vec2i(2, 1));
+	em.createEntity(ET::DEER, Vec2i(3, 1));
+	em.createEntity(ET::DEER, Vec2i(2, 2));
 
-	std::list<Vec2i> path{ Vec2i(0,1), Vec2i(0,2), Vec2i(0,3), Vec2i(0,4), Vec2i(0,5) };
+	Entity* entity = em.createEntity(ET::DEER, Vec2i(0, 2));
+
+	std::list<Vec2i> path{ Vec2i(0,3), Vec2i(0,4), Vec2i(0,5) };
 	Move* move = new Move(*entity, path);
 	entity->addAbility(move);
 
@@ -50,9 +57,8 @@ int main()
 		sf::Clock clock;
 		sf::Event event;
 		while (window.pollEvent(event)) {
-			//sf::Vector2f screen_pos((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y);
-			//sf::Vector2f world_pos = screen_pos_to_world_pos(screen_pos);
-			//sf::Vector2i tile = world_pos_to_tile(world_pos);
+			Vec2f screen_pos((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y);
+			
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
@@ -72,6 +78,9 @@ int main()
 				case(sf::Keyboard::S):
 					break;
 				case(sf::Keyboard::D):
+					break;
+				case(sf::Keyboard::G):
+					showGrid = !showGrid;
 					break;
 				case(sf::Keyboard::Up):
 					mapView.move(Vec2f(0, -5));
@@ -97,6 +106,10 @@ int main()
 			case sf::Event::MouseButtonPressed:
 				switch (event.mouseButton.button) {
 				case(sf::Mouse::Left):
+					gm.handleClick(screen_pos);
+					//sf::Vector2f world_pos = screen_pos_to_world_pos(screen_pos);
+					//sf::Vector2i tile = world_pos_to_tile(world_pos);
+					
 					//has_printed = true;
 					//std::cout << "screen_pos:" << screen_pos.x << ", " << screen_pos.y << std::endl;
 					//std::cout << "world_pos: " << world_pos.x << ", " << world_pos.y << std::endl;
