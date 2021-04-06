@@ -10,7 +10,7 @@ struct Colors {
 	Color white = Color::White;
 	Color yellow = Color::Yellow;
 	Color grey = Color(100, 100, 100);
-	Color transparent = Color(0, 0, 0, 0);
+	Color transparent = Color::Transparent;
 };
 
 extern Colors colors;

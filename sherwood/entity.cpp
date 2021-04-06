@@ -3,8 +3,13 @@
 #include "map.h"
 #include "entity_type.h"
 
-Entity::Entity(Map& _map, EntityType& _type, uint _id, const Vec2i& _tile)
-	: map(_map), type(_type), id(_id), tile(_tile), color(NULL) 
+Entity::Entity(Map& _map, EntityType& _type, uint _id, const Vec2i& _tile): 
+	map(_map), 
+	type(_type), 
+	id(_id), 
+	tile(_tile), 
+	color(NULL),
+	canMoveAt(0)
 {
 	map.entity_grid[tile.x][tile.y] = this;
 }

@@ -5,30 +5,22 @@
 #include "map.h"
 #include "entity.h"
 #include <list>
+#include "window_manager.h"
 
-extern sf::RenderWindow window;
-extern sf::View mapView;
 extern Colors colors;
 
 uint tic(0);
-uint targetFPS;
-float actualFPS;
-bool showGrid = true;
 
-void updateFPS(uint fps) {
-	targetFPS = fps;
-	window.setFramerateLimit(targetFPS);
-}
+bool showGrid = true;
 
 int main()
 {
+	WindowManager wm("Sherwood", 30);
 	Map map("data/map.txt");
+	GraphicsManager gm(map, wm);
 	EntityManager em(map);
-	GraphicsManager gm(map, colors.grey);
 	
 	em.createEntityType(ET::DEER, "deer", colors.yellow, 60);
-
-	
 
 	em.createEntity(ET::DEER, Vec2i(0, 0));
 	em.createEntity(ET::DEER, Vec2i(0, 1));
@@ -51,25 +43,23 @@ int main()
 
 	sf::Clock deltaClock;
 	sf::Time dt = deltaClock.restart();
-	updateFPS(30);
 	std::cout << "Mainloop started\n";
-	while (window.isOpen()) {
-		sf::Clock clock;
+	while (wm.window.isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event)) {
-			Vec2f screen_pos((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y);
+		while (wm.window.pollEvent(event)) {
+			Vec2f screen_pos((float)sf::Mouse::getPosition(wm.window).x, (float)sf::Mouse::getPosition(wm.window).y);
 			
 			switch (event.type) {
 			case sf::Event::Closed:
-				window.close();
+				wm.window.close();
 				break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case(sf::Keyboard::Escape):
-					window.close();
+					wm.window.close();
 					break;
 				case(sf::Keyboard::Q):
-					window.close();
+					wm.window.close();
 					break;
 				case(sf::Keyboard::W):
 					break;
@@ -83,48 +73,39 @@ int main()
 					showGrid = !showGrid;
 					break;
 				case(sf::Keyboard::Up):
-					mapView.move(Vec2f(0, -5));
+					wm.mapView.move(Vec2f(0, -5));
 					break;
 				case(sf::Keyboard::Down):
-					mapView.move(Vec2f(0, 5));
+					wm.mapView.move(Vec2f(0, 5));
 					break;
 				case(sf::Keyboard::Left):
-					mapView.move(Vec2f(-5, 0));
+					wm.mapView.move(Vec2f(-5, 0));
 					break;
 				case(sf::Keyboard::Right):
-					mapView.move(Vec2f(5, 0));
+					wm.mapView.move(Vec2f(5, 0));
 					break;
 				case(sf::Keyboard::Add):
-					updateFPS(targetFPS + 1);
+					wm.updateFPS(wm.targetFPS + 1);
 					break;
 				case(sf::Keyboard::Subtract):
-					updateFPS(targetFPS - 1);
+					wm.updateFPS(wm.targetFPS - 1);
 					break;
 				default:
 					break;
-				} //switch (event.key.code)
+				}
 			case sf::Event::MouseButtonPressed:
 				switch (event.mouseButton.button) {
 				case(sf::Mouse::Left):
-					gm.handleClick(screen_pos);
-					//sf::Vector2f world_pos = screen_pos_to_world_pos(screen_pos);
-					//sf::Vector2i tile = world_pos_to_tile(world_pos);
-					
-					//has_printed = true;
-					//std::cout << "screen_pos:" << screen_pos.x << ", " << screen_pos.y << std::endl;
-					//std::cout << "world_pos: " << world_pos.x << ", " << world_pos.y << std::endl;
-					//std::cout << "tile:   " << tile.x << ", " << tile.y << std::endl;
-					//select_entity(world_pos);
+					wm.handleScreenClick(screen_pos);
 					break;
 				default:
 					break;
-				} //switch (event.mouseButton.button)
+				}
 			default:
 				break;
-			} //switch (event.type)
+			} 
 		}
 
-		
 		em.updateEntities();
 		gm.draw();
 		
@@ -133,7 +114,7 @@ int main()
 		hasPrinted = false;
 		++tic;
 		dt = deltaClock.restart();
-		actualFPS = 1 / dt.asSeconds();
+		wm.actualFPS = 1 / dt.asSeconds();
 	}
 
     return 0;
