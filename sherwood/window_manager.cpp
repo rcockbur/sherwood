@@ -1,10 +1,13 @@
 #include "window_manager.h"
+#include "map.h"
 
-WindowManager::WindowManager(std::string windowName, uint targetFPS):
+WindowManager::WindowManager(const Map& _map, std::string windowName, uint targetFPS):
+	map(_map),
 	mapView(sf::FloatRect(0, 0, viewportSize.x, viewportSize.y)),
 	window(sf::VideoMode(windowSize.x, windowSize.y), windowName),
 	targetFPS(targetFPS),
-	actualFPS((float)targetFPS)
+	actualFPS((float)targetFPS),
+	gridSize(calculateGridSize(map.tileCount))
 {
 	window.setPosition(Vec2i(0, 0));
 	window.setFramerateLimit(targetFPS);
@@ -47,4 +50,8 @@ void WindowManager::updateFPS(uint fps)
 {
 	targetFPS = fps;
 	window.setFramerateLimit(targetFPS);
+}
+
+const Vec2f WindowManager::calculateGridSize(const Vec2i& _tileCount) {
+	return Vec2f(((float)_tileCount.x) * tileSize.x, ((float)_tileCount.y) * tileSize.y);
 }

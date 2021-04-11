@@ -29,10 +29,10 @@ GraphicsManager::GraphicsManager(const Map& _map, WindowManager& wm):
 	viewportShape.setOutlineThickness(1);
 	viewportShape.setFillColor(colors.transparent);
 
-	verticalLine.setSize(Vec2f(lineWidth, gridSize.y + lineWidth));
+	verticalLine.setSize(Vec2f(lineWidth, wm.gridSize.y + lineWidth));
 	verticalLine.setFillColor(colors.grey);
 
-	horizontalLine.setSize(Vec2f(gridSize.x + lineWidth, lineWidth));
+	horizontalLine.setSize(Vec2f(wm.gridSize.x + lineWidth, lineWidth));
 	horizontalLine.setFillColor(colors.grey);
 
 	sf::RectangleShape grassRect;
@@ -89,6 +89,9 @@ void GraphicsManager::drawMap() {
 }
 
 void GraphicsManager::drawGrid() {
+	//std::cout << "Tile Count" << map.tileCount.x << "\n";
+	//std::cout << "Tile Size" << tileSize.x << "\n";
+	//std::cout << "Grid size" << wm.gridSize.x << "\n";
 	for (int i = 0; i < map.tileCount.x + 1; i++) {
 		verticalLine.setPosition(Vec2f(tileSize.x * i - lineWidthHalf, -lineWidthHalf));
 		wm.window.draw(verticalLine);

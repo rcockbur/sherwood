@@ -15,8 +15,9 @@ bool showGrid = true;
 
 int main()
 {
-	WindowManager wm("Sherwood", 30);
+	
 	Map map("data/map.txt");
+	WindowManager wm(map, "Sherwood", 30);
 	GraphicsManager gm(map, wm);
 	EntityManager em(map);
 	

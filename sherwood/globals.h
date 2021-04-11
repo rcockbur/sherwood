@@ -23,5 +23,5 @@ extern const float topPanelHeight;
 extern const float viewportWidth;
 extern const Vec2f viewportSize;
 extern const Vec2f viewportOffset;
-extern const Vec2f gridSize;
+//extern const Vec2f gridSize;
 
