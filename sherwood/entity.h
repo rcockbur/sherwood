@@ -14,6 +14,7 @@ public:
 	sf::Color color;
 	std::deque<Ability*> abilityQueue;
 	uint canMoveAt;
+	bool isSelected;
 
 	Entity(Map& map, EntityType& _type, uint _id, const Vec2i& _tile);
 	void update();

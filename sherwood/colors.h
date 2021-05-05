@@ -11,6 +11,7 @@ struct Colors {
 	Color yellow = Color::Yellow;
 	Color grey = Color(100, 100, 100);
 	Color transparent = Color::Transparent;
+	Color brown = Color(165, 42, 42);
 };
 
 extern Colors colors;

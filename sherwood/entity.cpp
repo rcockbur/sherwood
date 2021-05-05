@@ -11,7 +11,7 @@ Entity::Entity(Map& _map, EntityType& _type, uint _id, const Vec2i& _tile):
 	color(NULL),
 	canMoveAt(0)
 {
-	map.entity_grid[tile.x][tile.y] = this;
+	map.entityGrid[tile.x][tile.y] = this;
 }
 
 void Entity::update()
@@ -31,7 +31,7 @@ void Entity::addAbility(Ability* ability)
 
 void Entity::move(const Vec2i _tile)
 {
-	map.entity_grid[tile.x][tile.y] = nullptr;
+	map.entityGrid[tile.x][tile.y] = nullptr;
 	tile = _tile;
-	map.entity_grid[tile.x][tile.y] = this;
+	map.entityGrid[tile.x][tile.y] = this;
 }

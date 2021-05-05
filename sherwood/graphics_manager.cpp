@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <sstream>
+#include <iomanip>
 #include <vector>
 #include "graphics_manager.h"
 #include "map.h"
@@ -8,13 +10,13 @@
 
 extern bool showGrid;
 
-const float lineWidthHalf = 1;
-const float lineWidth = lineWidthHalf * 2;
+
 
 sf::RectangleShape verticalLine;
 sf::RectangleShape horizontalLine;
 sf::RectangleShape viewportShape;
 sf::RectangleShape entityShape;
+sf::RectangleShape selectionShape;
 sf::Font arial;
 sf::Text text;
 std::vector<sf::RectangleShape> terrainShapes;
@@ -46,8 +48,13 @@ GraphicsManager::GraphicsManager(const Map& _map, WindowManager& wm):
 	waterRect.setFillColor(colors.blue);
 	terrainShapes.push_back(waterRect);
 
-	entityShape.setSize(tileSize);
+	entityShape.setSize(entitySize);
 	entityShape.setFillColor(colors.white);
+
+	selectionShape.setSize(entitySize);
+	selectionShape.setOutlineThickness(lineWidth);
+	selectionShape.setOutlineColor(colors.yellow);
+	selectionShape.setFillColor(colors.transparent);
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
@@ -61,11 +68,11 @@ void GraphicsManager::draw() {
 	wm.window.clear();
 
 	wm.window.setView(wm.mapView);
-	drawMap();
-	if (showGrid) {
-		drawGrid();
-	}
 	
+	drawTerrain();
+	if (showGrid)
+		drawGrid();
+	drawEntities();
 	wm.window.setView(wm.window.getDefaultView());
 	drawViewportOutline();
 	drawText();
@@ -73,25 +80,35 @@ void GraphicsManager::draw() {
 	wm.window.display();
 }
 
-void GraphicsManager::drawMap() {
-	for (int x = 0; x < map.terrain_grid.size(); ++x) {
-		for (int y = 0; y < map.terrain_grid[x].size(); ++y) {
-			terrainShapes.at(map.terrain_grid[x][y]).
+void GraphicsManager::drawTerrain() {
+	for (int x = 0; x < map.terrainGrid.size(); ++x) {
+		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
+			terrainShapes.at(map.terrainGrid[x][y]).
 				setPosition(Vec2f(tileSize.x * float(x), tileSize.y * (float)y));
-			wm.window.draw(terrainShapes.at(map.terrain_grid[x][y]));
-			if (map.entity_grid[x][y] != nullptr) {
-				entityShape.setPosition(wm.tileToWorld(map.entity_grid[x][y]->tile));
-				entityShape.setFillColor(map.entity_grid[x][y]->color);
+			wm.window.draw(terrainShapes.at(map.terrainGrid[x][y]));
+		}
+	}
+}
+
+void GraphicsManager::drawEntities() {
+	for (int x = 0; x < map.terrainGrid.size(); ++x) {
+		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
+			Entity* entity = map.entityGrid[x][y];
+			if (entity != nullptr) {
+				Vec2f worldPos = wm.tileToWorld(entity->tile) - Vec2f(entitySize.x / 2, entitySize.y / 2);
+				entityShape.setPosition(worldPos);
+				entityShape.setFillColor(entity->color);
 				wm.window.draw(entityShape);
+				if (entity->isSelected) {
+					selectionShape.setPosition(worldPos);
+					wm.window.draw(selectionShape);
+				}
 			}
 		}
 	}
 }
 
 void GraphicsManager::drawGrid() {
-	//std::cout << "Tile Count" << map.tileCount.x << "\n";
-	//std::cout << "Tile Size" << tileSize.x << "\n";
-	//std::cout << "Grid size" << wm.gridSize.x << "\n";
 	for (int i = 0; i < map.tileCount.x + 1; i++) {
 		verticalLine.setPosition(Vec2f(tileSize.x * i - lineWidthHalf, -lineWidthHalf));
 		wm.window.draw(verticalLine);
@@ -103,11 +120,11 @@ void GraphicsManager::drawGrid() {
 }
 
 void GraphicsManager::drawText() {
-	std::string s("Target FPS: ");
-	s += std::to_string(wm.targetFPS);
-	s += std::string("  Actual FPS: ");
-	s += std::to_string(wm.actualFPS);
-	text.setString(s);
+	//std::string s("Target FPS: ");
+	std::ostringstream s;
+	s << "Target FPS: " << wm.targetFPS;
+	s << "   Actual FPS: " << std::setprecision(3) << wm.actualFPS;
+	text.setString(s.str());
 	wm.window.draw(text);
 }
 

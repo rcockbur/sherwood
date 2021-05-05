@@ -4,7 +4,10 @@
 //	return Vec2f(((float)_tileCount.x) * tileSize.x, ((float)_tileCount.y) * tileSize.y);
 //}
 
+const float lineWidthHalf = 1;
+const float lineWidth = lineWidthHalf * 2;
 const Vec2f tileSize{ 24, 24 };
+const Vec2f entitySize{ tileSize.x - lineWidth, tileSize.y - lineWidth };
 const Vec2i tileCount{ 30, 20 };
 const Vec2u windowSize{ 800, 450 };
 const float windowPaddingTop{ 5 };

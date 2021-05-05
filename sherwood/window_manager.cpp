@@ -1,7 +1,8 @@
 #include "window_manager.h"
 #include "map.h"
+#include "entity.h"
 
-WindowManager::WindowManager(const Map& _map, std::string windowName, uint targetFPS):
+WindowManager::WindowManager(Map& _map, std::string windowName, uint targetFPS):
 	map(_map),
 	mapView(sf::FloatRect(0, 0, viewportSize.x, viewportSize.y)),
 	window(sf::VideoMode(windowSize.x, windowSize.y), windowName),
@@ -17,7 +18,7 @@ WindowManager::WindowManager(const Map& _map, std::string windowName, uint targe
 }
 
 Vec2f WindowManager::tileToWorld(const Vec2i tile) {
-	return Vec2f((float)tile.x * tileSize.x, (float)tile.y * tileSize.y);
+	return Vec2f(((float)tile.x + 0.5f) * tileSize.x, ((float)tile.y + 0.5f) * tileSize.y);
 }
 
 Vec2i WindowManager::worldToTile(const Vec2f pos) {
@@ -44,6 +45,12 @@ void WindowManager::handleWorldClick(const Vec2f worldPosition)
 	std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPosition);
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
+
+	Entity* entity = map.getEntityAt(clickedTile);
+	if (entity != nullptr) {
+		entity->isSelected = true;
+		std::cout << "Entity " << entity->id << " is selected" << "\n";
+	}
 }
 
 void WindowManager::updateFPS(uint fps)

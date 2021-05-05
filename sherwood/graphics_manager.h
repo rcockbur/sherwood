@@ -13,7 +13,8 @@ private:
 	WindowManager& wm;
 	
 	const sf::Color gridColor;
-	void drawMap();
+	void drawTerrain();
+	void drawEntities();
 	void drawGrid();
 	void drawViewportOutline();
 	void drawText();

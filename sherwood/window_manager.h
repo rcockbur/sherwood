@@ -7,14 +7,14 @@ class Map;
 
 class WindowManager {
 public:
-	const Map& map;
+	Map& map;
 	uint targetFPS;
 	float actualFPS;
 	sf::View mapView;
 	sf::RenderWindow window;
 	const Vec2f gridSize;
 
-	WindowManager(const Map& map, std::string windowName, uint targetFPS);
+	WindowManager(Map& map, std::string windowName, uint targetFPS);
 	Vec2i worldToTile(const Vec2f);
 	Vec2f tileToWorld(const Vec2i);
 	void handleScreenClick(const Vec2f screenPosition);

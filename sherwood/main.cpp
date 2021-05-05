@@ -21,7 +21,7 @@ int main()
 	GraphicsManager gm(map, wm);
 	EntityManager em(map);
 	
-	em.createEntityType(ET::DEER, "deer", colors.yellow, 60);
+	em.createEntityType(ET::DEER, "deer", colors.brown, 60);
 
 	em.createEntity(ET::DEER, Vec2i(0, 0));
 	em.createEntity(ET::DEER, Vec2i(0, 1));

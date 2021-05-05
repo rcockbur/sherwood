@@ -14,7 +14,10 @@ enum class ET{ DEER };
 constexpr uint ENTITY_TYPES = 1;
 enum class AT{ MOVE };
 
+extern const float lineWidthHalf;
+extern const float lineWidth;
 extern const Vec2f tileSize;
+extern const Vec2f entitySize;
 extern const Vec2u windowSize;
 extern const float windowPaddingTop;
 extern const float windowPaddingLeft;
