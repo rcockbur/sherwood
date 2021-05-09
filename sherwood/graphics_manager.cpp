@@ -18,7 +18,8 @@ sf::RectangleShape viewportShape;
 sf::RectangleShape entityShape;
 sf::RectangleShape selectionShape;
 sf::Font arial;
-sf::Text text;
+sf::Text fpsText;
+sf::Text selectionText;
 std::vector<sf::RectangleShape> terrainShapes;
 
 GraphicsManager::GraphicsManager(const Map& _map, WindowManager& wm): 
@@ -58,10 +59,8 @@ GraphicsManager::GraphicsManager(const Map& _map, WindowManager& wm):
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
-	text.setFont(arial);
-	text.setCharacterSize(14);
-	text.setFillColor(sf::Color::White);
-	text.setPosition(Vec2f(windowPaddingLeft, windowPaddingTop));
+	initText(fpsText, Vec2f(windowPaddingLeft, windowPaddingTop));
+	initText(selectionText, rightPannelPosition);
 }
 
 void GraphicsManager::draw() {
@@ -120,14 +119,36 @@ void GraphicsManager::drawGrid() {
 }
 
 void GraphicsManager::drawText() {
-	//std::string s("Target FPS: ");
+	drawTextFPS();
+	drawTextSelection();
+}
+
+void GraphicsManager::drawTextFPS() {
 	std::ostringstream s;
 	s << "Target FPS: " << wm.targetFPS;
 	s << "   Actual FPS: " << std::setprecision(3) << wm.actualFPS;
-	text.setString(s.str());
-	wm.window.draw(text);
+	fpsText.setString(s.str());
+	wm.window.draw(fpsText);
+}
+
+void GraphicsManager::drawTextSelection() {
+	if (selectedEntity != nullptr) {
+		std::ostringstream s;
+		s << "Entity\n";
+		s << "ID: ";
+		s << selectedEntity->id;
+		selectionText.setString(s.str());
+		wm.window.draw(selectionText);
+	}
 }
 
 void GraphicsManager::drawViewportOutline() {
 	wm.window.draw(viewportShape);
+}
+
+void GraphicsManager::initText(sf::Text& text, const Vec2f& position) {
+	text.setFont(arial);
+	text.setCharacterSize(14);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(position);
 }

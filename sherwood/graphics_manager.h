@@ -18,6 +18,9 @@ private:
 	void drawGrid();
 	void drawViewportOutline();
 	void drawText();
+	void drawTextFPS();
+	void drawTextSelection();
 	Vec2f calculateGridSize(const Vec2i& tileCount);
+	void initText(sf::Text& text, const Vec2f& position);
 };
 

@@ -17,5 +17,5 @@ const float topPanelHeight{ 20 };
 const float viewportWidth{ 580 };
 const Vec2f viewportSize{ viewportWidth, windowSize.y - windowPaddingTop - windowPaddingBot - topPanelHeight };
 const Vec2f viewportOffset{ Vec2f(windowPaddingLeft, windowPaddingTop + topPanelHeight) };
-//const Vec2f gridSize(calculateGridSize(tileCount));
-
+const Vec2f rightPannelPosition(viewportOffset.x + viewportSize.x + 3, viewportOffset.y);
+Entity* selectedEntity(nullptr);

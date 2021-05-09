@@ -50,6 +50,7 @@ void WindowManager::handleWorldClick(const Vec2f worldPosition)
 	if (entity != nullptr) {
 		entity->isSelected = true;
 		std::cout << "Entity " << entity->id << " is selected" << "\n";
+		selectedEntity = entity;
 	}
 }
 

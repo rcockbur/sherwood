@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+class Entity;
+
 typedef sf::Vector2f Vec2f;
 typedef sf::Vector2i Vec2i;
 typedef sf::Vector2u Vec2u;
@@ -26,5 +28,7 @@ extern const float topPanelHeight;
 extern const float viewportWidth;
 extern const Vec2f viewportSize;
 extern const Vec2f viewportOffset;
+extern const Vec2f rightPannelPosition;
+extern Entity* selectedEntity;
 //extern const Vec2f gridSize;
 
