@@ -6,6 +6,7 @@
 #include "entity.h"
 #include <list>
 #include "window_manager.h"
+#include "input_manager.h"
 
 extern Colors colors;
 
@@ -20,6 +21,7 @@ int main()
 	WindowManager wm(map, "Sherwood", 30);
 	GraphicsManager gm(map, wm);
 	EntityManager em(map);
+	InputManager im(map, em, wm);
 	
 	em.createEntityType(ET::DEER, "deer", colors.brown, 60);
 
@@ -86,10 +88,10 @@ int main()
 					wm.mapView.move(Vec2f(5, 0));
 					break;
 				case(sf::Keyboard::Add):
-					wm.updateFPS(wm.targetFPS + 1);
+					im.updateFPS(wm.targetFPS + 1);
 					break;
 				case(sf::Keyboard::Subtract):
-					wm.updateFPS(wm.targetFPS - 1);
+					im.updateFPS(wm.targetFPS - 1);
 					break;
 				default:
 					break;
@@ -97,7 +99,7 @@ int main()
 			case sf::Event::MouseButtonPressed:
 				switch (event.mouseButton.button) {
 				case(sf::Mouse::Left):
-					wm.handleScreenClick(screen_pos);
+					im.handleScreenClick(screen_pos);
 					break;
 				default:
 					break;

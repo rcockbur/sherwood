@@ -28,6 +28,7 @@ extern const float topPanelHeight;
 extern const float viewportWidth;
 extern const Vec2f viewportSize;
 extern const Vec2f viewportOffset;
+extern const sf::Rect<float> viewportRect;
 extern const Vec2f rightPannelPosition;
 extern Entity* selectedEntity;
 //extern const Vec2f gridSize;

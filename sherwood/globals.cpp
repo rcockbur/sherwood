@@ -1,10 +1,6 @@
 #include "globals.h"
 
-//Vec2f calculateGridSize(const Vec2i& _tileCount) {
-//	return Vec2f(((float)_tileCount.x) * tileSize.x, ((float)_tileCount.y) * tileSize.y);
-//}
-
-const float lineWidthHalf = 1;
+const float lineWidthHalf = 0.5;
 const float lineWidth = lineWidthHalf * 2;
 const Vec2f tileSize{ 24, 24 };
 const Vec2f entitySize{ tileSize.x - lineWidth, tileSize.y - lineWidth };
@@ -17,5 +13,6 @@ const float topPanelHeight{ 20 };
 const float viewportWidth{ 580 };
 const Vec2f viewportSize{ viewportWidth, windowSize.y - windowPaddingTop - windowPaddingBot - topPanelHeight };
 const Vec2f viewportOffset{ Vec2f(windowPaddingLeft, windowPaddingTop + topPanelHeight) };
+const sf::Rect<float> viewportRect(viewportOffset, viewportSize);
 const Vec2f rightPannelPosition(viewportOffset.x + viewportSize.x + 3, viewportOffset.y);
 Entity* selectedEntity(nullptr);

@@ -25,41 +25,11 @@ Vec2i WindowManager::worldToTile(const Vec2f pos) {
 	return Vec2i((int)(pos.x / tileSize.x), (int)(pos.y / tileSize.y));
 }
 
-void WindowManager::handleScreenClick(const Vec2f position)
-{
-	std::cout << "ScreenPosition:" << position.x << "," << position.y << "\n";
-
-	sf::Rect<float> viewportRect(viewportOffset, viewportSize + Vec2f(0, 0));
-
-	if (viewportRect.contains(position)) {
-		Vec2f worldPosition = window.mapPixelToCoords(Vec2i((int)(position.x + 0.5f), (int)(position.y + 0.5f)), mapView);
-		handleWorldClick(worldPosition);
-	}
-	else {
-		std::cout << "Out of bounds\n";
-	}
+//0.5 ensures that the pixe
+Vec2f WindowManager::screenToWorld(const Vec2f screenPos) {
+	return window.mapPixelToCoords(Vec2i((int)(screenPos.x + 0.5f), (int)(screenPos.y + 0.5f)), mapView);
 }
 
-void WindowManager::handleWorldClick(const Vec2f worldPosition)
-{
-	std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
-	Vec2i clickedTile = worldToTile(worldPosition);
-	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
-
-	Entity* entity = map.getEntityAt(clickedTile);
-	if (entity != nullptr) {
-		entity->isSelected = true;
-		std::cout << "Entity " << entity->id << " is selected" << "\n";
-		selectedEntity = entity;
-	}
-}
-
-void WindowManager::updateFPS(uint fps)
-{
-	targetFPS = fps;
-	window.setFramerateLimit(targetFPS);
-}
-
-const Vec2f WindowManager::calculateGridSize(const Vec2i& _tileCount) {
-	return Vec2f(((float)_tileCount.x) * tileSize.x, ((float)_tileCount.y) * tileSize.y);
+const Vec2f WindowManager::calculateGridSize(const Vec2i& tileCount) {
+	return Vec2f(((float)tileCount.x) * tileSize.x, ((float)tileCount.y) * tileSize.y);
 }

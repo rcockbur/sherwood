@@ -11,7 +11,6 @@ public:
 private:
 	const Map& map;
 	WindowManager& wm;
-	
 	const sf::Color gridColor;
 	void drawTerrain();
 	void drawEntities();

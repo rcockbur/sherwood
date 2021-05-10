@@ -17,10 +17,8 @@ public:
 	WindowManager(Map& map, std::string windowName, uint targetFPS);
 	Vec2i worldToTile(const Vec2f);
 	Vec2f tileToWorld(const Vec2i);
-	void handleScreenClick(const Vec2f screenPosition);
-	void handleWorldClick(const Vec2f worldPosition);
-	void updateFPS(uint fps);
+	Vec2f screenToWorld(const Vec2f);
 private:
-	const Vec2f calculateGridSize(const Vec2i& _tileCount);
+	const Vec2f calculateGridSize(const Vec2i& tileCount);
 
 };
