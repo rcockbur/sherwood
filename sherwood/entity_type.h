@@ -1,5 +1,5 @@
 #pragma once
-#include "globals.h"
+#include "types.h"
 
 class EntityType {
 public:

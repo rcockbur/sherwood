@@ -3,9 +3,10 @@
 #include "map.h"
 #include "entity_type.h"
 #include "entity.h"
+#include "game.h"
 
-EntityManager::EntityManager(Map& _map)
-	: map(_map), entityIndex(0)
+EntityManager::EntityManager()
+	: entityIndex(0)
 {
 	std::cout << "EntityManager created\n";
 }

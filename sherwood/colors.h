@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "globals.h"
+#include "types.h"
 
 struct Colors {
 	Color blue = Color::Blue;

@@ -1,28 +1,15 @@
-#include "entity_manager.h"
-#include "graphics_manager.h"
+#include <list>
 #include "colors.h"
 #include "ability.h"
-#include "map.h"
 #include "entity.h"
-#include <list>
-#include "window_manager.h"
-#include "input_manager.h"
+#include "game.h"
 
 extern Colors colors;
 
 uint tic(0);
 
-bool showGrid = true;
-
 int main()
 {
-	
-	Map map("data/map.txt");
-	WindowManager wm(map, "Sherwood", 30);
-	GraphicsManager gm(map, wm);
-	EntityManager em(map);
-	InputManager im(map, em, wm);
-	
 	em.createEntityType(ET::DEER, "deer", colors.brown, 60);
 
 	em.createEntity(ET::DEER, Vec2i(0, 0));
@@ -111,7 +98,7 @@ int main()
 
 		em.updateEntities();
 		gm.draw();
-		
+		//std::cout << "---------------------------------------------------------" << std::endl;
 		if (hasPrinted)
 			std::cout << "---------------------------------------------------------" << std::endl;
 		hasPrinted = false;

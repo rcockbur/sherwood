@@ -1,5 +1,5 @@
 #pragma once
-#include "globals.h"
+#include "types.h"
 
 class Map;
 class WindowManager;
@@ -7,12 +7,9 @@ class EntityManager;
 
 class InputManager {
 public:
-	InputManager(Map& map, EntityManager& em, WindowManager& wm);
+	InputManager();
 	void handleScreenClick(const Vec2f screenPosition);
 	void handleWorldClick(const Vec2f worldPosition);
 	void updateFPS(uint fps);
-private:
-	Map& map;
-	WindowManager& wm;
-	EntityManager& em;
+	void handleKeyPress(sf::Keyboard::Key);
 };

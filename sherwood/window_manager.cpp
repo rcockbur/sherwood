@@ -1,9 +1,23 @@
 #include "window_manager.h"
 #include "map.h"
 #include "entity.h"
+#include "game.h"
 
-WindowManager::WindowManager(Map& _map, std::string windowName, uint targetFPS):
-	map(_map),
+WindowManager::WindowManager(std::string windowName, uint targetFPS):
+	lineWidthHalf(0.5),
+	lineWidth (lineWidthHalf * 2),
+	tileSize(24, 24),
+	entitySize(tileSize.x - lineWidth, tileSize.y - lineWidth),
+	windowSize(800, 450),
+	windowPaddingTop(5),
+	windowPaddingLeft(5),
+	windowPaddingBot(10),
+	topPanelHeight(20),
+	viewportWidth(580),
+	viewportSize(viewportWidth, windowSize.y - windowPaddingTop - windowPaddingBot - topPanelHeight),
+	viewportOffset(Vec2f(windowPaddingLeft, windowPaddingTop + topPanelHeight)),
+	viewportRect(viewportOffset, viewportSize),
+	rightPannelPosition(viewportOffset.x + viewportSize.x + 3, viewportOffset.y),
 	mapView(sf::FloatRect(0, 0, viewportSize.x, viewportSize.y)),
 	window(sf::VideoMode(windowSize.x, windowSize.y), windowName),
 	targetFPS(targetFPS),
