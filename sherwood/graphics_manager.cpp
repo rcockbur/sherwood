@@ -7,7 +7,7 @@
 #include "colors.h"
 #include "entity.h"
 #include "window_manager.h"
-#include "game.h"
+#include "globals.h"
 
 GraphicsManager::GraphicsManager() 
 {

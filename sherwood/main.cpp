@@ -1,12 +1,7 @@
-#include <list>
-#include "colors.h"
+#include "globals.h"
 #include "ability.h"
 #include "entity.h"
-#include "game.h"
-
-extern Colors colors;
-
-uint tic(0);
+#include "colors.h"
 
 int main()
 {
@@ -29,83 +24,15 @@ int main()
 	Move* move2 = new Move(*entity, path2);
 	entity->addAbility(move2);
 
-	bool hasPrinted = false;
-
-	sf::Clock deltaClock;
-	sf::Time dt = deltaClock.restart();
-	std::cout << "Mainloop started\n";
 	while (wm.window.isOpen()) {
-		sf::Event event;
-		while (wm.window.pollEvent(event)) {
-			Vec2f screen_pos((float)sf::Mouse::getPosition(wm.window).x, (float)sf::Mouse::getPosition(wm.window).y);
-			
-			switch (event.type) {
-			case sf::Event::Closed:
-				wm.window.close();
-				break;
-			case sf::Event::KeyPressed:
-				switch (event.key.code) {
-				case(sf::Keyboard::Escape):
-					wm.window.close();
-					break;
-				case(sf::Keyboard::Q):
-					wm.window.close();
-					break;
-				case(sf::Keyboard::W):
-					break;
-				case(sf::Keyboard::A):
-					break;
-				case(sf::Keyboard::S):
-					break;
-				case(sf::Keyboard::D):
-					break;
-				case(sf::Keyboard::G):
-					showGrid = !showGrid;
-					break;
-				case(sf::Keyboard::Up):
-					wm.mapView.move(Vec2f(0, -5));
-					break;
-				case(sf::Keyboard::Down):
-					wm.mapView.move(Vec2f(0, 5));
-					break;
-				case(sf::Keyboard::Left):
-					wm.mapView.move(Vec2f(-5, 0));
-					break;
-				case(sf::Keyboard::Right):
-					wm.mapView.move(Vec2f(5, 0));
-					break;
-				case(sf::Keyboard::Add):
-					im.updateFPS(wm.targetFPS + 1);
-					break;
-				case(sf::Keyboard::Subtract):
-					im.updateFPS(wm.targetFPS - 1);
-					break;
-				default:
-					break;
-				}
-			case sf::Event::MouseButtonPressed:
-				switch (event.mouseButton.button) {
-				case(sf::Mouse::Left):
-					im.handleScreenClick(screen_pos);
-					break;
-				default:
-					break;
-				}
-			default:
-				break;
-			} 
-		}
-
+		im.handleInput();
 		em.updateEntities();
 		gm.draw();
-		//std::cout << "---------------------------------------------------------" << std::endl;
-		if (hasPrinted)
-			std::cout << "---------------------------------------------------------" << std::endl;
+		if (hasPrinted) std::cout << "---------------------" << std::endl;
 		hasPrinted = false;
 		++tic;
 		dt = deltaClock.restart();
 		wm.actualFPS = 1 / dt.asSeconds();
 	}
-
     return 0;
 }

@@ -8,6 +8,7 @@ class EntityManager;
 class InputManager {
 public:
 	InputManager();
+	void handleInput();
 	void handleScreenClick(const Vec2f screenPosition);
 	void handleWorldClick(const Vec2f worldPosition);
 	void updateFPS(uint fps);

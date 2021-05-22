@@ -3,7 +3,7 @@
 #include "map.h"
 #include "entity_type.h"
 #include "entity.h"
-#include "game.h"
+#include "globals.h"
 
 EntityManager::EntityManager()
 	: entityIndex(0)
@@ -25,6 +25,16 @@ Entity* EntityManager::createEntity(ET et, Vec2i _tile) {
 	entities.push_back(entity);
 	return entity;
 }
+
+//Entity* EntityManager::createDeer(Vec2i _tile) {
+//	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
+//		throw std::logic_error("tile is out of bounds");
+//
+//	Entity* entity = new Entity(map, *entityTypes.at(ET::DEER), entityIndex++, _tile);
+//	entity->color = entity->type.color;
+//	entities.push_back(entity);
+//	return entity;
+//}
 
 void EntityManager::updateEntities() {
 	for (auto& entity : entities) 

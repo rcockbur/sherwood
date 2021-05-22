@@ -3,11 +3,37 @@
 #include "map.h"
 #include "entity.h"
 #include "entity_manager.h"
-#include "game.h"
+#include "globals.h"
 
 InputManager::InputManager()
 {
 
+}
+
+void InputManager::handleInput()
+{
+	sf::Event event;
+	while (wm.window.pollEvent(event)) {
+		Vec2f screen_pos((float)sf::Mouse::getPosition(wm.window).x, (float)sf::Mouse::getPosition(wm.window).y);
+
+		switch (event.type) {
+		case sf::Event::Closed:
+			wm.window.close();
+			break;
+		case sf::Event::KeyPressed:
+			handleKeyPress(event.key.code);
+		case sf::Event::MouseButtonPressed:
+			switch (event.mouseButton.button) {
+			case(sf::Mouse::Left):
+				handleScreenClick(screen_pos);
+				break;
+			default:
+				break;
+			}
+		default:
+			break;
+		}
+	}
 }
 
 void InputManager::handleScreenClick(const Vec2f screenPos) {
@@ -54,7 +80,7 @@ void InputManager::handleKeyPress(sf::Keyboard::Key code) {
 	case(sf::Keyboard::D):
 		break;
 	case(sf::Keyboard::G):
-		//showGrid = !showGrid;
+		showGrid = !showGrid;
 		break;
 	case(sf::Keyboard::Up):
 		wm.mapView.move(Vec2f(0, -5));

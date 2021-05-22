@@ -1,7 +1,7 @@
 #include "window_manager.h"
 #include "map.h"
 #include "entity.h"
-#include "game.h"
+#include "globals.h"
 
 WindowManager::WindowManager(std::string windowName, uint targetFPS):
 	lineWidthHalf(0.5),

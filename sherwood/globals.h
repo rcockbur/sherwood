@@ -6,7 +6,11 @@
 #include "input_manager.h"
 
 extern bool showGrid;
+extern bool hasPrinted;
 extern Entity* selectedEntity;
+extern uint tic;
+extern sf::Clock deltaClock;
+extern sf::Time dt;
 
 extern Map map;
 extern WindowManager wm;
