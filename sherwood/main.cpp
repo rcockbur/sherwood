@@ -5,7 +5,7 @@
 
 int main()
 {
-	em.createEntityType(ET::DEER, "deer", colors.brown, 60);
+	em.createEntityType(ET::DEER, "deer", colors.brown, 1, 12.0f);
 
 	em.createEntity(ET::DEER, Vec2i(0, 0));
 	em.createEntity(ET::DEER, Vec2i(0, 1));

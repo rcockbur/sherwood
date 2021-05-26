@@ -19,6 +19,14 @@ Map::Map(std::string fileName)
 	std::cout << "Map data loaded\n";
 }
 
+bool Map::isWithinBounds(Vec2i tile) {
+	return (tile.x >= 0 && tile.x < tileCount.x&& tile.y >= 0 && tile.y < tileCount.y);
+}
+
+bool Map::isPathable(Vec2i tile) {
+	return (terrainGrid[tile.x][tile.y] == 0);
+}
+
 Entity* Map::getEntityAt(Vec2i tile) {
 	if (tile.x < 0 || tile.x >= tileCount.x || tile.y < 0 || tile.y >= tileCount.y)
 		throw std::logic_error("tile is out of bounds");

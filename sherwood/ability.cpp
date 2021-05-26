@@ -15,8 +15,9 @@ bool Move::execute()
 	if (path.size() > 0) {
 		if (tic >= entity.canMoveAt) {
 			entity.canMoveAt = tic + entity.type.movePeriod;
-			entity.move(path.front());
-			path.pop_front();
+			bool hasReachedTile = entity.moveTowards(path.front());
+			if (hasReachedTile)
+				path.pop_front();
 		}
 	}
 	return path.empty();

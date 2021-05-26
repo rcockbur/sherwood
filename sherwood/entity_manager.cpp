@@ -11,8 +11,8 @@ EntityManager::EntityManager()
 	std::cout << "EntityManager created\n";
 }
 
-void EntityManager::createEntityType(ET id, std::string name, sf::Color color, uint movePeriod) {
-	EntityType* entityType = new EntityType(id, name, color, movePeriod);
+void EntityManager::createEntityType(ET id, std::string name, sf::Color color, uint movePeriod, float moveDistance) {
+	EntityType* entityType = new EntityType(id, name, color, movePeriod, moveDistance);
 	entityTypes.insert(std::pair<ET, EntityType*>(id, entityType));
 }
 
@@ -25,16 +25,6 @@ Entity* EntityManager::createEntity(ET et, Vec2i _tile) {
 	entities.push_back(entity);
 	return entity;
 }
-
-//Entity* EntityManager::createDeer(Vec2i _tile) {
-//	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
-//		throw std::logic_error("tile is out of bounds");
-//
-//	Entity* entity = new Entity(map, *entityTypes.at(ET::DEER), entityIndex++, _tile);
-//	entity->color = entity->type.color;
-//	entities.push_back(entity);
-//	return entity;
-//}
 
 void EntityManager::updateEntities() {
 	for (auto& entity : entities) 

@@ -4,6 +4,7 @@
 #include "map.h"
 #include "window_manager.h"
 #include "input_manager.h"
+#include "pathfinding.h"
 
 extern bool showGrid;
 extern bool hasPrinted;
@@ -17,3 +18,4 @@ extern WindowManager wm;
 extern GraphicsManager gm;
 extern EntityManager em;
 extern InputManager im;
+extern aStar astar;

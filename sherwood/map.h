@@ -10,6 +10,8 @@ public:
 	const Vec2i tileCount;
 	std::vector<std::vector<int>> terrainGrid;
 	std::vector<std::vector<Entity*>> entityGrid;
+	bool isWithinBounds(Vec2i tile);
+	bool isPathable(Vec2i tile);
 	Entity* getEntityAt(Vec2i tile);
 private:
 	Vec2i calculateTileCount(std::string);

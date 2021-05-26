@@ -2,6 +2,7 @@
 #include "ability.h"
 #include "entity.h"
 #include "colors.h"
+#include "pathfinding.h"
 
 bool showGrid = true;
 bool hasPrinted = false;
@@ -15,3 +16,4 @@ WindowManager wm("Sherwood", 30);
 GraphicsManager gm;
 EntityManager em;
 InputManager im;
+aStar astar;

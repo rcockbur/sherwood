@@ -8,6 +8,7 @@
 #include "entity.h"
 #include "window_manager.h"
 #include "globals.h"
+#include "entity_manager.h"
 
 GraphicsManager::GraphicsManager() 
 {
@@ -75,21 +76,16 @@ void GraphicsManager::drawTerrain() {
 }
 
 void GraphicsManager::drawEntities() {
-	for (int x = 0; x < map.terrainGrid.size(); ++x) {
-		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
-			Entity* entity = map.entityGrid[x][y];
-			if (entity != nullptr) {
-				Vec2f worldPos = wm.tileToWorld(entity->tile) - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2);
-				entityShape.setPosition(worldPos);
-				entityShape.setFillColor(entity->color);
-				wm.window.draw(entityShape);
-				if (entity->isSelected) {
-					selectionShape.setPosition(worldPos);
-					wm.window.draw(selectionShape);
-				}
-			}
+	for (auto& entity : em.entities) {
+		Vec2f graphicalPosition = entity->position - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2);
+		entityShape.setPosition(graphicalPosition);
+		entityShape.setFillColor(entity->color);
+		wm.window.draw(entityShape);
+		if (entity->isSelected) {
+			selectionShape.setPosition(graphicalPosition);
+			wm.window.draw(selectionShape);
 		}
-	}
+	}	
 }
 
 void GraphicsManager::drawGrid() {
@@ -120,8 +116,9 @@ void GraphicsManager::drawTextSelection() {
 	if (selectedEntity != nullptr) {
 		std::ostringstream s;
 		s << "Entity\n";
-		s << "ID: ";
-		s << selectedEntity->id;
+		s << "ID: " << selectedEntity->id << "\n";
+		s << "Tile: " << selectedEntity->tile << "\n";
+		s << "Pos: " << selectedEntity->position << "\n";
 		selectionText.setString(s.str());
 		wm.window.draw(selectionText);
 	}

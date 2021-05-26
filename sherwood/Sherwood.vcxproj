@@ -163,6 +163,8 @@
     <ClCompile Include="entity_manager.cpp" />
     <ClCompile Include="entity_type.cpp" />
     <ClCompile Include="input_manager.cpp" />
+    <ClCompile Include="pathfinding.cpp" />
+    <ClCompile Include="types.cpp" />
     <ClCompile Include="window_manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
@@ -176,6 +178,7 @@
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="entity_type.h" />
+    <ClInclude Include="pathfinding.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="input_manager.h" />
     <ClInclude Include="window_manager.h" />

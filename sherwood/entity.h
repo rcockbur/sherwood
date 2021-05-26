@@ -11,6 +11,8 @@ public:
 	const uint id;
 	const EntityType& type;
 	Vec2i tile;
+	Vec2f position;
+	Rect bounds;
 	sf::Color color;
 	std::deque<Ability*> abilityQueue;
 	uint canMoveAt;
@@ -19,8 +21,10 @@ public:
 	Entity(Map& map, EntityType& _type, uint _id, const Vec2i& _tile);
 	void update();
 	void addAbility(Ability* ability);
-	void move(const Vec2i tile);
+	void setAbility(Ability* ability);
+	bool moveTowards(const Vec2i& targetTile);
 private:
 	Map& map;
+	Rect calculateBounds(const Vec2f& pos);
 };
 

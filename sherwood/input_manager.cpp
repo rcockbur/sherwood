@@ -4,6 +4,8 @@
 #include "entity.h"
 #include "entity_manager.h"
 #include "globals.h"
+#include "ability.h"
+#include "entity.h"
 
 InputManager::InputManager()
 {
@@ -25,7 +27,10 @@ void InputManager::handleInput()
 		case sf::Event::MouseButtonPressed:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				handleScreenClick(screen_pos);
+				handleScreenClick(screen_pos, false);
+				break;
+			case(sf::Mouse::Right):
+				handleScreenClick(screen_pos, true);
 				break;
 			default:
 				break;
@@ -36,26 +41,44 @@ void InputManager::handleInput()
 	}
 }
 
-void InputManager::handleScreenClick(const Vec2f screenPos) {
+void InputManager::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
 	std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y << "\n";
 
 	if (wm.viewportRect.contains(screenPos)) {
 		Vec2f worldPos = wm.screenToWorld(screenPos);
-		handleWorldClick(worldPos);
+		handleWorldClick(worldPos, isRightClick);
 	}
 	else {
 		std::cout << "Out of bounds\n";
 	}
 }
 
-void InputManager::handleWorldClick(const Vec2f worldPosition) {
+void InputManager::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 	std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = wm.worldToTile(worldPosition);
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
-
-	Entity* entity = map.getEntityAt(clickedTile);
-	if (entity != nullptr)
-		em.selectEntity(entity);
+	if (isRightClick) {
+		if (selectedEntity != nullptr) {
+			//std::list<Vec2i> path{ clickedTile };
+			//Move* move = new Move(*selectedEntity, path);
+			//selectedEntity->setAbility(move);
+			astar.clear();
+			if (astar.search(selectedEntity->tile, clickedTile)) {
+				std::list<Vec2i> path;
+				int c = astar.path(path);
+				Move* move = new Move(*selectedEntity, path);
+				selectedEntity->setAbility(move);
+			}
+		}
+	}
+	else {
+		for (auto& entity : em.entities) {
+			if (entity->bounds.contains(worldPosition)) {
+				em.selectEntity(entity);
+			}
+		}
+	}
+	
 }
 
 void InputManager::updateFPS(uint fps) {
