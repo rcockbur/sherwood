@@ -43,6 +43,8 @@ GraphicsManager::GraphicsManager()
 	selectionShape.setOutlineColor(colors.yellow);
 	selectionShape.setFillColor(colors.transparent);
 
+	pathDebugShape.setSize(wm.entitySize);
+
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
 	initText(fpsText, Vec2f(wm.windowPaddingLeft, wm.windowPaddingTop));
@@ -107,7 +109,8 @@ void GraphicsManager::drawText() {
 void GraphicsManager::drawTextFPS() {
 	std::ostringstream s;
 	s << "Target FPS: " << wm.targetFPS;
-	s << "   Actual FPS: " << std::setprecision(3) << wm.actualFPS;
+	//s << "   Actual FPS: " << std::setprecision(3) << wm.actualFPS;
+	s << "   Actual FPS: " << (int)wm.actualFPS;
 	fpsText.setString(s.str());
 	wm.window.draw(fpsText);
 }
@@ -118,7 +121,7 @@ void GraphicsManager::drawTextSelection() {
 		s << "Entity\n";
 		s << "ID: " << selectedEntity->id << "\n";
 		s << "Tile: " << selectedEntity->tile << "\n";
-		s << "Pos: " << selectedEntity->position << "\n";
+		s << "Pos: " << (Vec2i)(selectedEntity->position) << "\n";
 		selectionText.setString(s.str());
 		wm.window.draw(selectionText);
 	}
@@ -126,6 +129,34 @@ void GraphicsManager::drawTextSelection() {
 
 void GraphicsManager::drawViewportOutline() {
 	wm.window.draw(viewportShape);
+}
+
+void GraphicsManager::drawPathDebug(const std::list<node>& open, const std::list<node>& closed) {
+	wm.window.clear();
+
+	wm.window.setView(wm.mapView);
+	drawTerrain();
+	if (showGrid)
+		drawGrid();
+	drawEntities();
+
+	pathDebugShape.setFillColor(colors.red);
+	for (std::list<node>::const_iterator i = open.begin(); i != open.end(); i++) {
+		pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2));
+		wm.window.draw(pathDebugShape);
+	}
+	std::cout << closed.size() << "\n";
+	pathDebugShape.setFillColor(colors.pink);
+	for (std::list<node>::const_iterator i = closed.begin(); i != closed.end(); i++) {
+		pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2));
+		wm.window.draw(pathDebugShape);
+	}
+
+	wm.window.setView(wm.window.getDefaultView());
+	drawViewportOutline();
+	drawText();
+
+	wm.window.display();
 }
 
 void GraphicsManager::initText(sf::Text& text, const Vec2f& position) {

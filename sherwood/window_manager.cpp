@@ -6,7 +6,7 @@
 WindowManager::WindowManager(std::string windowName, uint targetFPS):
 	lineWidthHalf(0.5),
 	lineWidth (lineWidthHalf * 2),
-	tileSize(30, 30),
+	tileSize(24, 24),
 	entitySize(20, 20),
 	windowSize(800, 450),
 	windowPaddingTop(5),

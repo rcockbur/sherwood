@@ -1,11 +1,12 @@
 #include "pathfinding.h"
 #include "globals.h"
-
-bool node::operator == (const node& o) { return pos == o.pos; }
-bool node::operator == (const Vec2i& o) { return pos == o; }
-bool node::operator < (const node& o) { return h + g < o.h + o.g; }
+#include "graphics_manager.h"
+#include "colors.h"
+#include <Windows.h>
+#include <cmath>
 
 aStar::aStar() {
+    tilesChecked = 0;
     neighbours[0] = Vec2i(-1, -1); 
     neighbours[1] = Vec2i(1, -1);
     neighbours[2] = Vec2i(-1, 1); 
@@ -15,28 +16,19 @@ aStar::aStar() {
     neighbours[6] = Vec2i(0, 1); 
     neighbours[7] = Vec2i(1, 0);
 }
-int aStar::calcDist(Vec2i& p) {
-    // need a better heuristic
-    int x = end.x - p.x;
-    int y = end.y - p.y;
-    return(10*(sqrt(x * x + y * y)));
+int aStar::heuristic(Vec2i& p) {
+    int deltaX = std::abs(end.x - p.x);
+    int deltaY = std::abs(end.y - p.y);
+    int diagonals = std::min(deltaX, deltaY);
+    int orthoginals = std::abs(deltaX - deltaY);
+    return 14 * diagonals + 10 * orthoginals;
 }
 
 bool aStar::existVec2i(Vec2i& p, int neighborF) {
     std::list<node>::iterator i;
-    i = std::find(closed.begin(), closed.end(), p);
-    if (i != closed.end()) {
-        if ((*i).g + (*i).h < neighborF) {
-            return true;
-        }
-        else { 
-            closed.erase(i); 
-            return false; 
-        }
-    }
     i = std::find(open.begin(), open.end(), p);
     if (i != open.end()) {
-        if ((*i).g + (*i).h < neighborF) {
+        if ((*i).f < neighborF) {
             return true;
         }
         else { 
@@ -47,71 +39,105 @@ bool aStar::existVec2i(Vec2i& p, int neighborF) {
     return false;
 }
 
+bool validDiagonal(Vec2i& source, Vec2i direction) {
+    Vec2i tile1(source.x, source.y + direction.y);
+    Vec2i tile2(source.x + direction.x, source.y);
+    return map.isPathable(tile1) && map.isPathable(tile2);
+}
+
 //returns true if a neighbor is the end node
-bool aStar::fillOpen(node& n) {
+void aStar::fillOpen(node& n) {
     int stepCost;
+    int neighborF;
     int neighborG;
     int neighborH;
-    Vec2i neighbour;
-
+    Vec2i neighbourTile;
     for (int x = 0; x < 8; x++) {
-        stepCost = x < 4 ? 14 : 10; //diagonals have different cost
-        neighbour = n.pos + neighbours[x];
-        if (neighbour == end) 
-            return true;
+        stepCost = x < 4 ? 14 : 10;
+        neighbourTile = n.tile + neighbours[x];
+        std::list<node>::iterator i;
+        i = std::find(closed.begin(), closed.end(), neighbourTile);
+        if (i == closed.end()) {
+            if (map.isWithinBounds(neighbourTile) && map.isPathable(neighbourTile)) {
+                if (x >= 4 || validDiagonal(n.tile, neighbours[x])) {
+                    neighborG = stepCost + n.g;
+                    neighborH = heuristic(neighbourTile);
+                    neighborF = neighborG + neighborH;
+                    if (!existVec2i(neighbourTile, neighborF)) {
+                        node m;
+                        tilesChecked++;
+                        m.tieRating = tilesChecked;
+                        m.f = neighborF;
+                        m.g = neighborG;
+                        m.h = neighborH;
+                        m.tile = neighbourTile;
+                        m.parent = n.tile;
+                        open.push_back(m);
+                        /*gm.drawPathDebug(open, closed);
+                        Sleep(20);*/
+                    }
+                }
 
-        if (map.isWithinBounds(neighbour) && map.isPathable(neighbour)) {
-            neighborG = stepCost + n.g;
-            neighborH = calcDist(neighbour);
-            if (!existVec2i(neighbour, neighborG + neighborH)) {
-                node m;
-                m.g = neighborG;
-                m.h = neighborH;
-                m.pos = neighbour;
-                m.parent = n.pos;
-                open.push_back(m);
             }
         }
+        
     }
-    return false;
+    //return false;
 }
 
 bool aStar::search(Vec2i& s, Vec2i& e) {
-    node n; 
-    end = e; 
-    start = s;
-    n.g = 0; 
-    n.pos = s; 
-    n.parent = Vec2i(-1,-1); 
-    n.h = calcDist(s);
-    open.push_back(n);
-    while (!open.empty()) {
-        //open.sort();
-        node n = open.front();
-        open.pop_front();
-        closed.push_back(n);
-        if (fillOpen(n)) 
-            return true;
+    if (map.isPathable(e)) {
+        node n;
+        end = e;
+        start = s;
+        tilesChecked = 0;
+        n.g = 0;
+        n.tile = s;
+        n.parent = Vec2i(-1, -1);
+        n.h = heuristic(s);
+        n.f = n.h + n.g;
+        n.tieRating = tilesChecked;
+        open.push_back(n);
+        while (!open.empty()) {
+            open.sort();
+            node n = open.front();
+            open.pop_front();
+            closed.push_back(n);
+            gm.drawPathDebug(open, closed);
+            Sleep(100);
+            if (n == end) return true;
+            fillOpen(n);
+            gm.drawPathDebug(open, closed);
+            Sleep(100);
+            //if (fillOpen(n))
+            //    return true;
+        }
     }
     return false;
 }
 int aStar::path(std::list<Vec2i>& path) {
     path.push_front(end);
     int cost = 1 + closed.back().g;
-    path.push_front(closed.back().pos);
+    path.push_front(closed.back().tile);
     Vec2i parent = closed.back().parent;
 
     for (std::list<node>::reverse_iterator i = closed.rbegin(); i != closed.rend(); i++) {
-        if ((*i).pos == parent && !((*i).pos == start)) {
-            path.push_front((*i).pos);
+        if ((*i).tile == parent && !((*i).tile == start)) {
+            path.push_front((*i).tile);
             parent = (*i).parent;
+            /*gm.drawPathDebug((*i).pos, colors.lightBlue);
+            Sleep(500);*/
         }
     }
-    path.push_front(start);
+    //path.push_front(start);
     return cost;
 }
 
 void aStar::clear() {
     open.clear();
     closed.clear();
+}
+
+void aStar::drawDebug() {
+
 }

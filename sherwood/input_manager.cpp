@@ -58,7 +58,7 @@ void InputManager::handleWorldClick(const Vec2f& worldPosition, bool isRightClic
 	Vec2i clickedTile = wm.worldToTile(worldPosition);
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	if (isRightClick) {
-		if (selectedEntity != nullptr) {
+		if (selectedEntity != nullptr && selectedEntity->tile != clickedTile) {
 			//std::list<Vec2i> path{ clickedTile };
 			//Move* move = new Move(*selectedEntity, path);
 			//selectedEntity->setAbility(move);
