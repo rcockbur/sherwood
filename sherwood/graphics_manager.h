@@ -10,9 +10,12 @@ class GraphicsManager {
 public:
 	GraphicsManager();
 	void draw();
-	void drawPathDebug(const std::list<node>& open, const std::list<node>& closed);
+	void drawPathDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
+		const Vec2i& e, std::list<Vec2i> * path);
 private:
-	const sf::Color gridColor;
+	void initText(sf::Text& text, const Vec2f& position);
+	void drawWorld();
+	void drawHUD();
 	void drawTerrain();
 	void drawEntities();
 	void drawGrid();
@@ -22,7 +25,8 @@ private:
 	void drawTextSelection();
 	
 	Vec2f calculateGridSize(const Vec2i& tileCount);
-	void initText(sf::Text& text, const Vec2f& position);
+	
+	const sf::Color gridColor;
 	sf::RectangleShape verticalLine;
 	sf::RectangleShape horizontalLine;
 	sf::RectangleShape viewportShape;

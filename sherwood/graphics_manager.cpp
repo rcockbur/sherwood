@@ -4,7 +4,7 @@
 #include <vector>
 #include "graphics_manager.h"
 #include "map.h"
-#include "colors.h"
+#include "color.h"
 #include "entity.h"
 #include "window_manager.h"
 #include "globals.h"
@@ -12,66 +12,72 @@
 
 GraphicsManager::GraphicsManager() 
 {
-	viewportShape.setSize(wm.viewportSize);
-	viewportShape.setPosition(wm.viewportOffset);
-	viewportShape.setOutlineColor(colors.red);
+	viewportShape.setSize(VIEWPORT_SIZE);
+	viewportShape.setPosition(VIEWPORT_OFFSET);
+	viewportShape.setOutlineColor(color.red);
 	viewportShape.setOutlineThickness(1);
-	viewportShape.setFillColor(colors.transparent);
+	viewportShape.setFillColor(color.transparent);
 
-	verticalLine.setSize(Vec2f(wm.lineWidth, wm.gridSize.y + wm.lineWidth));
-	verticalLine.setFillColor(colors.grey);
+	verticalLine.setSize(Vec2f(LINE_WIDTH, wm.gridSize.y + LINE_WIDTH));
+	verticalLine.setFillColor(color.grey);
 
-	horizontalLine.setSize(Vec2f(wm.gridSize.x + wm.lineWidth, wm.lineWidth));
-	horizontalLine.setFillColor(colors.grey);
+	horizontalLine.setSize(Vec2f(wm.gridSize.x + LINE_WIDTH, LINE_WIDTH));
+	horizontalLine.setFillColor(color.grey);
 
 	sf::RectangleShape grassRect;
 	sf::RectangleShape waterRect;
 
-	grassRect.setSize(wm.tileSize);
-	grassRect.setFillColor(colors.green);
+	grassRect.setSize(TILE_SIZE);
+	grassRect.setFillColor(color.darkGreen);
 	terrainShapes.push_back(grassRect);
 
-	waterRect.setSize(wm.tileSize);
-	waterRect.setFillColor(colors.blue);
+	waterRect.setSize(TILE_SIZE);
+	waterRect.setFillColor(color.blue);
 	terrainShapes.push_back(waterRect);
 
-	entityShape.setSize(wm.entitySize);
-	entityShape.setFillColor(colors.white);
+	entityShape.setSize(ENTITY_SIZE);
+	entityShape.setFillColor(color.white);
 
-	selectionShape.setSize(wm.entitySize);
-	selectionShape.setOutlineThickness(wm.lineWidth);
-	selectionShape.setOutlineColor(colors.yellow);
-	selectionShape.setFillColor(colors.transparent);
+	selectionShape.setSize(ENTITY_SIZE);
+	selectionShape.setOutlineThickness(LINE_WIDTH);
+	selectionShape.setOutlineColor(color.yellow);
+	selectionShape.setFillColor(color.transparent);
 
-	pathDebugShape.setSize(wm.entitySize);
+	//pathDebugShape.setSize(ENTITY_SIZE);
+	pathDebugShape.setSize(PATH_DEBUG_SIZE);
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
-	initText(fpsText, Vec2f(wm.windowPaddingLeft, wm.windowPaddingTop));
-	initText(selectionText, wm.rightPannelPosition);
+	initText(fpsText, Vec2f(WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP));
+	initText(selectionText, RIGHT_PANEL_OFFSET);
 }
 
 void GraphicsManager::draw() {
 	wm.window.clear();
+	drawWorld();
+	drawHUD();
+	wm.window.display();
+}
 
+void GraphicsManager::drawWorld() {
 	wm.window.setView(wm.mapView);
-	
 	drawTerrain();
 	if (showGrid)
 		drawGrid();
 	drawEntities();
+}
+
+void GraphicsManager::drawHUD() {
 	wm.window.setView(wm.window.getDefaultView());
 	drawViewportOutline();
 	drawText();
-
-	wm.window.display();
 }
 
 void GraphicsManager::drawTerrain() {
 	for (int x = 0; x < map.terrainGrid.size(); ++x) {
 		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
 			terrainShapes.at(map.terrainGrid[x][y]).
-				setPosition(Vec2f(wm.tileSize.x * float(x), wm.tileSize.y * (float)y));
+				setPosition(Vec2f(TILE_SIZE.x * float(x), TILE_SIZE.y * (float)y));
 			wm.window.draw(terrainShapes.at(map.terrainGrid[x][y]));
 		}
 	}
@@ -79,7 +85,7 @@ void GraphicsManager::drawTerrain() {
 
 void GraphicsManager::drawEntities() {
 	for (auto& entity : em.entities) {
-		Vec2f graphicalPosition = entity->position - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2);
+		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE.x / 2, ENTITY_SIZE.y / 2);
 		entityShape.setPosition(graphicalPosition);
 		entityShape.setFillColor(entity->color);
 		wm.window.draw(entityShape);
@@ -92,11 +98,11 @@ void GraphicsManager::drawEntities() {
 
 void GraphicsManager::drawGrid() {
 	for (int i = 0; i < map.tileCount.x + 1; i++) {
-		verticalLine.setPosition(Vec2f(wm.tileSize.x * i - wm.lineWidthHalf, -wm.lineWidthHalf));
+		verticalLine.setPosition(Vec2f(TILE_SIZE.x * i - LINE_WIDTH_HALF, -LINE_WIDTH_HALF));
 		wm.window.draw(verticalLine);
 	}
 	for (int i = 0; i < map.tileCount.y + 1; i++) {
-		horizontalLine.setPosition(Vec2f(-wm.lineWidthHalf, wm.tileSize.y * i - wm.lineWidthHalf));
+		horizontalLine.setPosition(Vec2f(-LINE_WIDTH_HALF, TILE_SIZE.y * i - LINE_WIDTH_HALF));
 		wm.window.draw(horizontalLine);
 	}
 }
@@ -131,31 +137,44 @@ void GraphicsManager::drawViewportOutline() {
 	wm.window.draw(viewportShape);
 }
 
-void GraphicsManager::drawPathDebug(const std::list<node>& open, const std::list<node>& closed) {
+void GraphicsManager::drawPathDebug(const std::list<node>& open, const std::list<node>& closed, 
+	const Vec2i& s, const Vec2i& e, std::list<Vec2i> * path) {
 	wm.window.clear();
-
-	wm.window.setView(wm.mapView);
-	drawTerrain();
-	if (showGrid)
-		drawGrid();
-	drawEntities();
-
-	pathDebugShape.setFillColor(colors.red);
+	drawWorld();
+	
+	pathDebugShape.setFillColor(color.red);
 	for (std::list<node>::const_iterator i = open.begin(); i != open.end(); i++) {
-		pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2));
-		wm.window.draw(pathDebugShape);
+		if ((*i).tile != s) {
+			pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
+			wm.window.draw(pathDebugShape);
+		}
+		
 	}
-	std::cout << closed.size() << "\n";
-	pathDebugShape.setFillColor(colors.pink);
+	pathDebugShape.setFillColor(color.purple);
 	for (std::list<node>::const_iterator i = closed.begin(); i != closed.end(); i++) {
-		pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(wm.entitySize.x / 2, wm.entitySize.y / 2));
-		wm.window.draw(pathDebugShape);
+		if ((*i).tile != s) {
+			pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
+			wm.window.draw(pathDebugShape);
+		}	
 	}
+	if (path != nullptr) {
+		pathDebugShape.setFillColor(color.teal);
+		for (std::list<Vec2i>::iterator i = (*path).begin(); i != (*path).end(); i++) {
+			pathDebugShape.setPosition(wm.tileToWorld((*i)) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
+			wm.window.draw(pathDebugShape);
+		}
+	}
+	
 
-	wm.window.setView(wm.window.getDefaultView());
-	drawViewportOutline();
-	drawText();
+	pathDebugShape.setFillColor(color.white);
+	pathDebugShape.setPosition(wm.tileToWorld(s) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
+	wm.window.draw(pathDebugShape);
 
+	pathDebugShape.setFillColor(color.yellow);
+	pathDebugShape.setPosition(wm.tileToWorld(e) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
+	wm.window.draw(pathDebugShape);
+
+	drawHUD();
 	wm.window.display();
 }
 

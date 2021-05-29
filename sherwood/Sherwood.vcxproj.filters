@@ -36,7 +36,7 @@
     <ClCompile Include="ability.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="colors.cpp">
+    <ClCompile Include="color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="actions.cpp">
@@ -83,7 +83,7 @@
     <ClInclude Include="ability.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="colors.h">
+    <ClInclude Include="color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="actions.h">

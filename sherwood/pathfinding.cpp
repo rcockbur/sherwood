@@ -1,7 +1,7 @@
 #include "pathfinding.h"
 #include "globals.h"
 #include "graphics_manager.h"
-#include "colors.h"
+#include "color.h"
 #include <Windows.h>
 #include <cmath>
 
@@ -103,14 +103,10 @@ bool aStar::search(Vec2i& s, Vec2i& e) {
             node n = open.front();
             open.pop_front();
             closed.push_back(n);
-            gm.drawPathDebug(open, closed);
-            Sleep(100);
             if (n == end) return true;
             fillOpen(n);
-            gm.drawPathDebug(open, closed);
-            Sleep(100);
-            //if (fillOpen(n))
-            //    return true;
+            gm.drawPathDebug(open, closed, start, end, nullptr);
+            Sleep(50);
         }
     }
     return false;
@@ -125,8 +121,8 @@ int aStar::path(std::list<Vec2i>& path) {
         if ((*i).tile == parent && !((*i).tile == start)) {
             path.push_front((*i).tile);
             parent = (*i).parent;
-            /*gm.drawPathDebug((*i).pos, colors.lightBlue);
-            Sleep(500);*/
+            gm.drawPathDebug(open, closed, start, end, &path);
+            Sleep(50);
         }
     }
     //path.push_front(start);

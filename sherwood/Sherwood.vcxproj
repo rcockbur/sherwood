@@ -156,7 +156,7 @@
   <ItemGroup>
     <ClCompile Include="ability.cpp" />
     <ClCompile Include="actions.cpp" />
-    <ClCompile Include="colors.cpp" />
+    <ClCompile Include="color.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="graphics_manager.cpp" />
     <ClCompile Include="entity.cpp" />
@@ -173,7 +173,7 @@
   <ItemGroup>
     <ClInclude Include="ability.h" />
     <ClInclude Include="actions.h" />
-    <ClInclude Include="colors.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="graphics_manager.h" />
     <ClInclude Include="entity.h" />

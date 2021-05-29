@@ -63,5 +63,5 @@ bool Entity::moveTowards(const Vec2i& targetTile)
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
-	return Rect(pos.x - wm.tileSize.x / 2, pos.y - wm.tileSize.y / 2, wm.tileSize.x, wm.tileSize.y);
+	return Rect(pos.x - ENTITY_SIZE.x / 2, pos.y - ENTITY_SIZE.y / 2, ENTITY_SIZE.x, ENTITY_SIZE.y);
 }

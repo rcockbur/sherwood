@@ -44,7 +44,7 @@ void InputManager::handleInput()
 void InputManager::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
 	std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y << "\n";
 
-	if (wm.viewportRect.contains(screenPos)) {
+	if (VIEWPORT_RECT.contains(screenPos)) {
 		Vec2f worldPos = wm.screenToWorld(screenPos);
 		handleWorldClick(worldPos, isRightClick);
 	}
