@@ -14,10 +14,10 @@ public:
     int tilesChecked;
     std::list<node> closed;
 	aStar();
-    int heuristic(Vec2i& p);
+    int heuristic(const Vec2i& p);
     bool existVec2i(Vec2i& p, int cost);
     void fillOpen(node& n);
-    bool search(Vec2i& s, Vec2i& e);
+    bool search(const Vec2i& s, const Vec2i& e);
     int path(std::list<Vec2i>& path);
     void clear();
 private:

@@ -36,6 +36,7 @@ GraphicsManager::GraphicsManager()
 	terrainShapes.push_back(waterRect);
 
 	entityShape.setSize(ENTITY_SIZE);
+	//entityShape.setRadius(8);
 	entityShape.setFillColor(color.white);
 
 	selectionShape.setSize(ENTITY_SIZE);

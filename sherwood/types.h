@@ -14,8 +14,8 @@ typedef unsigned int uint;
 typedef sf::Rect<float> Rect;
 
 enum class ET{ DEER };
-constexpr uint ENTITY_TYPES = 1;
-enum class AT{ MOVE };
+//constexpr uint ENTITY_TYPES = 1;
+//enum class AT{ MOVE };
 
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);

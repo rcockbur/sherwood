@@ -29,8 +29,6 @@ extern const Vec2f VIEWPORT_OFFSET;
 extern const sf::Rect<float> VIEWPORT_RECT;
 extern const Vec2f RIGHT_PANEL_OFFSET;
 
-
-
 extern Map map;
 extern WindowManager wm;
 extern GraphicsManager gm;

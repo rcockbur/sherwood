@@ -16,7 +16,7 @@ aStar::aStar() {
     neighbours[6] = Vec2i(0, 1); 
     neighbours[7] = Vec2i(1, 0);
 }
-int aStar::heuristic(Vec2i& p) {
+int aStar::heuristic(const Vec2i& p) {
     int deltaX = std::abs(end.x - p.x);
     int deltaY = std::abs(end.y - p.y);
     int diagonals = std::min(deltaX, deltaY);
@@ -85,7 +85,7 @@ void aStar::fillOpen(node& n) {
     //return false;
 }
 
-bool aStar::search(Vec2i& s, Vec2i& e) {
+bool aStar::search(const Vec2i& s, const Vec2i& e) {
     if (map.isPathable(e)) {
         node n;
         end = e;
@@ -103,10 +103,13 @@ bool aStar::search(Vec2i& s, Vec2i& e) {
             node n = open.front();
             open.pop_front();
             closed.push_back(n);
-            if (n == end) return true;
+            if (n == end) {
+                Sleep(300);
+                return true;
+            }
             fillOpen(n);
             gm.drawPathDebug(open, closed, start, end, nullptr);
-            Sleep(50);
+            //Sleep(10);
         }
     }
     return false;
@@ -122,10 +125,10 @@ int aStar::path(std::list<Vec2i>& path) {
             path.push_front((*i).tile);
             parent = (*i).parent;
             gm.drawPathDebug(open, closed, start, end, &path);
-            Sleep(50);
         }
     }
-    //path.push_front(start);
+
+    Sleep(300);
     return cost;
 }
 

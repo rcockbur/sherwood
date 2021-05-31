@@ -11,8 +11,6 @@ uint tic(0);
 sf::Clock deltaClock;
 sf::Time dt = deltaClock.restart();
 
-
-
 const float LINE_WIDTH_HALF(0.5);
 const float LINE_WIDTH(LINE_WIDTH_HALF * 2);
 const Vec2f TILE_SIZE(24, 24);
@@ -30,7 +28,7 @@ const sf::Rect<float> VIEWPORT_RECT(VIEWPORT_OFFSET, VIEWPORT_SIZE);
 const Vec2f RIGHT_PANEL_OFFSET(VIEWPORT_OFFSET.x + VIEWPORT_SIZE.x + 3, VIEWPORT_OFFSET.y);
 
 Map map("data/map.txt");
-WindowManager wm("Sherwood", 30);
+WindowManager wm("Sherwood", 60);
 GraphicsManager gm;
 EntityManager em;
 InputManager im;

@@ -2,22 +2,45 @@
 #include "ability.h"
 #include "map.h"
 #include "entity_type.h"
+#include "pathfinding.h"
 #include "globals.h"
 
-Entity::Entity(Map& _map, EntityType& _type, uint _id, const Vec2i& _tile): 
-	map(_map), 
+Entity::Entity(EntityType& _type, uint _id, const Vec2i& _tile):
 	type(_type), 
 	id(_id), 
 	tile(_tile), 
 	position(wm.tileToWorld(_tile)),
 	bounds(calculateBounds(position)),
-	color(NULL),
-	canMoveAt(0)
+	color(NULL)
 {
 	map.entityGrid[tile.x][tile.y] = this;
 }
 
 void Entity::update()
+{
+}
+
+void Entity::targetTile(const Vec2i& tile) {
+	std::cout << "Entity targetTile\n";
+}
+
+Rect Entity::calculateBounds(const Vec2f& pos) {
+	return Rect(pos.x - ENTITY_SIZE.x / 2, pos.y - ENTITY_SIZE.y / 2, ENTITY_SIZE.x, ENTITY_SIZE.y);
+}
+
+
+
+
+
+
+Unit::Unit(UnitType& _type, uint _id, const Vec2i& _tile) :
+	Entity(_type, _id, _tile),
+	type(_type),
+	canMoveAt(0)
+{
+}
+
+void Unit::update()
 {
 	if (abilityQueue.size() > 0) {
 		Ability* ability = abilityQueue.front();
@@ -27,18 +50,18 @@ void Entity::update()
 	}
 }
 
-void Entity::addAbility(Ability* ability) 
+void Unit::addAbility(Ability* ability)
 {
 	abilityQueue.push_back(ability);
 }
 
-void Entity::setAbility(Ability* ability)
+void Unit::setAbility(Ability* ability)
 {
 	abilityQueue.clear();
 	abilityQueue.push_back(ability);
 }
 
-bool Entity::moveTowards(const Vec2i& targetTile)
+bool Unit::moveTowards(const Vec2i& targetTile)
 {
 	if (tile != targetTile) {
 		map.entityGrid[tile.x][tile.y] = nullptr;
@@ -62,6 +85,13 @@ bool Entity::moveTowards(const Vec2i& targetTile)
 
 }
 
-Rect Entity::calculateBounds(const Vec2f& pos) {
-	return Rect(pos.x - ENTITY_SIZE.x / 2, pos.y - ENTITY_SIZE.y / 2, ENTITY_SIZE.x, ENTITY_SIZE.y);
+void Unit::targetTile(const Vec2i& tile) {
+	astar.clear();
+	if (astar.search(selectedEntity->tile, tile)) {
+		std::list<Vec2i> path;
+		int c = astar.path(path);
+		Move* move = new Move(*this, path);
+		setAbility(move);
+	}
+	std::cout << "Unit targetTile\n";
 }

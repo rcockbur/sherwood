@@ -5,11 +5,11 @@
 
 int main()
 {
-	em.createEntityType(ET::DEER, "deer", color.brown, 1, 10.0f);
+	em.createUnitType(ET::DEER, "deer", color.brown, 1, 3.0f);
 
-	em.createEntity(ET::DEER, Vec2i(2, 1));
-	em.createEntity(ET::DEER, Vec2i(3, 1));
-	em.createEntity(ET::DEER, Vec2i(2, 2));
+	em.createUnit(ET::DEER, Vec2i(2, 1));
+	em.createUnit(ET::DEER, Vec2i(3, 1));
+	em.createUnit(ET::DEER, Vec2i(2, 2));
 
 	while (wm.window.isOpen()) {
 		im.handleInput();

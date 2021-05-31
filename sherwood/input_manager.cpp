@@ -59,16 +59,15 @@ void InputManager::handleWorldClick(const Vec2f& worldPosition, bool isRightClic
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	if (isRightClick) {
 		if (selectedEntity != nullptr && selectedEntity->tile != clickedTile) {
-			//std::list<Vec2i> path{ clickedTile };
-			//Move* move = new Move(*selectedEntity, path);
-			//selectedEntity->setAbility(move);
-			astar.clear();
+			/*astar.clear();
 			if (astar.search(selectedEntity->tile, clickedTile)) {
 				std::list<Vec2i> path;
 				int c = astar.path(path);
 				Move* move = new Move(*selectedEntity, path);
 				selectedEntity->setAbility(move);
-			}
+			}*/
+			selectedEntity->targetTile(clickedTile);
+			std::cout << "targetTile\n";
 		}
 	}
 	else {
@@ -78,7 +77,6 @@ void InputManager::handleWorldClick(const Vec2f& worldPosition, bool isRightClic
 			}
 		}
 	}
-	
 }
 
 void InputManager::updateFPS(uint fps) {

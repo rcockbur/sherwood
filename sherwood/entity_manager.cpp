@@ -11,8 +11,13 @@ EntityManager::EntityManager()
 	std::cout << "EntityManager created\n";
 }
 
-void EntityManager::createEntityType(ET id, std::string name, sf::Color color, uint movePeriod, float moveDistance) {
-	EntityType* entityType = new EntityType(id, name, color, movePeriod, moveDistance);
+void EntityManager::createEntityType(ET id, std::string name, sf::Color color) {
+	EntityType* entityType = new EntityType(id, name, color);
+	entityTypes.insert(std::pair<ET, EntityType*>(id, entityType));
+}
+
+void EntityManager::createUnitType(ET id, std::string name, sf::Color color, uint movePeriod, float moveDistance) {
+	UnitType* entityType = new UnitType(id, name, color, movePeriod, moveDistance);
 	entityTypes.insert(std::pair<ET, EntityType*>(id, entityType));
 }
 
@@ -20,10 +25,20 @@ Entity* EntityManager::createEntity(ET et, Vec2i _tile) {
 	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y) 
 		throw std::logic_error("tile is out of bounds");
 	
-	Entity* entity = new Entity(map, *entityTypes.at(et), entityIndex++, _tile);
+	Entity* entity = new Entity(*entityTypes.at(et), entityIndex++, _tile);
 	entity->color = entity->type.color;
 	entities.push_back(entity);
 	return entity;
+}
+
+Unit* EntityManager::createUnit(ET et, Vec2i _tile) {
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
+		throw std::logic_error("tile is out of bounds");
+
+	Unit* unit = new Unit(static_cast<UnitType&>(*entityTypes.at(et)), entityIndex++, _tile);
+	unit->color = unit->type.color;
+	entities.push_back(unit);
+	return unit;
 }
 
 void EntityManager::updateEntities() {

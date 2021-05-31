@@ -31,6 +31,7 @@ private:
 	sf::RectangleShape horizontalLine;
 	sf::RectangleShape viewportShape;
 	sf::RectangleShape entityShape;
+	//sf::CircleShape entityShape;
 	sf::RectangleShape selectionShape;
 	sf::RectangleShape pathDebugShape;
 	sf::Font arial;

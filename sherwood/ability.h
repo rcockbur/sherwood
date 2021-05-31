@@ -2,7 +2,7 @@
 #include "types.h"
 #include <list>
 
-class Entity;
+class Unit;
 
 class Ability {
 public:
@@ -12,8 +12,8 @@ public:
 class Move : public Ability {
 public:
 	std::list<Vec2i> path;
-	Entity& entity;
+	Unit& unit;
 
-	Move(Entity& entity, std::list<Vec2i> path);
+	Move(Unit& unit, std::list<Vec2i> path);
 	bool execute();
 };

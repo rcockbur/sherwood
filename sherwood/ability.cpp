@@ -4,8 +4,8 @@
 
 extern uint tic;
 
-Move::Move(Entity& _entity, std::list<Vec2i> _path) 
-	: entity(_entity), path(_path)
+Move::Move(Unit& unit, std::list<Vec2i> _path)
+	: unit(unit), path(_path)
 {
 
 }
@@ -13,9 +13,9 @@ Move::Move(Entity& _entity, std::list<Vec2i> _path)
 bool Move::execute() 
 {
 	if (path.size() > 0) {
-		if (tic >= entity.canMoveAt) {
-			entity.canMoveAt = tic + entity.type.movePeriod;
-			bool hasReachedTile = entity.moveTowards(path.front());
+		if (tic >= unit.canMoveAt) {
+			unit.canMoveAt = tic + unit.type.movePeriod;
+			bool hasReachedTile = unit.moveTowards(path.front());
 			if (hasReachedTile)
 				path.pop_front();
 		}
