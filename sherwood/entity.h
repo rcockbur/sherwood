@@ -16,7 +16,7 @@ public:
 	sf::Color color;
 	bool isSelected;
 
-	Entity(EntityType& _type, uint _id, const Vec2i& _tile);
+	Entity(const EntityType& _type, uint _id, const Vec2i& _tile);
 	virtual void update();
 	virtual void targetTile(const Vec2i& tile);
 protected:
@@ -29,7 +29,7 @@ public:
 	std::deque<Ability*> abilityQueue;
 	uint canMoveAt;
 
-	Unit(UnitType& _type, uint _id, const Vec2i& _tile);
+	Unit(const UnitType& _type, uint _id, const Vec2i& _tile);
 	void update();
 	void addAbility(Ability* ability);
 	void setAbility(Ability* ability);

@@ -6,6 +6,8 @@
 #include "input_manager.h"
 #include "pathfinding.h"
 
+class UnitType;
+
 extern bool showGrid;
 extern bool hasPrinted;
 extern Entity* selectedEntity;
@@ -35,3 +37,6 @@ extern GraphicsManager gm;
 extern EntityManager em;
 extern InputManager im;
 extern aStar astar;
+
+extern const UnitType person;
+extern const EntityType rock;

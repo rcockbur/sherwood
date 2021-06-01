@@ -3,6 +3,7 @@
 #include "entity.h"
 #include "color.h"
 #include "pathfinding.h"
+#include "entity_type.h"
 
 bool showGrid = true;
 bool hasPrinted = false;
@@ -33,3 +34,6 @@ GraphicsManager gm;
 EntityManager em;
 InputManager im;
 aStar astar;
+
+const UnitType person = UnitType("person", color.brown, 1, 3.0f);
+const EntityType rock = EntityType("rock", color.grey);

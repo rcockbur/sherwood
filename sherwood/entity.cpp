@@ -5,13 +5,14 @@
 #include "pathfinding.h"
 #include "globals.h"
 
-Entity::Entity(EntityType& _type, uint _id, const Vec2i& _tile):
-	type(_type), 
-	id(_id), 
-	tile(_tile), 
+Entity::Entity(const EntityType& _type, uint _id, const Vec2i& _tile) :
+	type(_type),
+	id(_id),
+	tile(_tile),
 	position(wm.tileToWorld(_tile)),
 	bounds(calculateBounds(position)),
-	color(NULL)
+	color(NULL),
+	isSelected(false)
 {
 	map.entityGrid[tile.x][tile.y] = this;
 }
@@ -33,7 +34,7 @@ Rect Entity::calculateBounds(const Vec2f& pos) {
 
 
 
-Unit::Unit(UnitType& _type, uint _id, const Vec2i& _tile) :
+Unit::Unit(const UnitType& _type, uint _id, const Vec2i& _tile) :
 	Entity(_type, _id, _tile),
 	type(_type),
 	canMoveAt(0)
@@ -87,7 +88,7 @@ bool Unit::moveTowards(const Vec2i& targetTile)
 
 void Unit::targetTile(const Vec2i& tile) {
 	astar.clear();
-	if (astar.search(selectedEntity->tile, tile)) {
+	if (astar.search(this->tile, tile)) {
 		std::list<Vec2i> path;
 		int c = astar.path(path);
 		Move* move = new Move(*this, path);

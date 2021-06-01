@@ -3,18 +3,15 @@
 
 class EntityType {
 public:
-	ET id;
+	//ET id;
 	std::string name;
 	sf::Color color;
-	//uint movePeriod;
-	//float moveDistance;
-	//EntityType(ET, std::string, sf::Color, uint _movePeriod, float _moveDistance);
-	EntityType(ET, std::string, sf::Color);
+	EntityType(std::string, sf::Color);
 };
 
 class UnitType : public EntityType {
 public:
 	uint movePeriod;
 	float moveDistance;
-	UnitType(ET, std::string, sf::Color, uint _movePeriod, float _moveDistance);
+	UnitType(std::string, sf::Color, uint _movePeriod, float _moveDistance);
 };

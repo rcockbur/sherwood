@@ -6,6 +6,7 @@
 #include "map.h"
 #include "color.h"
 #include "entity.h"
+#include "entity_type.h"
 #include "window_manager.h"
 #include "globals.h"
 #include "entity_manager.h"
@@ -51,6 +52,13 @@ GraphicsManager::GraphicsManager()
 		throw std::logic_error("font cannot be found");
 	initText(fpsText, Vec2f(WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP));
 	initText(selectionText, RIGHT_PANEL_OFFSET);
+}
+
+void GraphicsManager::initText(sf::Text& text, const Vec2f& position) {
+	text.setFont(arial);
+	text.setCharacterSize(14);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(position);
 }
 
 void GraphicsManager::draw() {
@@ -116,7 +124,6 @@ void GraphicsManager::drawText() {
 void GraphicsManager::drawTextFPS() {
 	std::ostringstream s;
 	s << "Target FPS: " << wm.targetFPS;
-	//s << "   Actual FPS: " << std::setprecision(3) << wm.actualFPS;
 	s << "   Actual FPS: " << (int)wm.actualFPS;
 	fpsText.setString(s.str());
 	wm.window.draw(fpsText);
@@ -125,7 +132,7 @@ void GraphicsManager::drawTextFPS() {
 void GraphicsManager::drawTextSelection() {
 	if (selectedEntity != nullptr) {
 		std::ostringstream s;
-		s << "Entity\n";
+		s << "Type: " << selectedEntity->type.name << "\n";
 		s << "ID: " << selectedEntity->id << "\n";
 		s << "Tile: " << selectedEntity->tile << "\n";
 		s << "Pos: " << (Vec2i)(selectedEntity->position) << "\n";
@@ -179,9 +186,3 @@ void GraphicsManager::drawPathDebug(const std::list<node>& open, const std::list
 	wm.window.display();
 }
 
-void GraphicsManager::initText(sf::Text& text, const Vec2f& position) {
-	text.setFont(arial);
-	text.setCharacterSize(14);
-	text.setFillColor(sf::Color::White);
-	text.setPosition(position);
-}
