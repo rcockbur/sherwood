@@ -6,34 +6,49 @@
 #include "entity_type.h"
 
 bool showGrid = true;
+bool showPathfinding = false;
 bool hasPrinted = false;
+int targetFPS = 60;
+float actualFPS = (float)targetFPS;
 Entity* selectedEntity(nullptr);
-uint tic(0);
+int tic(0);
 sf::Clock deltaClock;
 sf::Time dt = deltaClock.restart();
 
 const float LINE_WIDTH_HALF(0.5);
 const float LINE_WIDTH(LINE_WIDTH_HALF * 2);
-const Vec2f TILE_SIZE(24, 24);
-const Vec2f ENTITY_SIZE(16, 16);
-const Vec2f PATH_DEBUG_SIZE(8, 8);
-const Vec2u WINDOW_SIZE(800, 450);
+const float TILE_SIZE = 25;
+const float ENTITY_SIZE = 18;
+const float PATH_DEBUG_SIZE = 10;
+const Vec2u WINDOW_SIZE(1920, 1080);
 const float WINDOW_PADDING_TOP(5);
 const float WINDOW_PADDING_LEFT(5);
 const float WINDOW_PADDING_BOT(10);
 const float TOP_PANEL_HEIGHT(20);
-const float VIEWPORT_WIDTH(580);
+const float VIEWPORT_WIDTH(1000);
 const Vec2f VIEWPORT_SIZE(VIEWPORT_WIDTH, WINDOW_SIZE.y - WINDOW_PADDING_TOP - WINDOW_PADDING_BOT - TOP_PANEL_HEIGHT);
 const Vec2f VIEWPORT_OFFSET(WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP + TOP_PANEL_HEIGHT);
 const sf::Rect<float> VIEWPORT_RECT(VIEWPORT_OFFSET, VIEWPORT_SIZE);
 const Vec2f RIGHT_PANEL_OFFSET(VIEWPORT_OFFSET.x + VIEWPORT_SIZE.x + 3, VIEWPORT_OFFSET.y);
 
 Map map("data/map.txt");
-WindowManager wm("Sherwood", 60);
-GraphicsManager gm;
+sf::View mapView(sf::FloatRect(0, 0, VIEWPORT_SIZE.x, VIEWPORT_SIZE.y));
+sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
+const Vec2f GRID_SIZE((float)map.tileCount.x * TILE_SIZE, ((float)map.tileCount.y * TILE_SIZE));
+
+Graphics graphics;
 EntityManager em;
-InputManager im;
+Input input;
 aStar astar;
 
 const UnitType person = UnitType("person", color.brown, 1, 3.0f);
 const EntityType rock = EntityType("rock", color.grey);
+
+void initWindow() {
+	renderWindow.setPosition(Vec2i(0, 0));
+	renderWindow.setFramerateLimit(targetFPS);
+	Vec2f viewportOffsetRatio(VIEWPORT_OFFSET.x / WINDOW_SIZE.x, VIEWPORT_OFFSET.y / WINDOW_SIZE.y);
+	Vec2f viewportSizeRatio(VIEWPORT_SIZE.x / WINDOW_SIZE.x, VIEWPORT_SIZE.y / WINDOW_SIZE.y);
+	mapView.setViewport(sf::FloatRect(viewportOffsetRatio.x, viewportOffsetRatio.y, viewportSizeRatio.x, viewportSizeRatio.y));
+	mapView.move(Vec2f(-10, -10));
+}

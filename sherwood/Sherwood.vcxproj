@@ -158,15 +158,15 @@
     <ClCompile Include="actions.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="globals.cpp" />
-    <ClCompile Include="graphics_manager.cpp" />
+    <ClCompile Include="graphics.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_manager.cpp" />
     <ClCompile Include="entity_type.cpp" />
-    <ClCompile Include="input_manager.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="pathfinding.cpp" />
     <ClCompile Include="types.cpp" />
-    <ClCompile Include="window_manager.cpp" />
+    <ClCompile Include="utility.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
   </ItemGroup>
@@ -175,15 +175,15 @@
     <ClInclude Include="actions.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="globals.h" />
-    <ClInclude Include="graphics_manager.h" />
+    <ClInclude Include="graphics.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="entity_type.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="pathfinding.h" />
     <ClInclude Include="types.h" />
-    <ClInclude Include="input_manager.h" />
-    <ClInclude Include="window_manager.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="utility.h" />
     <ClInclude Include="map.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

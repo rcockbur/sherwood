@@ -1,6 +1,6 @@
 #include "pathfinding.h"
 #include "globals.h"
-#include "graphics_manager.h"
+#include "graphics.h"
 #include "color.h"
 #include <Windows.h>
 #include <cmath>
@@ -24,7 +24,7 @@ int aStar::heuristic(const Vec2i& p) {
     return 14 * diagonals + 10 * orthoginals;
 }
 
-bool aStar::existVec2i(Vec2i& p, int neighborF) {
+bool aStar::checkNeighbor(Vec2i& p, int neighborF) {
     std::list<node>::iterator i;
     i = std::find(open.begin(), open.end(), p);
     if (i != open.end()) {
@@ -39,7 +39,7 @@ bool aStar::existVec2i(Vec2i& p, int neighborF) {
     return false;
 }
 
-bool validDiagonal(Vec2i& source, Vec2i direction) {
+bool validDiagonal(const Vec2i& source, const Vec2i& direction) {
     Vec2i tile1(source.x, source.y + direction.y);
     Vec2i tile2(source.x + direction.x, source.y);
     return map.isPathable(tile1) && map.isPathable(tile2);
@@ -63,7 +63,7 @@ void aStar::fillOpen(node& n) {
                     neighborG = stepCost + n.g;
                     neighborH = heuristic(neighbourTile);
                     neighborF = neighborG + neighborH;
-                    if (!existVec2i(neighbourTile, neighborF)) {
+                    if (!checkNeighbor(neighbourTile, neighborF)) {
                         node m;
                         tilesChecked++;
                         m.tieRating = tilesChecked;
@@ -73,16 +73,11 @@ void aStar::fillOpen(node& n) {
                         m.tile = neighbourTile;
                         m.parent = n.tile;
                         open.push_back(m);
-                        /*gm.drawPathDebug(open, closed);
-                        Sleep(20);*/
                     }
                 }
-
             }
         }
-        
     }
-    //return false;
 }
 
 bool aStar::search(const Vec2i& s, const Vec2i& e) {
@@ -104,19 +99,19 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
             open.pop_front();
             closed.push_back(n);
             if (n == end) {
-                Sleep(300);
                 return true;
             }
             fillOpen(n);
-            gm.drawPathDebug(open, closed, start, end, nullptr);
-            //Sleep(10);
+            if (showPathfinding) {
+                graphics.drawPathDebug(open, closed, start, end, nullptr);
+            }
         }
     }
     return false;
 }
-int aStar::path(std::list<Vec2i>& path) {
+std::list<Vec2i> aStar::path() {
+    std::list<Vec2i> path;
     path.push_front(end);
-    int cost = 1 + closed.back().g;
     path.push_front(closed.back().tile);
     Vec2i parent = closed.back().parent;
 
@@ -124,12 +119,13 @@ int aStar::path(std::list<Vec2i>& path) {
         if ((*i).tile == parent && !((*i).tile == start)) {
             path.push_front((*i).tile);
             parent = (*i).parent;
-            gm.drawPathDebug(open, closed, start, end, &path);
+            if (showPathfinding) {
+                graphics.drawPathDebug(open, closed, start, end, &path);
+            }
+            
         }
     }
-
-    Sleep(300);
-    return cost;
+    return path;
 }
 
 void aStar::clear() {

@@ -2,16 +2,16 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
-#include "graphics_manager.h"
+#include "graphics.h"
 #include "map.h"
 #include "color.h"
 #include "entity.h"
 #include "entity_type.h"
-#include "window_manager.h"
 #include "globals.h"
 #include "entity_manager.h"
+#include "utility.h"
 
-GraphicsManager::GraphicsManager() 
+Graphics::Graphics() 
 {
 	viewportShape.setSize(VIEWPORT_SIZE);
 	viewportShape.setPosition(VIEWPORT_OFFSET);
@@ -19,34 +19,32 @@ GraphicsManager::GraphicsManager()
 	viewportShape.setOutlineThickness(1);
 	viewportShape.setFillColor(color.transparent);
 
-	verticalLine.setSize(Vec2f(LINE_WIDTH, wm.gridSize.y + LINE_WIDTH));
+	verticalLine.setSize(Vec2f(LINE_WIDTH, GRID_SIZE.y + LINE_WIDTH));
 	verticalLine.setFillColor(color.grey);
 
-	horizontalLine.setSize(Vec2f(wm.gridSize.x + LINE_WIDTH, LINE_WIDTH));
+	horizontalLine.setSize(Vec2f(GRID_SIZE.x + LINE_WIDTH, LINE_WIDTH));
 	horizontalLine.setFillColor(color.grey);
 
 	sf::RectangleShape grassRect;
 	sf::RectangleShape waterRect;
 
-	grassRect.setSize(TILE_SIZE);
+	grassRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
 	grassRect.setFillColor(color.darkGreen);
 	terrainShapes.push_back(grassRect);
 
-	waterRect.setSize(TILE_SIZE);
+	waterRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
 	waterRect.setFillColor(color.blue);
 	terrainShapes.push_back(waterRect);
 
-	entityShape.setSize(ENTITY_SIZE);
-	//entityShape.setRadius(8);
+	entityShape.setSize(Vec2f(ENTITY_SIZE, ENTITY_SIZE));
 	entityShape.setFillColor(color.white);
 
-	selectionShape.setSize(ENTITY_SIZE);
+	selectionShape.setSize(Vec2f(ENTITY_SIZE, ENTITY_SIZE));
 	selectionShape.setOutlineThickness(LINE_WIDTH);
 	selectionShape.setOutlineColor(color.yellow);
 	selectionShape.setFillColor(color.transparent);
 
-	//pathDebugShape.setSize(ENTITY_SIZE);
-	pathDebugShape.setSize(PATH_DEBUG_SIZE);
+	pathDebugShape.setSize(Vec2f(PATH_DEBUG_SIZE, PATH_DEBUG_SIZE));
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
@@ -54,135 +52,135 @@ GraphicsManager::GraphicsManager()
 	initText(selectionText, RIGHT_PANEL_OFFSET);
 }
 
-void GraphicsManager::initText(sf::Text& text, const Vec2f& position) {
+void Graphics::initText(sf::Text& text, const Vec2f& position) {
 	text.setFont(arial);
 	text.setCharacterSize(14);
 	text.setFillColor(sf::Color::White);
 	text.setPosition(position);
 }
 
-void GraphicsManager::draw() {
-	wm.window.clear();
+void Graphics::draw() {
+	renderWindow.clear();
 	drawWorld();
 	drawHUD();
-	wm.window.display();
+	renderWindow.display();
 }
 
-void GraphicsManager::drawWorld() {
-	wm.window.setView(wm.mapView);
+void Graphics::drawWorld() {
+	renderWindow.setView(mapView);
 	drawTerrain();
 	if (showGrid)
 		drawGrid();
 	drawEntities();
 }
 
-void GraphicsManager::drawHUD() {
-	wm.window.setView(wm.window.getDefaultView());
+void Graphics::drawHUD() {
+	renderWindow.setView(renderWindow.getDefaultView());
 	drawViewportOutline();
 	drawText();
 }
 
-void GraphicsManager::drawTerrain() {
+void Graphics::drawTerrain() {
 	for (int x = 0; x < map.terrainGrid.size(); ++x) {
 		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
 			terrainShapes.at(map.terrainGrid[x][y]).
-				setPosition(Vec2f(TILE_SIZE.x * float(x), TILE_SIZE.y * (float)y));
-			wm.window.draw(terrainShapes.at(map.terrainGrid[x][y]));
+				setPosition(Vec2f(TILE_SIZE * float(x), TILE_SIZE * (float)y));
+			renderWindow.draw(terrainShapes.at(map.terrainGrid[x][y]));
 		}
 	}
 }
 
-void GraphicsManager::drawEntities() {
+void Graphics::drawEntities() {
 	for (auto& entity : em.entities) {
-		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE.x / 2, ENTITY_SIZE.y / 2);
+		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
 		entityShape.setPosition(graphicalPosition);
 		entityShape.setFillColor(entity->color);
-		wm.window.draw(entityShape);
+		renderWindow.draw(entityShape);
 		if (entity->isSelected) {
 			selectionShape.setPosition(graphicalPosition);
-			wm.window.draw(selectionShape);
+			renderWindow.draw(selectionShape);
 		}
 	}	
 }
 
-void GraphicsManager::drawGrid() {
+void Graphics::drawGrid() {
 	for (int i = 0; i < map.tileCount.x + 1; i++) {
-		verticalLine.setPosition(Vec2f(TILE_SIZE.x * i - LINE_WIDTH_HALF, -LINE_WIDTH_HALF));
-		wm.window.draw(verticalLine);
+		verticalLine.setPosition(Vec2f(TILE_SIZE * i - LINE_WIDTH_HALF, -LINE_WIDTH_HALF));
+		renderWindow.draw(verticalLine);
 	}
 	for (int i = 0; i < map.tileCount.y + 1; i++) {
-		horizontalLine.setPosition(Vec2f(-LINE_WIDTH_HALF, TILE_SIZE.y * i - LINE_WIDTH_HALF));
-		wm.window.draw(horizontalLine);
+		horizontalLine.setPosition(Vec2f(-LINE_WIDTH_HALF, TILE_SIZE * i - LINE_WIDTH_HALF));
+		renderWindow.draw(horizontalLine);
 	}
 }
 
-void GraphicsManager::drawText() {
+void Graphics::drawText() {
 	drawTextFPS();
 	drawTextSelection();
 }
 
-void GraphicsManager::drawTextFPS() {
+void Graphics::drawTextFPS() {
 	std::ostringstream s;
-	s << "Target FPS: " << wm.targetFPS;
-	s << "   Actual FPS: " << (int)wm.actualFPS;
+	s << "Target FPS: " << targetFPS;
+	s << "   Actual FPS: " << (int)actualFPS;
 	fpsText.setString(s.str());
-	wm.window.draw(fpsText);
+	renderWindow.draw(fpsText);
 }
 
-void GraphicsManager::drawTextSelection() {
+void Graphics::drawTextSelection() {
 	if (selectedEntity != nullptr) {
 		std::ostringstream s;
 		s << "Type: " << selectedEntity->type.name << "\n";
 		s << "ID: " << selectedEntity->id << "\n";
-		s << "Tile: " << selectedEntity->tile << "\n";
+		s << "Tile: " << worldToTile(selectedEntity->position) << "\n";
 		s << "Pos: " << (Vec2i)(selectedEntity->position) << "\n";
 		selectionText.setString(s.str());
-		wm.window.draw(selectionText);
+		renderWindow.draw(selectionText);
 	}
 }
 
-void GraphicsManager::drawViewportOutline() {
-	wm.window.draw(viewportShape);
+void Graphics::drawViewportOutline() {
+	renderWindow.draw(viewportShape);
 }
 
-void GraphicsManager::drawPathDebug(const std::list<node>& open, const std::list<node>& closed, 
+void Graphics::drawPathDebug(const std::list<node>& open, const std::list<node>& closed, 
 	const Vec2i& s, const Vec2i& e, std::list<Vec2i> * path) {
-	wm.window.clear();
+	renderWindow.clear();
 	drawWorld();
 	
 	pathDebugShape.setFillColor(color.red);
 	for (std::list<node>::const_iterator i = open.begin(); i != open.end(); i++) {
 		if ((*i).tile != s) {
-			pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
-			wm.window.draw(pathDebugShape);
+			pathDebugShape.setPosition(tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+			renderWindow.draw(pathDebugShape);
 		}
 		
 	}
 	pathDebugShape.setFillColor(color.purple);
 	for (std::list<node>::const_iterator i = closed.begin(); i != closed.end(); i++) {
 		if ((*i).tile != s) {
-			pathDebugShape.setPosition(wm.tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
-			wm.window.draw(pathDebugShape);
+			pathDebugShape.setPosition(tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+			renderWindow.draw(pathDebugShape);
 		}	
 	}
 	if (path != nullptr) {
 		pathDebugShape.setFillColor(color.teal);
 		for (std::list<Vec2i>::iterator i = (*path).begin(); i != (*path).end(); i++) {
-			pathDebugShape.setPosition(wm.tileToWorld((*i)) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
-			wm.window.draw(pathDebugShape);
+			pathDebugShape.setPosition(tileToWorld((*i)) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+			renderWindow.draw(pathDebugShape);
 		}
 	}
 	
 
 	pathDebugShape.setFillColor(color.white);
-	pathDebugShape.setPosition(wm.tileToWorld(s) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
-	wm.window.draw(pathDebugShape);
+	pathDebugShape.setPosition(tileToWorld(s) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+	renderWindow.draw(pathDebugShape);
 
 	pathDebugShape.setFillColor(color.yellow);
-	pathDebugShape.setPosition(wm.tileToWorld(e) - Vec2f(PATH_DEBUG_SIZE.x / 2, PATH_DEBUG_SIZE.y / 2));
-	wm.window.draw(pathDebugShape);
+	pathDebugShape.setPosition(tileToWorld(e) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+	renderWindow.draw(pathDebugShape);
 
 	drawHUD();
-	wm.window.display();
+	renderWindow.display();
 }
 

@@ -4,11 +4,11 @@
 #include <list>
 
 class Map;
-class WindowManager;
+class Window;
 
-class GraphicsManager {
+class Graphics {
 public:
-	GraphicsManager();
+	Graphics();
 	void draw();
 	void drawPathDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
 		const Vec2i& e, std::list<Vec2i> * path);

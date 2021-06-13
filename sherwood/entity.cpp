@@ -4,35 +4,24 @@
 #include "entity_type.h"
 #include "pathfinding.h"
 #include "globals.h"
+#include "utility.h"
 
-Entity::Entity(const EntityType& _type, uint _id, const Vec2i& _tile) :
-	type(_type),
-	id(_id),
-	tile(_tile),
-	position(wm.tileToWorld(_tile)),
+Entity::Entity(const EntityType& type, uint id, const Vec2i& tile) :
+	type(type),
+	id(id),
+	position(tileToWorld(tile)),
 	bounds(calculateBounds(position)),
 	color(NULL),
 	isSelected(false)
 {
-	map.entityGrid[tile.x][tile.y] = this;
 }
 
-void Entity::update()
-{
-}
-
-void Entity::targetTile(const Vec2i& tile) {
-	std::cout << "Entity targetTile\n";
+void Entity::update() {
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
-	return Rect(pos.x - ENTITY_SIZE.x / 2, pos.y - ENTITY_SIZE.y / 2, ENTITY_SIZE.x, ENTITY_SIZE.y);
+	return Rect(pos.x - ENTITY_SIZE / 2, pos.y - ENTITY_SIZE / 2, ENTITY_SIZE, ENTITY_SIZE);
 }
-
-
-
-
-
 
 Unit::Unit(const UnitType& _type, uint _id, const Vec2i& _tile) :
 	Entity(_type, _id, _tile),
@@ -46,8 +35,10 @@ void Unit::update()
 	if (abilityQueue.size() > 0) {
 		Ability* ability = abilityQueue.front();
 		bool isComplete = ability->execute();
-		if (isComplete)
+		if (isComplete) {
+			delete ability;
 			abilityQueue.pop_front();
+		}	
 	}
 }
 
@@ -64,12 +55,7 @@ void Unit::setAbility(Ability* ability)
 
 bool Unit::moveTowards(const Vec2i& targetTile)
 {
-	if (tile != targetTile) {
-		map.entityGrid[tile.x][tile.y] = nullptr;
-		tile = targetTile;
-		map.entityGrid[tile.x][tile.y] = this;
-	}
-	Vec2f targetPos = wm.tileToWorld(targetTile);
+	Vec2f targetPos = tileToWorld(targetTile);
 	Vec2f diff = targetPos - position;
 	float dist = (float)sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 	if (dist > type.moveDistance) {
@@ -83,16 +69,4 @@ bool Unit::moveTowards(const Vec2i& targetTile)
 		bounds = calculateBounds(position);
 		return true;
 	}
-
-}
-
-void Unit::targetTile(const Vec2i& tile) {
-	astar.clear();
-	if (astar.search(this->tile, tile)) {
-		std::list<Vec2i> path;
-		int c = astar.path(path);
-		Move* move = new Move(*this, path);
-		setAbility(move);
-	}
-	std::cout << "Unit targetTile\n";
 }

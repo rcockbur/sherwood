@@ -2,12 +2,12 @@
 #include "types.h"
 
 class Map;
-class WindowManager;
+class Window;
 class EntityManager;
 
-class InputManager {
+class Input {
 public:
-	InputManager();
+	Input();
 	void handleInput();
 	void handleScreenClick(const Vec2f& screenPosition, bool isRightClick);
 	void handleWorldClick(const Vec2f& worldPosition, bool isRightClick);

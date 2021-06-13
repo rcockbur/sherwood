@@ -1,3 +1,3 @@
 #include "color.h"
 
-Colors color;
+const Colors color;

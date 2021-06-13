@@ -1,8 +1,7 @@
 #include "ability.h"
 #include "entity.h"
 #include "entity_type.h"
-
-extern uint tic;
+#include "globals.h"
 
 Move::Move(Unit& unit, std::list<Vec2i> _path)
 	: unit(unit), path(_path)
@@ -10,8 +9,7 @@ Move::Move(Unit& unit, std::list<Vec2i> _path)
 
 }
 
-bool Move::execute() 
-{
+bool Move::execute() {
 	if (path.size() > 0) {
 		if (tic >= unit.canMoveAt) {
 			unit.canMoveAt = tic + unit.type.movePeriod;

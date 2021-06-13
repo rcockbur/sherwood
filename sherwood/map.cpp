@@ -10,10 +10,8 @@ Map::Map(std::string fileName)
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
 	terrainGrid.resize(tileCount.x);
-	entityGrid.resize(tileCount.x);
 	for (int x = 0; x < tileCount.x; x++) {
 		terrainGrid[x].resize(tileCount.y);
-		entityGrid[x].resize(tileCount.y);
 	}
 	loadMapData("data/map.txt");
 	std::cout << "Map data loaded\n";
@@ -25,13 +23,6 @@ bool Map::isWithinBounds(Vec2i tile) {
 
 bool Map::isPathable(Vec2i tile) {
 	return (terrainGrid[tile.x][tile.y] == 0);
-}
-
-Entity* Map::getEntityAt(Vec2i tile) {
-	if (tile.x < 0 || tile.x >= tileCount.x || tile.y < 0 || tile.y >= tileCount.y)
-		throw std::logic_error("tile is out of bounds");
-
-	return entityGrid[tile.x][tile.y];
 }
 
 Vec2i Map::calculateTileCount(std::string fileName) {
@@ -69,7 +60,6 @@ void Map::loadMapData(std::string fileName) {
 			x = 0;
 			while (std::getline(ss, sym, ',')) {
 				terrainGrid[x][y] = std::stoi(sym);
-				entityGrid[x][y] = nullptr;
 				x++;
 			}
 			++y;
