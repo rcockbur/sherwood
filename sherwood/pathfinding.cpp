@@ -45,7 +45,6 @@ bool validDiagonal(const Vec2i& source, const Vec2i& direction) {
     return map.isPathable(tile1) && map.isPathable(tile2);
 }
 
-//returns true if a neighbor is the end node
 void aStar::fillOpen(node& n) {
     int stepCost;
     int neighborF;
