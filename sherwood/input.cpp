@@ -80,7 +80,7 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 	}
 }
 
-void Input::updateFPS(uint fps) {
+void Input::updateFPS(int fps) {
 	targetFPS = fps;
 	renderWindow.setFramerateLimit(targetFPS);
 }

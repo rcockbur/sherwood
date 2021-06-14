@@ -129,11 +129,20 @@ void Graphics::drawTextFPS() {
 
 void Graphics::drawTextSelection() {
 	if (selectedEntity != nullptr) {
-		std::ostringstream s;
-		s << "Type: " << selectedEntity->type.name << "\n";
-		s << "ID: " << selectedEntity->id << "\n";
-		s << "Tile: " << worldToTile(selectedEntity->position) << "\n";
-		s << "Pos: " << (Vec2i)(selectedEntity->position) << "\n";
+		std::ostringstream s = selectedEntity->getSelectionText();
+		//s << "Type: " << selectedEntity->type.name << "\n";
+		//s << "ID: " << selectedEntity->id << "\n";
+		//s << "Tile: " << worldToTile(selectedEntity->position) << "\n";
+		//s << "Pos: " << (Vec2i)(selectedEntity->position) << "\n";
+		//Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
+		//if (selectedUnit) {
+		//	if (selectedUnit->home) {
+		//		s << "Home: " << selectedUnit->home->id << "\n";
+		//	}
+		//	else {
+		//		s << "Home: -\n";
+		//	}
+		//}
 		selectionText.setString(s.str());
 		renderWindow.draw(selectionText);
 	}

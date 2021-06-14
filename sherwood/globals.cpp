@@ -20,7 +20,7 @@ const float LINE_WIDTH(LINE_WIDTH_HALF * 2);
 const float TILE_SIZE = 25;
 const float ENTITY_SIZE = 18;
 const float PATH_DEBUG_SIZE = 10;
-const Vec2u WINDOW_SIZE(1920, 1080);
+const Vec2u WINDOW_SIZE(1200, 700);
 const float WINDOW_PADDING_TOP(5);
 const float WINDOW_PADDING_LEFT(5);
 const float WINDOW_PADDING_BOT(10);
@@ -33,7 +33,8 @@ const Vec2f RIGHT_PANEL_OFFSET(VIEWPORT_OFFSET.x + VIEWPORT_SIZE.x + 3, VIEWPORT
 
 Map map("data/map.txt");
 sf::View mapView(sf::FloatRect(0, 0, VIEWPORT_SIZE.x, VIEWPORT_SIZE.y));
-sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
+//sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
+sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood");
 const Vec2f GRID_SIZE((float)map.tileCount.x * TILE_SIZE, ((float)map.tileCount.y * TILE_SIZE));
 
 Graphics graphics;
@@ -41,8 +42,11 @@ EntityManager em;
 Input input;
 aStar astar;
 
+const ResourceType food("food");
 const UnitType person = UnitType("person", color.brown, 1, 3.0f);
 const EntityType rock = EntityType("rock", color.grey);
+const BuildingType house = BuildingType("house", color.black);
+const DepositType berryBush = DepositType("berry bush", color.red, food, 100);
 
 void initWindow() {
 	renderWindow.setPosition(Vec2i(0, 0));

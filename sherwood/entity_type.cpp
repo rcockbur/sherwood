@@ -7,7 +7,7 @@ EntityType::EntityType(const std::string _name, const sf::Color _color) :
 
 }
 
-UnitType::UnitType(std::string name, sf::Color color, uint movePeriod, float moveDistance) :
+UnitType::UnitType(const std::string name, const sf::Color color, int movePeriod, float moveDistance) :
 	EntityType(name, color),
 	movePeriod(movePeriod),
 	moveDistance(moveDistance) 
@@ -15,3 +15,17 @@ UnitType::UnitType(std::string name, sf::Color color, uint movePeriod, float mov
 
 }
 
+BuildingType::BuildingType(const std::string name, const sf::Color color) :
+	EntityType(name, color)
+{
+
+}
+
+DepositType::DepositType(const std::string name, const sf::Color color, const ResourceType& _resourceType, 
+	const int _amount) :
+	EntityType(name, color),
+	resourceType(_resourceType),
+	amount(_amount)
+{
+
+}

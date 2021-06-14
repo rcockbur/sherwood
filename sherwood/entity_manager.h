@@ -4,22 +4,22 @@
 
 class EntityType;
 class UnitType;
+class BuildingType;
+class DepositType;
 class Map;
 class Entity;
 class Unit;
+class Building;
+class Deposit;
 
 class EntityManager {
 public:
 	EntityManager();
-	//void createEntityType(ET, std::string, sf::Color);
-	//void createUnitType(std::string, sf::Color, uint, float);
-	Entity* createEntity(const EntityType&, Vec2i);
-	Unit* createUnit(const UnitType&, Vec2i);
+	Entity* createEntity(const EntityType&, const Vec2i);
+	Unit* createUnit(const UnitType&, const Vec2i);
+	Building* createBuilding(const BuildingType&, const Vec2i);
+	Deposit* createResource(const DepositType&, const Vec2i);
 	void updateEntities();
 	void selectEntity(Entity*);
 	std::list<Entity*> entities;
-private:
-	uint entityIndex;
-	//std::map<ET, EntityType*> entityTypes;
-	
 };

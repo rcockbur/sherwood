@@ -1,8 +1,9 @@
 #pragma once
 #include "types.h"
 #include <list>
+#include "entity.h"
+#include "resource.h"
 
-class Unit;
 
 class Ability {
 public:
@@ -16,4 +17,10 @@ public:
 
 	Move(Unit& unit, std::list<Vec2i> path);
 	bool execute();
+};
+
+class HarvestResource : Move {
+public:
+	const Resource& source;
+	HarvestResource(Unit& unit, std::list<Vec2i> path, Resource& source);
 };

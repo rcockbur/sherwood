@@ -4,6 +4,7 @@
 #include "map.h"
 #include "input.h"
 #include "pathfinding.h"
+#include "resource.h"
 
 class UnitType;
 
@@ -43,7 +44,11 @@ extern EntityManager em;
 extern Input input;
 extern aStar astar;
 
+extern const ResourceType food;
 extern const UnitType person;
 extern const EntityType rock;
+extern const BuildingType house;
+extern const DepositType berryBush;
+
 
 void initWindow();

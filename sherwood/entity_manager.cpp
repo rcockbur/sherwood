@@ -5,31 +5,49 @@
 #include "entity.h"
 #include "globals.h"
 
-EntityManager::EntityManager()
-	: entityIndex(0)
-{
+EntityManager::EntityManager() {
 	std::cout << "EntityManager created\n";
 }
 
 
-Entity* EntityManager::createEntity(const EntityType& entityType, Vec2i _tile) {
+Entity* EntityManager::createEntity(const EntityType& entityType, const Vec2i _tile) {
 	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y) 
 		throw std::logic_error("tile is out of bounds");
 	
-	Entity* entity = new Entity(entityType, entityIndex++, _tile);
+	Entity* entity = new Entity(entityType, _tile);
 	entity->color = entity->type.color;
 	entities.push_back(entity);
 	return entity;
 }
 
-Unit* EntityManager::createUnit(const UnitType& entityType, Vec2i _tile) {
+Unit* EntityManager::createUnit(const UnitType& unitType, const Vec2i _tile) {
 	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
 		throw std::logic_error("tile is out of bounds");
 
-	Unit* unit = new Unit(static_cast<const UnitType&>(entityType), entityIndex++, _tile);
+	Unit* unit = new Unit(unitType, _tile);
 	unit->color = unit->type.color;
 	entities.push_back(unit);
 	return unit;
+}
+
+Building* EntityManager::createBuilding(const BuildingType& buildingType, const Vec2i _tile) {
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
+		throw std::logic_error("tile is out of bounds");
+
+	Building* building = new Building(buildingType, _tile);
+	building->color = building->type.color;
+	entities.push_back(building);
+	return building;
+}
+
+Deposit* EntityManager::createResource(const DepositType& resourceType, const Vec2i _tile) {
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
+		throw std::logic_error("tile is out of bounds");
+
+	Deposit* deposit = new Deposit(resourceType, _tile);
+	deposit->color = deposit->type.color;
+	entities.push_back(deposit);
+	return deposit;
 }
 
 void EntityManager::updateEntities() {
