@@ -8,7 +8,7 @@
 bool showGrid = true;
 bool showPathfinding = false;
 bool hasPrinted = false;
-int targetFPS = 60;
+int targetFPS = 30;
 float actualFPS = (float)targetFPS;
 Entity* selectedEntity(nullptr);
 int tic(0);
@@ -42,8 +42,10 @@ EntityManager em;
 Input input;
 aStar astar;
 
-const ResourceType food("food");
-const UnitType person = UnitType("person", color.brown, 1, 3.0f);
+//const ResourceType food("food");
+const std::string resourceNames[NUM_RESOURCES] = { "food", "wood" };
+
+const UnitType person = UnitType("person", color.brown, 1, 2.0f);
 const EntityType rock = EntityType("rock", color.grey);
 const BuildingType house = BuildingType("house", color.black);
 const DepositType berryBush = DepositType("berry bush", color.red, food, 100);

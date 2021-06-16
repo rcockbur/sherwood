@@ -92,19 +92,21 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
         n.f = n.h + n.g;
         n.tieRating = tilesChecked;
         open.push_back(n);
+                 
         while (!open.empty()) {
             open.sort();
             node n = open.front();
             open.pop_front();
             closed.push_back(n);
             if (n == end) {
+                if (showPathfinding) Sleep(200); //after completing search successfully
                 return true;
             }
             fillOpen(n);
-            if (showPathfinding) {
-                graphics.drawPathDebug(open, closed, start, end, nullptr);
-            }
+            if (showPathfinding) graphics.drawPathDebug(open, closed, start, end, nullptr);//after each node
         }
+        if (showPathfinding) Sleep(200); //after completing search
+            
     }
     return false;
 }
@@ -113,17 +115,18 @@ std::list<Vec2i> aStar::path() {
     path.push_front(end);
     path.push_front(closed.back().tile);
     Vec2i parent = closed.back().parent;
-
     for (std::list<node>::reverse_iterator i = closed.rbegin(); i != closed.rend(); i++) {
         if ((*i).tile == parent && !((*i).tile == start)) {
             path.push_front((*i).tile);
             parent = (*i).parent;
             if (showPathfinding) {
                 graphics.drawPathDebug(open, closed, start, end, &path);
+                Sleep(10); //after each path node
             }
-            
         }
     }
+    if (showPathfinding) Sleep(200); //after completing search
+        
     return path;
 }
 

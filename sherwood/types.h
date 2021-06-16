@@ -13,6 +13,7 @@ typedef sf::Color Color;
 typedef sf::Rect<float> Rect;
 
 //enum RT { food };
+enum ResourceTypes { food, wood };
 
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);

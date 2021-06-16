@@ -1,12 +1,12 @@
 #pragma once
 #include "types.h"
-
-class ResourceType;
+#include "resource.h"
 
 class EntityType {
 public:
 	const std::string name;
-	const sf::Color color;
+	const sf::Color color;	
+	Resources resources;
 	EntityType(const std::string, const sf::Color);
 };
 
@@ -24,8 +24,6 @@ public:
 
 class DepositType : public EntityType {
 public:
-	const ResourceType& resourceType;
-	int amount;
-	DepositType(const std::string name, const sf::Color color, const ResourceType& resourceType,
+	DepositType(const std::string name, const sf::Color color, const int resourceType,
 		const int amount);
 };

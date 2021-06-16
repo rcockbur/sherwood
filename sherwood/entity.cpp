@@ -14,8 +14,10 @@ Entity::Entity(const EntityType& type, const Vec2i tile) :
 	id(id_index),
 	position(tileToWorld(tile)),
 	bounds(calculateBounds(position)),
-	color(NULL),
-	isSelected(false)
+	color(type.color),
+	isSelected(false),
+	resources(type.resources)
+	
 {
 	++id_index;
 }
@@ -27,8 +29,13 @@ std::ostringstream Entity::getSelectionText() {
 	std::ostringstream s;
 	s << "Type: " << type.name << "\n";
 	s << "ID: " << id << "\n";
-	s << "Pos: " << (Vec2i)(position) << "\n";
+	//s << "Pos: " << (Vec2i)(position) << "\n";
 	s << "Tile: " << worldToTile(position) << "\n";
+	for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
+		if (resources[resourceType] > 0) {
+			s << "resource: " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
+		}
+	}
 	return s;
 }
 
@@ -100,14 +107,11 @@ Building::Building(const BuildingType& _type, const Vec2i _tile) :
 
 Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
-	type(_type),
-	resource(type.resourceType, type.amount)
+	type(_type)
 {
-
 }
 
 std::ostringstream Deposit::getSelectionText() {
 	std::ostringstream s = Entity::getSelectionText();
-	s << "resource: " << resource.amount << " " << resource.type.name << "\n";
 	return s;
 }

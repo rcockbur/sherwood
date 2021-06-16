@@ -21,6 +21,6 @@ public:
 
 class HarvestResource : Move {
 public:
-	const Resource& source;
-	HarvestResource(Unit& unit, std::list<Vec2i> path, Resource& source);
+	const Deposit& source;
+	HarvestResource(Unit& unit, std::list<Vec2i> path, Deposit& source);
 };

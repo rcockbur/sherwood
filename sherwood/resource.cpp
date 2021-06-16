@@ -1,13 +1,39 @@
 #include "resource.h"
 
-ResourceType::ResourceType(const std::string _name) :
-	name(_name)
+
+Resources::Resources() :
+	amounts{0}
 {
+
 }
 
-Resource::Resource(const ResourceType& _type, int _amount) :
-	type(_type),
-	amount(_amount)
+Resources::Resources(const int type, int amount) :
+	amounts{ 0 }
 {
+	amounts[type] = amount;
 }
 
+Resources::Resources(const Resources& other) {
+	std::copy(other.amounts, other.amounts + NUM_RESOURCES, amounts);
+}
+
+Resources& Resources::operator=(const Resources& other) {
+	std::copy(other.amounts, other.amounts + NUM_RESOURCES, amounts);
+	return *this;
+}
+
+//standard index operator
+int& Resources::operator[](const int type) {
+	if (type < 0 || type >= NUM_RESOURCES) {
+		throw std::logic_error("resource type is invalid");
+	}
+	return amounts[type];
+}
+
+//index operator for fetching value from const objects
+const int& Resources::operator[](const int type) const {
+	if (type < 0 || type >= NUM_RESOURCES) {
+		throw std::logic_error("resource type is invalid");
+	}
+	return amounts[type];
+}

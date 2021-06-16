@@ -15,7 +15,6 @@ Entity* EntityManager::createEntity(const EntityType& entityType, const Vec2i _t
 		throw std::logic_error("tile is out of bounds");
 	
 	Entity* entity = new Entity(entityType, _tile);
-	entity->color = entity->type.color;
 	entities.push_back(entity);
 	return entity;
 }
@@ -25,7 +24,6 @@ Unit* EntityManager::createUnit(const UnitType& unitType, const Vec2i _tile) {
 		throw std::logic_error("tile is out of bounds");
 
 	Unit* unit = new Unit(unitType, _tile);
-	unit->color = unit->type.color;
 	entities.push_back(unit);
 	return unit;
 }
@@ -35,7 +33,6 @@ Building* EntityManager::createBuilding(const BuildingType& buildingType, const 
 		throw std::logic_error("tile is out of bounds");
 
 	Building* building = new Building(buildingType, _tile);
-	building->color = building->type.color;
 	entities.push_back(building);
 	return building;
 }
@@ -45,7 +42,6 @@ Deposit* EntityManager::createResource(const DepositType& resourceType, const Ve
 		throw std::logic_error("tile is out of bounds");
 
 	Deposit* deposit = new Deposit(resourceType, _tile);
-	deposit->color = deposit->type.color;
 	entities.push_back(deposit);
 	return deposit;
 }

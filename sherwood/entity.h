@@ -21,6 +21,7 @@ public:
 	Rect bounds;
 	sf::Color color;
 	bool isSelected;
+	Resources resources;
 
 	Entity(const EntityType& type, const Vec2i tile);
 	virtual void update();
@@ -53,7 +54,6 @@ public:
 class Deposit : public Entity {
 public:
 	const DepositType& type;
-	const Resource resource;
 	Deposit(const DepositType& type, const Vec2i tile);
 	std::ostringstream getSelectionText();
 };

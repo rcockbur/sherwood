@@ -1,15 +1,17 @@
 #pragma once
 #include "types.h"
+#include "globals.h"
 
-class ResourceType {
+class Resources {
 public:
-	std::string name;
-	ResourceType(const std::string name);
-};
+	int amounts[NUM_RESOURCES];
 
-class Resource {
-public:
-	const ResourceType& type;
-	int amount;
-	Resource(const ResourceType& resourceType, int amount);
+	Resources();
+	Resources(const int type, int amount);
+	Resources(const Resources& other);
+	Resources& operator=(const Resources& other);
+	int& operator[](const int index);
+	const int& operator[](const int index) const;
+
+
 };

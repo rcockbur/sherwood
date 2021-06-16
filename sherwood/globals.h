@@ -4,7 +4,7 @@
 #include "map.h"
 #include "input.h"
 #include "pathfinding.h"
-#include "resource.h"
+#include <string>
 
 class UnitType;
 
@@ -44,7 +44,9 @@ extern EntityManager em;
 extern Input input;
 extern aStar astar;
 
-extern const ResourceType food;
+constexpr int NUM_RESOURCES = 2;
+extern const std::string resourceNames[NUM_RESOURCES];
+
 extern const UnitType person;
 extern const EntityType rock;
 extern const BuildingType house;

@@ -63,11 +63,13 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 		if (selectedUnit) {
 			if (selectedEntity != nullptr && worldToTile(selectedEntity->position) != clickedTile) {
 				astar.clear();
+				if (showPathfinding) renderWindow.setFramerateLimit(1000);					
 				if (astar.search(worldToTile(selectedUnit->position), clickedTile)) {
 					std::list<Vec2i> path = astar.path();
 					Move* move = new Move(*selectedUnit, path);
 					selectedUnit->setAbility(move);
 				}
+				if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
 			}
 		}
 	}
