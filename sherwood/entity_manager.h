@@ -2,24 +2,25 @@
 #include "types.h"
 #include <list>
 
-class EntityType;
 class UnitType;
 class BuildingType;
+class DoodadType;
 class DepositType;
 class Map;
-class Entity;
 class Unit;
+class Doodad;
 class Building;
 class Deposit;
 
 class EntityManager {
 public:
 	EntityManager();
-	Entity* createEntity(const EntityType&, const Vec2i);
+	Doodad* createDoodad(const DoodadType&, const Vec2i);
+	Deposit* createDeposit(const DepositType&, const Vec2i);
 	Unit* createUnit(const UnitType&, const Vec2i);
 	Building* createBuilding(const BuildingType&, const Vec2i);
-	Deposit* createResource(const DepositType&, const Vec2i);
 	void updateEntities();
 	void selectEntity(Entity*);
 	std::list<Entity*> entities;
+	std::list<Unit*> units;
 };

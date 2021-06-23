@@ -17,10 +17,14 @@ public:
 
 	Move(Unit& unit, std::list<Vec2i> path);
 	bool execute();
+protected:
+	void followPath();
 };
 
-class HarvestResource : Move {
+class Harvest : Move {
 public:
 	const Deposit& source;
-	HarvestResource(Unit& unit, std::list<Vec2i> path, Deposit& source);
+	const int resourceType;
+	Harvest(Unit& unit, std::list<Vec2i> path, Deposit& source, int resourceType);
+	bool execute();
 };

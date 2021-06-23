@@ -22,6 +22,14 @@ Resources& Resources::operator=(const Resources& other) {
 	return *this;
 }
 
+Resources Resources::operator-(const Resources& other) {
+	Resources r = Resources(*this);
+	for (int i = 0; i < NUM_RESOURCES; ++i) {
+		r[i] -= other[i];
+	}
+	return r;
+}
+
 //standard index operator
 int& Resources::operator[](const int type) {
 	if (type < 0 || type >= NUM_RESOURCES) {

@@ -15,41 +15,60 @@ Entity::Entity(const EntityType& type, const Vec2i tile) :
 	position(tileToWorld(tile)),
 	bounds(calculateBounds(position)),
 	color(type.color),
-	isSelected(false),
-	resources(type.resources)
-	
+	isSelected(false)
 {
 	++id_index;
 }
 
-void Entity::update() {
-}
 
-std::ostringstream Entity::getSelectionText() {
-	std::ostringstream s;
+void Entity::getSelectionText(std::ostringstream& s) {
+	std::string classString(typeid(*this).name());
+	classString.erase(0, 6); 
+	s << "Class: " << classString << "\n";
 	s << "Type: " << type.name << "\n";
 	s << "ID: " << id << "\n";
-	//s << "Pos: " << (Vec2i)(position) << "\n";
 	s << "Tile: " << worldToTile(position) << "\n";
-	for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
-		if (resources[resourceType] > 0) {
-			s << "resource: " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
-		}
-	}
-	return s;
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
 	return Rect(pos.x - ENTITY_SIZE / 2, pos.y - ENTITY_SIZE / 2, ENTITY_SIZE, ENTITY_SIZE);
 }
 
-Unit::Unit(const UnitType& _type, const Vec2i _tile) :
+Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
+	type(_type)
+{}
+
+Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
+	Entity(_type, _tile),
+	type(_type)
+{}
+
+void Deposit::getSelectionText(std::ostringstream& s) {
+	Entity::getSelectionText(s);
+}
+
+ComplexEntity::ComplexEntity(const ComplexEntityType& _type, const Vec2i _tile) :
+	Entity(_type, _tile),
+	type(_type),
+	resources(type.resources)
+{}
+
+void ComplexEntity::getSelectionText(std::ostringstream& s) {
+	Entity::getSelectionText(s);
+	for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
+		if (resources[resourceType] > 0) {
+			s << "resource: " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
+		}
+	}
+}
+
+Unit::Unit(const UnitType& _type, const Vec2i _tile) :
+	ComplexEntity(_type, _tile),
 	type(_type),
 	canMoveAt(0),
 	home(nullptr)
-{
-}
+{}
 
 void Unit::update()
 {
@@ -63,10 +82,10 @@ void Unit::update()
 	}
 }
 
-std::ostringstream Unit::getSelectionText() {
-	std::ostringstream s = Entity::getSelectionText();
+void Unit::getSelectionText(std::ostringstream& s) {
+	ComplexEntity::getSelectionText(s);
 	s << "Home: " << ((home) ? std::to_string(home->id) : "-") << "\n";
-	return s;
+	s << "AbilityQueue: " << abilityQueue.size() << "\n";
 }
 
 void Unit::addAbility(Ability* ability) {
@@ -100,18 +119,7 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 }
 
 Building::Building(const BuildingType& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
+	ComplexEntity(_type, _tile),
 	type(_type)
-{
-}
+{}
 
-Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
-	type(_type)
-{
-}
-
-std::ostringstream Deposit::getSelectionText() {
-	std::ostringstream s = Entity::getSelectionText();
-	return s;
-}

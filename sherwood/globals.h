@@ -48,7 +48,7 @@ constexpr int NUM_RESOURCES = 2;
 extern const std::string resourceNames[NUM_RESOURCES];
 
 extern const UnitType person;
-extern const EntityType rock;
+extern const DoodadType rock;
 extern const BuildingType house;
 extern const DepositType berryBush;
 

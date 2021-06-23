@@ -46,7 +46,7 @@ aStar astar;
 const std::string resourceNames[NUM_RESOURCES] = { "food", "wood" };
 
 const UnitType person = UnitType("person", color.brown, 1, 2.0f);
-const EntityType rock = EntityType("rock", color.grey);
+const DoodadType rock = DoodadType("rock", color.grey);
 const BuildingType house = BuildingType("house", color.black);
 const DepositType berryBush = DepositType("berry bush", color.red, food, 100);
 

@@ -6,6 +6,8 @@
 
 class Ability;
 class EntityType;
+class DoodadType;
+class ComplexEntityType;
 class UnitType;
 class BuildingType;
 class DepositType;
@@ -21,16 +23,35 @@ public:
 	Rect bounds;
 	sf::Color color;
 	bool isSelected;
-	Resources resources;
-
 	Entity(const EntityType& type, const Vec2i tile);
-	virtual void update();
-	virtual std::ostringstream getSelectionText();
+	virtual void getSelectionText(std::ostringstream&);
 protected:
 	Rect calculateBounds(const Vec2f& pos);
 };
 
-class Unit : public Entity {
+class Doodad : public Entity {
+public:
+	const DoodadType& type;
+	Doodad(const DoodadType&, const Vec2i tile);
+};
+
+class Deposit : public Entity {
+public:
+	const DepositType& type;
+	int amount;
+	Deposit(const DepositType& type, const Vec2i tile);
+	void getSelectionText(std::ostringstream&);
+};
+
+class ComplexEntity : public Entity {
+public:
+	const ComplexEntityType& type;
+	Resources resources;
+	ComplexEntity(const ComplexEntityType&, const Vec2i tile);
+	virtual void getSelectionText(std::ostringstream&);
+};
+
+class Unit : public ComplexEntity {
 public:
 	const UnitType& type;
 	std::deque<Ability*> abilityQueue;
@@ -38,22 +59,16 @@ public:
 	Building* home;
 	Unit(const UnitType& type, const Vec2i tile);
 	void update();
-	std::ostringstream getSelectionText();
+	void getSelectionText(std::ostringstream&);
 	void addAbility(Ability* ability);
 	void setAbility(Ability* ability);
 	void setHome(Building* home);
 	bool moveTowards(const Vec2i targetTile);
 };
 
-class Building : public Entity {
+class Building : public ComplexEntity {
 public:
 	const BuildingType& type;
 	Building(const BuildingType& type, const Vec2i tile);
 };
 
-class Deposit : public Entity {
-public:
-	const DepositType& type;
-	Deposit(const DepositType& type, const Vec2i tile);
-	std::ostringstream getSelectionText();
-};

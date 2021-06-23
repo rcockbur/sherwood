@@ -10,9 +10,9 @@ int main()
 	em.createUnit(person, Vec2i(3, 1));
 	Unit* peter = em.createUnit(person, Vec2i(2, 2));
 
-	em.createEntity(rock, Vec2i(5, 5));
+	em.createDoodad(rock, Vec2i(5, 5));
 
-	em.createResource(berryBush, Vec2i(20, 20));
+	em.createDeposit(berryBush, Vec2i(20, 20));
 
 	Building* petersHome = em.createBuilding(house, Vec2i(20, 8));
 

@@ -9,14 +9,22 @@ EntityManager::EntityManager() {
 	std::cout << "EntityManager created\n";
 }
 
-
-Entity* EntityManager::createEntity(const EntityType& entityType, const Vec2i _tile) {
-	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y) 
+Doodad* EntityManager::createDoodad(const DoodadType& doodadType, const Vec2i _tile) {
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
 		throw std::logic_error("tile is out of bounds");
-	
-	Entity* entity = new Entity(entityType, _tile);
-	entities.push_back(entity);
-	return entity;
+
+	Doodad* doodad = new Doodad(doodadType, _tile);
+	entities.push_back(doodad);
+	return doodad;
+}
+
+Deposit* EntityManager::createDeposit(const DepositType& resourceType, const Vec2i _tile) {
+	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
+		throw std::logic_error("tile is out of bounds");
+
+	Deposit* deposit = new Deposit(resourceType, _tile);
+	entities.push_back(deposit);
+	return deposit;
 }
 
 Unit* EntityManager::createUnit(const UnitType& unitType, const Vec2i _tile) {
@@ -25,6 +33,7 @@ Unit* EntityManager::createUnit(const UnitType& unitType, const Vec2i _tile) {
 
 	Unit* unit = new Unit(unitType, _tile);
 	entities.push_back(unit);
+	units.push_back(unit);
 	return unit;
 }
 
@@ -37,18 +46,9 @@ Building* EntityManager::createBuilding(const BuildingType& buildingType, const 
 	return building;
 }
 
-Deposit* EntityManager::createResource(const DepositType& resourceType, const Vec2i _tile) {
-	if (_tile.x < 0 || _tile.x >= map.tileCount.x || _tile.y < 0 || _tile.y >= map.tileCount.y)
-		throw std::logic_error("tile is out of bounds");
-
-	Deposit* deposit = new Deposit(resourceType, _tile);
-	entities.push_back(deposit);
-	return deposit;
-}
-
 void EntityManager::updateEntities() {
-	for (auto& entity : entities) 
-		entity->update();
+	for (auto& unit : units) 
+		unit->update();
 }
 
 void EntityManager::selectEntity(Entity* entity) {
