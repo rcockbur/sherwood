@@ -60,7 +60,7 @@
     <ClCompile Include="utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="resource.cpp">
+    <ClCompile Include="resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="job.cpp">
@@ -110,7 +110,7 @@
     <ClInclude Include="utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="job.h">

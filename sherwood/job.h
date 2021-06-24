@@ -3,5 +3,14 @@
 
 class Job {
 public:
-	Job(Unit* unit);
+	Unit& unit;
+	Job(Unit& unit);
+	virtual bool addAbility() = 0;
+};
+
+class Harvester : public Job {
+public:
+	Deposit& deposit;
+	Harvester(Unit&, Deposit&);
+	bool addAbility();
 };

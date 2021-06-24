@@ -13,6 +13,6 @@ public:
 	Resources operator-(const Resources& other);
 	int& operator[](const int index);
 	const int& operator[](const int index) const;
-
+	bool empty() const;
 
 };

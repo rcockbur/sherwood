@@ -1,4 +1,4 @@
-#include "resource.h"
+#include "resources.h"
 
 
 Resources::Resources() :
@@ -44,4 +44,13 @@ const int& Resources::operator[](const int type) const {
 		throw std::logic_error("resource type is invalid");
 	}
 	return amounts[type];
+}
+
+bool Resources::empty() const {
+	for (int i = 0; i < NUM_RESOURCES; ++i) {
+		if (amounts[i] > 0) {
+			return false;
+		}
+	}
+	return true;
 }

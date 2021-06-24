@@ -47,10 +47,11 @@ extern aStar astar;
 constexpr int NUM_RESOURCES = 2;
 extern const std::string resourceNames[NUM_RESOURCES];
 
-extern const UnitType person;
-extern const DoodadType rock;
-extern const BuildingType house;
-extern const DepositType berryBush;
+extern UnitType person;
+extern DoodadType rock;
+extern BuildingType house;
+extern DepositType berryBush;
+extern DepositType tree;
 
-
+void initEntityTypes();
 void initWindow();

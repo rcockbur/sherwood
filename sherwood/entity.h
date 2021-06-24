@@ -2,7 +2,7 @@
 #include "types.h"
 #include <sstream>
 #include <deque>
-#include "resource.h"
+#include "resources.h"
 
 class Ability;
 class EntityType;
@@ -13,12 +13,14 @@ class BuildingType;
 class DepositType;
 class DoodadType;
 class Building;
+class Job;
 
 class Entity {
 public:
 	static int id_index;
 	const int id;
 	const EntityType& type;
+	Vec2i tile;
 	Vec2f position;
 	Rect bounds;
 	sf::Color color;
@@ -46,7 +48,7 @@ public:
 class ComplexEntity : public Entity {
 public:
 	const ComplexEntityType& type;
-	Resources resources;
+	
 	ComplexEntity(const ComplexEntityType&, const Vec2i tile);
 	virtual void getSelectionText(std::ostringstream&);
 };
@@ -55,13 +57,20 @@ class Unit : public ComplexEntity {
 public:
 	const UnitType& type;
 	std::deque<Ability*> abilityQueue;
+	std::deque<Job*> jobQueue;
 	int canMoveAt;
+	int canGatherAt;
 	Building* home;
+	//Job* job;
+	int carryType;
+	int carryAmmount;
 	Unit(const UnitType& type, const Vec2i tile);
 	void update();
 	void getSelectionText(std::ostringstream&);
 	void addAbility(Ability* ability);
 	void setAbility(Ability* ability);
+	void addJob(Job* job);
+	void setJob(Job* job);
 	void setHome(Building* home);
 	bool moveTowards(const Vec2i targetTile);
 };
@@ -69,6 +78,8 @@ public:
 class Building : public ComplexEntity {
 public:
 	const BuildingType& type;
+	Resources resources;
 	Building(const BuildingType& type, const Vec2i tile);
+	void getSelectionText(std::ostringstream&);
 };
 

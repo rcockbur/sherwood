@@ -45,10 +45,33 @@ aStar astar;
 //const ResourceType food("food");
 const std::string resourceNames[NUM_RESOURCES] = { "food", "wood" };
 
-const UnitType person = UnitType("person", color.brown, 1, 2.0f);
-const DoodadType rock = DoodadType("rock", color.grey);
-const BuildingType house = BuildingType("house", color.black);
-const DepositType berryBush = DepositType("berry bush", color.red, food, 100);
+UnitType person = UnitType("person");
+DoodadType rock = DoodadType("rock");
+BuildingType house = BuildingType("house");
+DepositType berryBush = DepositType("berry bush");
+DepositType tree = DepositType("tree");
+
+void initEntityTypes() {
+	person.color = color.lightBlue;
+	person.movePeriod = 1;
+	person.moveDistance = 4.0f;
+	person.carryCapacity = 5;
+	person.gatherPeriod = 30;
+
+	rock.color = color.grey;
+
+	house.color = color.black;
+	house.resources[food] = 50;
+	house.resources[wood] = 100;
+
+	berryBush.color = color.red;
+	berryBush.resourceType = food;
+	berryBush.amount = 100;
+
+	tree.color = color.brown;
+	tree.resourceType = wood;
+	tree.amount = 50;
+}
 
 void initWindow() {
 	renderWindow.setPosition(Vec2i(0, 0));

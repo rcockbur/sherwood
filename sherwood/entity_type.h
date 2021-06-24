@@ -1,42 +1,43 @@
 #pragma once
 #include "types.h"
-#include "resource.h"
+#include "resources.h"
 
 class EntityType {
 public:
-	const std::string name;
-	const sf::Color color;	
-	EntityType(const std::string, const sf::Color);
+	std::string name;
+	sf::Color color;	
+	EntityType(std::string&&);
 };
 
 class DoodadType: public EntityType {
 public:
-	DoodadType(const std::string, const sf::Color);
+	DoodadType(std::string&& _name);
 };
 
 class DepositType : public EntityType {
 public:
-	const int resourceType;
+	int resourceType;
 	int amount;
-	DepositType(const std::string name, const sf::Color color, const int resourceType,
-		const int amount);
+	DepositType(std::string&& _name);
 };
 
 class ComplexEntityType : public EntityType {
 public:
-	Resources resources;
-	ComplexEntityType(const std::string, const sf::Color);
+	ComplexEntityType(std::string&& _name);
 };
 
 class UnitType : public ComplexEntityType {
 public:
-	const int movePeriod;
-	const float moveDistance;
-	UnitType(const std::string, const sf::Color, int _movePeriod, float _moveDistance);
+	int movePeriod;
+	float moveDistance;
+	int carryCapacity;
+	int gatherPeriod;
+	UnitType(std::string&& _name);
 };
 
 class BuildingType : public ComplexEntityType {
 public:
-	BuildingType(const std::string, const sf::Color);
+	Resources resources;
+	BuildingType(std::string&& _name);
 };
 

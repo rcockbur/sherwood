@@ -21,6 +21,7 @@ public:
 	Building* createBuilding(const BuildingType&, const Vec2i);
 	void updateEntities();
 	void selectEntity(Entity*);
+	Entity* getEntityAtWorldPos(const Vec2f& worldPosition) const;
 	std::list<Entity*> entities;
 	std::list<Unit*> units;
 };

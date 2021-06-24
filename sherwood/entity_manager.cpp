@@ -59,3 +59,12 @@ void EntityManager::selectEntity(Entity* entity) {
 	selectedEntity->isSelected = true;
 	std::cout << "Entity " << entity->id << " is selected" << "\n";
 }
+
+Entity* EntityManager::getEntityAtWorldPos(const Vec2f& worldPosition) const {
+	for (auto& entity : em.entities) {
+		if (entity->bounds.contains(worldPosition)) {
+			return entity;
+		}
+	}
+	return nullptr;
+}

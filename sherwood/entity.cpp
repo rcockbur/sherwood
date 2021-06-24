@@ -6,12 +6,14 @@
 #include "globals.h"
 #include "utility.h"
 #include "string"
+#include "job.h"
 
 int Entity::id_index = 0;
 
-Entity::Entity(const EntityType& type, const Vec2i tile) :
+Entity::Entity(const EntityType& type, const Vec2i _tile) :
 	type(type),
 	id(id_index),
+	tile(_tile),
 	position(tileToWorld(tile)),
 	bounds(calculateBounds(position)),
 	color(type.color),
@@ -27,7 +29,8 @@ void Entity::getSelectionText(std::ostringstream& s) {
 	s << "Class: " << classString << "\n";
 	s << "Type: " << type.name << "\n";
 	s << "ID: " << id << "\n";
-	s << "Tile: " << worldToTile(position) << "\n";
+	s << "Tile: " << tile << "\n";
+	s << "Pos: " << position << "\n";
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
@@ -41,33 +44,32 @@ Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
 
 Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
-	type(_type)
+	type(_type),
+	amount(type.amount)
 {}
 
 void Deposit::getSelectionText(std::ostringstream& s) {
 	Entity::getSelectionText(s);
+	s << std::to_string(amount) << " " << resourceNames[type.resourceType] << "\n";
 }
 
 ComplexEntity::ComplexEntity(const ComplexEntityType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
-	type(_type),
-	resources(type.resources)
+	type(_type)
 {}
 
 void ComplexEntity::getSelectionText(std::ostringstream& s) {
 	Entity::getSelectionText(s);
-	for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
-		if (resources[resourceType] > 0) {
-			s << "resource: " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
-		}
-	}
 }
 
 Unit::Unit(const UnitType& _type, const Vec2i _tile) :
 	ComplexEntity(_type, _tile),
 	type(_type),
 	canMoveAt(0),
-	home(nullptr)
+	canGatherAt(0),
+	home(nullptr),
+	carryAmmount(0),
+	carryType(0)
 {}
 
 void Unit::update()
@@ -80,12 +82,29 @@ void Unit::update()
 			abilityQueue.pop_front();
 		}	
 	}
+	else if (jobQueue.size() > 0) {
+		Job* job = jobQueue.front();
+		bool isComplete = job->addAbility();
+		if (isComplete) {
+			delete job;
+			jobQueue.pop_front();
+		}
+	}
 }
 
 void Unit::getSelectionText(std::ostringstream& s) {
 	ComplexEntity::getSelectionText(s);
 	s << "Home: " << ((home) ? std::to_string(home->id) : "-") << "\n";
 	s << "AbilityQueue: " << abilityQueue.size() << "\n";
+	s << "JobQueue: " << jobQueue.size() << "\n";
+	s << "Carrying: ";
+	if (carryAmmount > 0) {
+		s << std::to_string(carryAmmount) << " " << resourceNames[carryType] << "\n";
+	}
+	else {
+		s << "-\n";
+	}
+	
 }
 
 void Unit::addAbility(Ability* ability) {
@@ -97,6 +116,15 @@ void Unit::setAbility(Ability* ability) {
 	abilityQueue.push_back(ability);
 }
 
+void Unit::addJob(Job* job) {
+	jobQueue.push_back(job);
+}
+
+void Unit::setJob(Job* job) {
+	jobQueue.clear();
+	jobQueue.push_back(job);
+}
+
 void Unit::setHome(Building* _home) {
 	home = _home;
 }
@@ -105,21 +133,36 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 	Vec2f targetPos = tileToWorld(targetTile);
 	Vec2f diff = targetPos - position;
 	float dist = (float)sqrt(pow(diff.x, 2) + pow(diff.y, 2));
+	bool reachedTarget = false;
 	if (dist > type.moveDistance) {
 		(diff /= dist) *= type.moveDistance;
 		position += diff;
-		bounds = calculateBounds(position);
-		return false;
+		
 	}
 	else {
 		position = targetPos;
-		bounds = calculateBounds(position);
-		return true;
+		reachedTarget = true;
 	}
+	bounds = calculateBounds(position);
+	tile = worldToTile(position);
+	return reachedTarget;
 }
 
 Building::Building(const BuildingType& _type, const Vec2i _tile) :
 	ComplexEntity(_type, _tile),
-	type(_type)
+	type(_type),
+	resources(type.resources)
 {}
 
+void Building::getSelectionText(std::ostringstream& s) {
+	Entity::getSelectionText(s);
+	if (resources.empty() == false) {
+		s << "Resources:\n";
+		for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
+			if (resources[resourceType] > 0) {
+				s << "    " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
+			}
+		}
+	}
+
+}

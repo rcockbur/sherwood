@@ -6,6 +6,7 @@
 #include "ability.h"
 #include "entity.h"
 #include "utility.h"
+#include "actions.h"
 
 Input::Input()
 {
@@ -58,26 +59,28 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 	std::cout << "  WorldPosition:" << worldPosition.x << "," << worldPosition.y;
 	Vec2i clickedTile = worldToTile(worldPosition);
 	std::cout << "  Tile:" << clickedTile.x << "," << clickedTile.y;
-	Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
+	Entity* clickedEntity = em.getEntityAtWorldPos(worldPosition);
 	if (isRightClick) {
-		if (selectedUnit) {
-			if (selectedEntity != nullptr && worldToTile(selectedEntity->position) != clickedTile) {
-				astar.clear();
-				if (showPathfinding) renderWindow.setFramerateLimit(1000);					
-				if (astar.search(worldToTile(selectedUnit->position), clickedTile)) {
-					std::list<Vec2i> path = astar.path();
-					Move* move = new Move(*selectedUnit, path);
-					selectedUnit->setAbility(move);
+		Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
+		if (selectedUnit != nullptr) {
+			Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
+			Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
+			if (clickedDeposit != nullptr) {
+				unitHarvestDeposit(selectedUnit, clickedDeposit);
+			}
+			else if (clickedBuilding != nullptr) {
+				if (clickedBuilding == selectedUnit->home && selectedUnit->carryAmmount > 0) {
+					unitReturnResources(selectedUnit);
 				}
-				if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
+			}
+			else if (selectedEntity->tile != clickedTile) {
+				unitMoveToTile(selectedUnit, clickedTile);
 			}
 		}
 	}
 	else {
-		for (auto& entity : em.entities) {
-			if (entity->bounds.contains(worldPosition)) {
-				em.selectEntity(entity);
-			}
+		if (clickedEntity != nullptr) {
+			em.selectEntity(clickedEntity);
 		}
 	}
 }

@@ -80,6 +80,9 @@ void aStar::fillOpen(node& n) {
 }
 
 bool aStar::search(const Vec2i& s, const Vec2i& e) {
+    clear();
+    if (showPathfinding) renderWindow.setFramerateLimit(1000);
+    bool pathFound = false;
     if (map.isPathable(e)) {
         node n;
         end = e;
@@ -92,27 +95,30 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
         n.f = n.h + n.g;
         n.tieRating = tilesChecked;
         open.push_back(n);
-                 
+        
         while (!open.empty()) {
             open.sort();
             node n = open.front();
             open.pop_front();
             closed.push_back(n);
             if (n == end) {
-                if (showPathfinding) Sleep(200); //after completing search successfully
-                return true;
+                pathFound = true;
+                break;
             }
             fillOpen(n);
-            if (showPathfinding) graphics.drawPathDebug(open, closed, start, end, nullptr);//after each node
-        }
-        if (showPathfinding) Sleep(200); //after completing search
-            
+            if (showPathfinding) 
+                graphics.drawPathDebug(open, closed, start, end, nullptr);//after each node
+        }     
     }
-    return false;
+    if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
+    return pathFound;
 }
-std::list<Vec2i> aStar::path() {
+std::list<Vec2i> aStar::path(const bool stopShort) {
+    if (showPathfinding) {
+        Sleep(200);
+        renderWindow.setFramerateLimit(1000);
+    }
     std::list<Vec2i> path;
-    path.push_front(end);
     path.push_front(closed.back().tile);
     Vec2i parent = closed.back().parent;
     for (std::list<node>::reverse_iterator i = closed.rbegin(); i != closed.rend(); i++) {
@@ -125,16 +131,16 @@ std::list<Vec2i> aStar::path() {
             }
         }
     }
-    if (showPathfinding) Sleep(200); //after completing search
-        
+    if (showPathfinding) {
+        Sleep(200);
+        renderWindow.setFramerateLimit(targetFPS);
+    }
+    if (stopShort) path.pop_back();
+    
     return path;
 }
 
 void aStar::clear() {
     open.clear();
     closed.clear();
-}
-
-void aStar::drawDebug() {
-
 }

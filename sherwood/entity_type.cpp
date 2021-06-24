@@ -1,37 +1,33 @@
 #include "entity_type.h"
 #include "types.h"
 
-EntityType::EntityType(const std::string _name, const sf::Color _color) : 
-	name(_name), 
-	color(_color)
+EntityType::EntityType(std::string&& _name) : 
+	name(std::move(_name))
 {}
 
-DoodadType::DoodadType(const std::string _name, const sf::Color _color) :
-	EntityType(_name, _color)
+DoodadType::DoodadType(std::string&& _name) :
+	EntityType(std::move(_name))
 {}
 
-DepositType::DepositType(const std::string name, const sf::Color color, const int _resourceType,
-	const int _amount) :
-	EntityType(name, color),
-	resourceType(_resourceType),
-	amount(_amount)
-
+DepositType::DepositType(std::string&& _name) :
+	EntityType(std::move(_name)),
+	resourceType(0),
+	amount(0)
 {}
 
-ComplexEntityType::ComplexEntityType(const std::string name, const sf::Color color) :
-	EntityType(name, color)
+ComplexEntityType::ComplexEntityType(std::string&& _name) :
+	EntityType(std::move(_name))
 {}
 
-UnitType::UnitType(const std::string name, const sf::Color color, int movePeriod, float moveDistance) :
-	ComplexEntityType(name, color),
-	movePeriod(movePeriod),
-	moveDistance(moveDistance) 
-{
-	resources[food] = 50;
-	resources[wood] = 100;
-}
+UnitType::UnitType(std::string&& _name) :
+	ComplexEntityType(std::move(_name)),
+	movePeriod(0),
+	moveDistance(0.0f),
+	carryCapacity(0),
+	gatherPeriod(0)
+{}
 
-BuildingType::BuildingType(const std::string name, const sf::Color color) :
-	ComplexEntityType(name, color)
+BuildingType::BuildingType(std::string&& _name) :
+	ComplexEntityType(std::move(_name))
 {}
 

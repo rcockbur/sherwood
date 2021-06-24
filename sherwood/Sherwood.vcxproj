@@ -166,7 +166,7 @@
     <ClCompile Include="job.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="pathfinding.cpp" />
-    <ClCompile Include="resource.cpp" />
+    <ClCompile Include="resources.cpp" />
     <ClCompile Include="types.cpp" />
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="main.cpp" />
@@ -184,7 +184,7 @@
     <ClInclude Include="job.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="pathfinding.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="resources.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="utility.h" />

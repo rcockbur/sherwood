@@ -2,7 +2,7 @@
 #include "types.h"
 #include <list>
 #include "entity.h"
-#include "resource.h"
+#include "resources.h"
 
 
 class Ability {
@@ -16,15 +16,22 @@ public:
 	Unit& unit;
 
 	Move(Unit& unit, std::list<Vec2i> path);
+	
 	bool execute();
 protected:
 	void followPath();
 };
 
-class Harvest : Move {
+class Harvest : public Move {
 public:
-	const Deposit& source;
-	const int resourceType;
-	Harvest(Unit& unit, std::list<Vec2i> path, Deposit& source, int resourceType);
+	Deposit& deposit;
+	bool hasReachedDeposit;
+	Harvest(Unit& unit, std::list<Vec2i> path, Deposit& source);
+	bool execute();
+};
+
+class ReturnResources : public Move {
+public :
+	ReturnResources(Unit& unit, std::list<Vec2i> path);
 	bool execute();
 };

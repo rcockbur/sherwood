@@ -30,17 +30,53 @@ void Move::followPath() {
 	}
 }
 
-Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& _source, int _resourceType) :
+Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& _deposit) :
 	Move(unit, path),
-	source(_source),
-	resourceType(_resourceType)
+	deposit(_deposit),
+	hasReachedDeposit(false)
 {
 
 }
 
 bool Harvest::execute() {
+	if (hasReachedDeposit) {
+		if (unit.carryAmmount == unit.type.carryCapacity || deposit.amount == 0) {
+			return true; //done gathering
+		}
+		else {
+			if (tic >= unit.canGatherAt) {
+				++unit.carryAmmount;
+				--deposit.amount;
+				unit.canGatherAt = tic + unit.type.gatherPeriod;
+			}
+			return false; //not done gathering
+		}
+	}
+	else {
+		followPath();
+		if (path.empty()) {
+			hasReachedDeposit = true;
+			unit.canGatherAt = tic + unit.type.gatherPeriod;
+			if (unit.carryType != deposit.type.resourceType) {
+				unit.carryType = deposit.type.resourceType;
+				unit.carryAmmount = 0;
+			}
+			
+		}
+		
+		return false; //not done moving
+		
+	}
+}
+
+ReturnResources::ReturnResources(Unit& unit, std::list<Vec2i> path) :
+	Move(unit, path)
+{}
+
+bool ReturnResources::execute() {
 	if (path.empty()) {
-		//Resources diff = unit.resources
+		unit.home->resources[unit.carryType] += unit.carryAmmount;
+		unit.carryAmmount = 0;
 		return true;
 	}
 	else {
