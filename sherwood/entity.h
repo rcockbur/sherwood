@@ -26,6 +26,7 @@ public:
 	sf::Color color;
 	bool isSelected;
 	Entity(const EntityType& type, const Vec2i tile);
+	~Entity();
 	virtual void getSelectionText(std::ostringstream&);
 protected:
 	Rect calculateBounds(const Vec2f& pos);
@@ -35,6 +36,7 @@ class Doodad : public Entity {
 public:
 	const DoodadType& type;
 	Doodad(const DoodadType&, const Vec2i tile);
+	~Doodad();
 };
 
 class Deposit : public Entity {
@@ -42,6 +44,7 @@ public:
 	const DepositType& type;
 	int amount;
 	Deposit(const DepositType& type, const Vec2i tile);
+	~Deposit();
 	void getSelectionText(std::ostringstream&);
 };
 
@@ -65,6 +68,7 @@ public:
 	int carryType;
 	int carryAmmount;
 	Unit(const UnitType& type, const Vec2i tile);
+	~Unit();
 	void update();
 	void getSelectionText(std::ostringstream&);
 	void addAbility(Ability* ability);

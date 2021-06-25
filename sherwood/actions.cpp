@@ -11,14 +11,9 @@ void unitMoveToTile(Unit* unit, Vec2i targetTile) {
 	}
 }
 
-void unitHarvestDeposit(Unit* unit, Deposit* deposit) {
-	//if (astar.search(unit->tile, deposit->tile)) {
-	//	std::list<Vec2i> path = astar.path(true);
-	//	Harvest* harvest = new Harvest(*unit, path, *deposit);
-	//	unit->setAbility(harvest);
-	//}
-	Harvester* harvester = new Harvester(*unit, *deposit);
-	unit->setJob(harvester);
+void unitHarvestDeposit(Unit& unit, Deposit& deposit) {
+	Harvester* harvester = new Harvester(unit, deposit);
+	unit.setJob(harvester);
 }
 
 void unitReturnResources(Unit* unit) {

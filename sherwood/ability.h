@@ -24,7 +24,8 @@ protected:
 
 class Harvest : public Move {
 public:
-	Deposit& deposit;
+	//Deposit& deposit;
+	int depositID;
 	bool hasReachedDeposit;
 	Harvest(Unit& unit, std::list<Vec2i> path, Deposit& source);
 	bool execute();

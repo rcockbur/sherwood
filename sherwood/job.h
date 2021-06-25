@@ -10,7 +10,8 @@ public:
 
 class Harvester : public Job {
 public:
-	Deposit& deposit;
+	//Deposit& deposit;
+	int depositID;
 	Harvester(Unit&, Deposit&);
 	bool addAbility();
 };

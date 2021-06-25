@@ -1,6 +1,7 @@
 #pragma once
 #include "types.h"
 #include <list>
+#include <unordered_map>
 
 class UnitType;
 class BuildingType;
@@ -19,9 +20,13 @@ public:
 	Deposit* createDeposit(const DepositType&, const Vec2i);
 	Unit* createUnit(const UnitType&, const Vec2i);
 	Building* createBuilding(const BuildingType&, const Vec2i);
+	//void destroyEntity(Entity* entity);
 	void updateEntities();
 	void selectEntity(Entity*);
 	Entity* getEntityAtWorldPos(const Vec2f& worldPosition) const;
-	std::list<Entity*> entities;
-	std::list<Unit*> units;
+	std::unordered_map<int, Entity*> entityMap;
+	std::unordered_map<int, Unit*> unitMap;
+	std::unordered_map<int, Deposit*> depositMap;
+private:
+	//std::list<Unit*> units;
 };

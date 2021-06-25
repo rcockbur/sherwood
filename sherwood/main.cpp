@@ -18,7 +18,7 @@ int main()
 	em.createDeposit(berryBush, Vec2i(20, 20));
 	em.createDeposit(tree, Vec2i(5, 2));
 
-	Building* petersHome = em.createBuilding(house, Vec2i(20, 8));
+	Building* petersHome = em.createBuilding(house, Vec2i(3, 8));
 
 	peter->setHome(petersHome);
 

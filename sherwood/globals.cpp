@@ -66,7 +66,7 @@ void initEntityTypes() {
 
 	berryBush.color = color.red;
 	berryBush.resourceType = food;
-	berryBush.amount = 100;
+	berryBush.amount = 10;
 
 	tree.color = color.brown;
 	tree.resourceType = wood;

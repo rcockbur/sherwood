@@ -5,5 +5,5 @@
 #include "ability.h"
 
 void unitMoveToTile(Unit* unit, Vec2i targetTile);
-void unitHarvestDeposit(Unit* unit, Deposit* deposit);
+void unitHarvestDeposit(Unit& unit, Deposit& deposit);
 void unitReturnResources(Unit* unit);

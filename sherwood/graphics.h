@@ -21,7 +21,7 @@ private:
 	void drawGrid();
 	void drawViewportOutline();
 	void drawText();
-	void drawTextFPS();
+	void drawTopText();
 	void drawTextSelection();
 	
 	Vec2f calculateGridSize(const Vec2i& tileCount);

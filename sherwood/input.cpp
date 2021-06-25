@@ -9,9 +9,7 @@
 #include "actions.h"
 
 Input::Input()
-{
-
-}
+{}
 
 void Input::handleInput()
 {
@@ -66,7 +64,7 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 			Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
 			Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
 			if (clickedDeposit != nullptr) {
-				unitHarvestDeposit(selectedUnit, clickedDeposit);
+				unitHarvestDeposit(*selectedUnit, *clickedDeposit);
 			}
 			else if (clickedBuilding != nullptr) {
 				if (clickedBuilding == selectedUnit->home && selectedUnit->carryAmmount > 0) {

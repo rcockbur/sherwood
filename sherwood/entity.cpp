@@ -22,6 +22,13 @@ Entity::Entity(const EntityType& type, const Vec2i _tile) :
 	++id_index;
 }
 
+Entity::~Entity() {
+	if (isSelected) {
+		selectedEntity = nullptr;
+	}
+	em.entityMap.erase(id);
+}
+
 
 void Entity::getSelectionText(std::ostringstream& s) {
 	std::string classString(typeid(*this).name());
@@ -42,11 +49,19 @@ Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
 	type(_type)
 {}
 
+Doodad::~Doodad() {
+	
+}
+
 Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
 	type(_type),
 	amount(type.amount)
 {}
+
+Deposit::~Deposit() {
+	em.depositMap.erase(id);
+}
 
 void Deposit::getSelectionText(std::ostringstream& s) {
 	Entity::getSelectionText(s);
@@ -71,6 +86,16 @@ Unit::Unit(const UnitType& _type, const Vec2i _tile) :
 	carryAmmount(0),
 	carryType(0)
 {}
+
+Unit::~Unit() {
+	for (Ability* ability : abilityQueue) {
+		delete ability;
+	}
+	for (Job* job : jobQueue) {
+		delete job;
+	}
+	em.unitMap.erase(id);
+}
 
 void Unit::update()
 {

@@ -91,16 +91,16 @@ void Graphics::drawTerrain() {
 }
 
 void Graphics::drawEntities() {
-	for (auto& entity : em.entities) {
-		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
+	for (auto& it : em.entityMap) {
+		Vec2f graphicalPosition = it.second->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
 		entityShape.setPosition(graphicalPosition);
-		entityShape.setFillColor(entity->color);
+		entityShape.setFillColor(it.second->color);
 		renderWindow.draw(entityShape);
-		if (entity->isSelected) {
+		if (it.second->isSelected) {
 			selectionShape.setPosition(graphicalPosition);
 			renderWindow.draw(selectionShape);
 		}
-	}	
+	}
 }
 
 void Graphics::drawGrid() {
@@ -115,14 +115,16 @@ void Graphics::drawGrid() {
 }
 
 void Graphics::drawText() {
-	drawTextFPS();
+	drawTopText();
 	drawTextSelection();
 }
 
-void Graphics::drawTextFPS() {
+void Graphics::drawTopText() {
 	std::ostringstream s;
 	s << "Target FPS: " << targetFPS;
 	s << "   Actual FPS: " << (int)actualFPS;
+	s << "   Units: " << em.unitMap.size();
+	s << "   Deposits: " << em.depositMap.size();
 	fpsText.setString(s.str());
 	renderWindow.draw(fpsText);
 }

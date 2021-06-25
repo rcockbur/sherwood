@@ -30,9 +30,9 @@ void Move::followPath() {
 	}
 }
 
-Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& _deposit) :
+Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& deposit) :
 	Move(unit, path),
-	deposit(_deposit),
+	depositID(deposit.id),
 	hasReachedDeposit(false)
 {
 
@@ -40,14 +40,19 @@ Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& _deposit) :
 
 bool Harvest::execute() {
 	if (hasReachedDeposit) {
-		if (unit.carryAmmount == unit.type.carryCapacity || deposit.amount == 0) {
+		auto it = em.depositMap.find(depositID);
+		Deposit* deposit = (it == em.depositMap.end()) ? nullptr : it->second;
+		if (unit.carryAmmount == unit.type.carryCapacity || deposit == nullptr) {
 			return true; //done gathering
 		}
 		else {
 			if (tic >= unit.canGatherAt) {
 				++unit.carryAmmount;
-				--deposit.amount;
+				--deposit->amount;
 				unit.canGatherAt = tic + unit.type.gatherPeriod;
+				if (deposit->amount == 0) {
+					delete deposit;
+				}
 			}
 			return false; //not done gathering
 		}
@@ -55,12 +60,20 @@ bool Harvest::execute() {
 	else {
 		followPath();
 		if (path.empty()) {
-			hasReachedDeposit = true;
-			unit.canGatherAt = tic + unit.type.gatherPeriod;
-			if (unit.carryType != deposit.type.resourceType) {
-				unit.carryType = deposit.type.resourceType;
-				unit.carryAmmount = 0;
+			auto it = em.depositMap.find(depositID);
+			Deposit* deposit = (it == em.depositMap.end()) ? nullptr : it->second;
+			if (deposit != nullptr) {
+				hasReachedDeposit = true;
+				unit.canGatherAt = tic + unit.type.gatherPeriod;
+				if (unit.carryType != deposit->type.resourceType) {
+					unit.carryType = deposit->type.resourceType;
+					unit.carryAmmount = 0;
+				}
 			}
+			else {
+				return true;
+			}
+			
 			
 		}
 		
