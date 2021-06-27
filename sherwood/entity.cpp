@@ -43,7 +43,7 @@ void Entity::getSelectionText(std::ostringstream& s) {
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
-	return Rect(pos.x - ENTITY_SIZE / 2, pos.y - ENTITY_SIZE / 2, ENTITY_SIZE, ENTITY_SIZE);
+	return Rect(pos.x - type.size / 2, pos.y - type.size / 2, type.size, type.size);
 }
 
 bool Entity::operator==(const Lookup& lookup) {
@@ -56,10 +56,13 @@ FixedEntity::FixedEntity(const FixedEntityType& _type, const Vec2i _tile) :
 {
 	em.validateStaticEntityGridAvailable(tile);
 	em.staticEntityGrid[tile.x][tile.y] = this;
+	map.impassGrid[tile.x][tile.y] = true;
 }
 
 FixedEntity::~FixedEntity() {
 	em.staticEntityGrid[tile.x][tile.y] = nullptr;
+	if (map.terrainGrid[tile.x][tile.y] > 0)
+		map.impassGrid[tile.x][tile.y] = false;
 }
 
 void FixedEntity::getSelectionText(std::ostringstream& s) {

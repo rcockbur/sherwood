@@ -14,7 +14,7 @@ Input::Input() :
 
 void Input::handleInput()
 {
-	shiftIsDown = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	handleKeysDown();
 	sf::Event event;
 	while (renderWindow.pollEvent(event)) {
 		Vec2f screen_pos((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
@@ -40,6 +40,17 @@ void Input::handleInput()
 			break;
 		}
 	}
+}
+
+void Input::handleKeysDown() {
+	shiftIsDown = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+	Vec2f cameraMove(-CAMERA_SPEED, -CAMERA_SPEED);
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) cameraMove.x += CAMERA_SPEED;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) cameraMove.x += CAMERA_SPEED;
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) cameraMove.y += CAMERA_SPEED;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) cameraMove.y += CAMERA_SPEED;
+	mapView.move(cameraMove);
 }
 
 void Input::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
@@ -110,18 +121,18 @@ void Input::handleKeyPress(sf::Keyboard::Key code) {
 	case(sf::Keyboard::P):
 		showPathfinding = !showPathfinding;
 		break;
-	case(sf::Keyboard::Up):
-		mapView.move(Vec2f(0, -5));
-		break;
-	case(sf::Keyboard::Down):
-		mapView.move(Vec2f(0, 5));
-		break;
-	case(sf::Keyboard::Left):
-		mapView.move(Vec2f(-5, 0));
-		break;
-	case(sf::Keyboard::Right):
-		mapView.move(Vec2f(5, 0));
-		break;
+	//case(sf::Keyboard::Up):
+	//	mapView.move(Vec2f(0, -CAMERA_SPEED));
+	//	break;
+	//case(sf::Keyboard::Down):
+	//	mapView.move(Vec2f(0, CAMERA_SPEED));
+	//	break;
+	//case(sf::Keyboard::Left):
+	//	mapView.move(Vec2f(-CAMERA_SPEED, 0));
+	//	break;
+	//case(sf::Keyboard::Right):
+	//	mapView.move(Vec2f(CAMERA_SPEED, 0));
+	//	break;
 	case(sf::Keyboard::Add):
 		updateFPS(targetFPS + 1);
 		break;

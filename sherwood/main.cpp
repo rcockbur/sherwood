@@ -18,7 +18,7 @@ int main()
 
 	new Deposit(berryBush, Vec2i(5, 3));
 	new Deposit(berryBush, Vec2i(4, 12));
-	new Deposit(berryBush, Vec2i(20, 20));
+	new Deposit(berryBush, Vec2i(20, 21));
 
 	new Deposit(tree, Vec2i(8, 0));
 	new Deposit(tree, Vec2i(9, 0));

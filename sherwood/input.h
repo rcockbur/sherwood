@@ -10,6 +10,7 @@ class Input {
 public:
 	Input();
 	void handleInput();
+	void handleKeysDown();
 	void handleScreenClick(const Vec2f& screenPosition, bool isRightClick);
 	void handleWorldClick(const Vec2f& worldPosition, bool isRightClick);
 	void updateFPS(int fps);

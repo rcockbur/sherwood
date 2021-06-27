@@ -9,6 +9,7 @@ public:
 	Map(std::string fileName);
 	const Vec2i tileCount;
 	std::vector<std::vector<int>> terrainGrid;
+	std::vector<std::vector<bool>> impassGrid;
 	bool isWithinBounds(Vec2i tile);
 	bool isPathable(Vec2i tile);
 	void validateWithinBounds(Vec2i tile) const;

@@ -10,8 +10,10 @@ Map::Map(std::string fileName)
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
 	terrainGrid.resize(tileCount.x);
+	impassGrid.resize(tileCount.x);
 	for (int x = 0; x < tileCount.x; x++) {
 		terrainGrid[x].resize(tileCount.y);
+		impassGrid[x].resize(tileCount.y);
 	}
 	loadMapData("data/map.txt");
 	std::cout << "Map data loaded\n";
@@ -22,7 +24,8 @@ bool Map::isWithinBounds(Vec2i tile) {
 }
 
 bool Map::isPathable(Vec2i tile) {
-	return (terrainGrid[tile.x][tile.y] == 0);
+	return (terrainGrid[tile.x][tile.y] > 0);
+	//return (impassGrid[tile.x][tile.y] == false);
 }
 
 void Map::validateWithinBounds(Vec2i tile) const {
@@ -65,6 +68,7 @@ void Map::loadMapData(std::string fileName) {
 			x = 0;
 			while (std::getline(ss, sym, ',')) {
 				terrainGrid[x][y] = std::stoi(sym);
+				impassGrid[x][y] = (terrainGrid[x][y] > 0) ? false : true;
 				x++;
 			}
 			++y;

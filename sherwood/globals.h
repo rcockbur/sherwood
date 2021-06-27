@@ -4,7 +4,6 @@
 #include "map.h"
 #include "input.h"
 #include "pathfinding.h"
-//#include "constants.h"
 #include <string>
 
 class UnitType;

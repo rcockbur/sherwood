@@ -20,31 +20,23 @@ Graphics::Graphics()
 	viewportShape.setFillColor(color.transparent);
 
 	verticalLine.setSize(Vec2f(LINE_WIDTH, GRID_SIZE.y + LINE_WIDTH));
-	verticalLine.setFillColor(color.grey);
+	verticalLine.setFillColor(color.lightGrey);
 
 	horizontalLine.setSize(Vec2f(GRID_SIZE.x + LINE_WIDTH, LINE_WIDTH));
-	horizontalLine.setFillColor(color.grey);
+	horizontalLine.setFillColor(color.lightGrey);
 
 	sf::RectangleShape grassRect;
 	sf::RectangleShape waterRect;
-
-	grassRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
-	grassRect.setFillColor(color.darkGreen);
-	terrainShapes.push_back(grassRect);
 
 	waterRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
 	waterRect.setFillColor(color.blue);
 	terrainShapes.push_back(waterRect);
 
-	entityShape.setSize(Vec2f(ENTITY_SIZE, ENTITY_SIZE));
-	entityShape.setFillColor(color.white);
+	grassRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
+	grassRect.setFillColor(color.green);
+	terrainShapes.push_back(grassRect);
 
-	selectionShape.setSize(Vec2f(ENTITY_SIZE, ENTITY_SIZE));
-	selectionShape.setOutlineThickness(LINE_WIDTH);
-	selectionShape.setOutlineColor(color.yellow);
-	selectionShape.setFillColor(color.transparent);
-
-	pathDebugShape.setSize(Vec2f(PATH_DEBUG_SIZE, PATH_DEBUG_SIZE));
+	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2);
 
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
@@ -92,14 +84,21 @@ void Graphics::drawTerrain() {
 
 void Graphics::drawEntities() {
 	for (auto& entity : em.entities) {
-		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
-		entityShape.setPosition(graphicalPosition);
-		entityShape.setFillColor(entity->color);
-		renderWindow.draw(entityShape);
+		Vec2f graphicalPos = entity->position - Vec2f(entity->type.size / 2, entity->type.size / 2);
+		sf::Shape* shape = entity->type.getShape();
+		entity->type.updateShapeSize();
+		shape->setPosition(graphicalPos);
+		shape->setFillColor(entity->color);
+		renderWindow.draw(*shape);
 		if (entity->isSelected) {
-			selectionShape.setPosition(graphicalPosition);
-			renderWindow.draw(selectionShape);
-		}
+			entity->type.updateOutlineShapeSize();
+			sf::Shape* outlineShape = entity->type.getOutlineShape();
+			outlineShape->setPosition(graphicalPos);
+			outlineShape->setFillColor(color.transparent);
+			outlineShape->setOutlineColor(color.yellow);
+			outlineShape->setOutlineThickness(-OUTLINE_WIDTH);
+			renderWindow.draw(*outlineShape);
+		}	
 	}
 }
 
@@ -131,7 +130,6 @@ void Graphics::drawTopText() {
 void Graphics::drawTextSelection() {
 	if (selectedEntity != nullptr) {
 		std::ostringstream s;
-		/*s << typeid(*selectedEntity).name() << "\n";*/
 		selectedEntity->getSelectionText(s);
 		
 		selectionText.setString(s.str());
@@ -170,7 +168,6 @@ void Graphics::drawPathDebug(const std::list<node>& open, const std::list<node>&
 			renderWindow.draw(pathDebugShape);
 		}
 	}
-	
 
 	pathDebugShape.setFillColor(color.white);
 	pathDebugShape.setPosition(tileToWorld(s) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));

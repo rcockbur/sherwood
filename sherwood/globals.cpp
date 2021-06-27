@@ -16,6 +16,7 @@ int tic(0);
 sf::Clock deltaClock;
 sf::Time dt = deltaClock.restart();
 
+const Colors color;
 Map map("data/map.txt");
 sf::View mapView(sf::FloatRect(0, 0, VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]));
 //sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
@@ -26,6 +27,7 @@ Graphics graphics;
 EntityManager em;
 Input input;
 aStar astar;
+
 
 UnitType person = UnitType("person");
 DoodadType rock = DoodadType("rock");
@@ -39,20 +41,25 @@ void initEntityTypes() {
 	person.moveDistance = 4.0f;
 	person.carryCapacity = 5;
 	person.gatherPeriod = 30;
+	person.size = 12;
 
-	rock.color = color.grey;
+	rock.color = color.darkGrey;
+	rock.size = 12;
 
 	house.color = color.black;
 	house.resources[food] = 50;
 	house.resources[wood] = 100;
+	house.size = 16;
 
 	berryBush.color = color.red;
 	berryBush.resourceType = food;
 	berryBush.amount = 10;
+	berryBush.size = 14;
 
 	tree.color = color.brown;
 	tree.resourceType = wood;
 	tree.amount = 50;
+	tree.size = 12;
 }
 
 void initWindow() {
