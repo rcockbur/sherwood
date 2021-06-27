@@ -7,6 +7,7 @@
 #include "utility.h"
 #include "string"
 #include "job.h"
+#include "entity_manager.h"
 
 int Entity::id_index = 0;
 
@@ -20,15 +21,16 @@ Entity::Entity(const EntityType& type, const Vec2i _tile) :
 	isSelected(false)
 {
 	++id_index;
+	map.validateWithinBounds(tile);
+	em.entities.insert({ this });
 }
 
 Entity::~Entity() {
 	if (isSelected) {
 		selectedEntity = nullptr;
 	}
-	em.entityMap.erase(id);
+	em.entities.erase(this);
 }
-
 
 void Entity::getSelectionText(std::ostringstream& s) {
 	std::string classString(typeid(*this).name());
@@ -44,48 +46,75 @@ Rect Entity::calculateBounds(const Vec2f& pos) {
 	return Rect(pos.x - ENTITY_SIZE / 2, pos.y - ENTITY_SIZE / 2, ENTITY_SIZE, ENTITY_SIZE);
 }
 
-Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
+bool Entity::operator==(const Lookup& lookup) {
+	return (id == lookup.id);
+}
+
+FixedEntity::FixedEntity(const FixedEntityType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
+	type(_type)
+{
+	em.validateStaticEntityGridAvailable(tile);
+	em.staticEntityGrid[tile.x][tile.y] = this;
+}
+
+FixedEntity::~FixedEntity() {
+	em.staticEntityGrid[tile.x][tile.y] = nullptr;
+}
+
+void FixedEntity::getSelectionText(std::ostringstream& s) {
+	Entity::getSelectionText(s);
+}
+
+Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
+	FixedEntity(_type, _tile),
 	type(_type)
 {}
 
-Doodad::~Doodad() {
-	
-}
+Doodad::~Doodad() {}
 
 Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
+	FixedEntity(_type, _tile),
 	type(_type),
 	amount(type.amount)
 {}
 
-Deposit::~Deposit() {
-	em.depositMap.erase(id);
-}
+Deposit::~Deposit() {}
 
 void Deposit::getSelectionText(std::ostringstream& s) {
-	Entity::getSelectionText(s);
+	FixedEntity::getSelectionText(s);
 	s << std::to_string(amount) << " " << resourceNames[type.resourceType] << "\n";
 }
 
-ComplexEntity::ComplexEntity(const ComplexEntityType& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
-	type(_type)
+Building::Building(const BuildingType& _type, const Vec2i _tile) :
+	FixedEntity(_type, _tile),
+	type(_type),
+	resources(type.resources)
 {}
 
-void ComplexEntity::getSelectionText(std::ostringstream& s) {
-	Entity::getSelectionText(s);
+void Building::getSelectionText(std::ostringstream& s) {
+	FixedEntity::getSelectionText(s);
+	if (resources.empty() == false) {
+		s << "Resources:\n";
+		for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
+			if (resources[resourceType] > 0) {
+				s << "    " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
+			}
+		}
+	}
 }
 
+//////////////////// UNIT ///////////////////
 Unit::Unit(const UnitType& _type, const Vec2i _tile) :
-	ComplexEntity(_type, _tile),
+	Entity(_type, _tile),
 	type(_type),
 	canMoveAt(0),
 	canGatherAt(0),
-	home(nullptr),
 	carryAmmount(0),
 	carryType(0)
-{}
+{
+	em.unitMap.insert({ id, this });
+}
 
 Unit::~Unit() {
 	for (Ability* ability : abilityQueue) {
@@ -99,27 +128,37 @@ Unit::~Unit() {
 
 void Unit::update()
 {
+	bool finishedAnAbility = false;
+	Status abilityStatus;
 	if (abilityQueue.size() > 0) {
 		Ability* ability = abilityQueue.front();
-		bool isComplete = ability->execute();
-		if (isComplete) {
+		abilityStatus = ability->execute();
+		if (abilityStatus != inProgress) {
 			delete ability;
 			abilityQueue.pop_front();
+			finishedAnAbility = true;
 		}	
 	}
-	else if (jobQueue.size() > 0) {
+	if (abilityQueue.size() == 0 && jobQueue.size() > 0) {
 		Job* job = jobQueue.front();
-		bool isComplete = job->addAbility();
-		if (isComplete) {
+		if (finishedAnAbility && abilityStatus == failure) {
 			delete job;
 			jobQueue.pop_front();
+		}
+		else {
+			
+			Status jobStatus = job->addAbility();
+			if (jobStatus != inProgress) {
+				delete job;
+				jobQueue.pop_front();
+			}
 		}
 	}
 }
 
 void Unit::getSelectionText(std::ostringstream& s) {
-	ComplexEntity::getSelectionText(s);
-	s << "Home: " << ((home) ? std::to_string(home->id) : "-") << "\n";
+	Entity::getSelectionText(s);
+	s << "Home: " << ((homeLookup.id >= 0) ? std::to_string(homeLookup.id) : "-") << "\n";
 	s << "AbilityQueue: " << abilityQueue.size() << "\n";
 	s << "JobQueue: " << jobQueue.size() << "\n";
 	s << "Carrying: ";
@@ -129,7 +168,6 @@ void Unit::getSelectionText(std::ostringstream& s) {
 	else {
 		s << "-\n";
 	}
-	
 }
 
 void Unit::addAbility(Ability* ability) {
@@ -137,8 +175,13 @@ void Unit::addAbility(Ability* ability) {
 }
 
 void Unit::setAbility(Ability* ability) {
-	abilityQueue.clear();
+	destroyAbilities();
 	abilityQueue.push_back(ability);
+}
+
+void Unit::destroyAbilities() {
+	for (auto ability : abilityQueue) delete ability;
+	abilityQueue.clear();
 }
 
 void Unit::addJob(Job* job) {
@@ -146,12 +189,18 @@ void Unit::addJob(Job* job) {
 }
 
 void Unit::setJob(Job* job) {
-	jobQueue.clear();
+	destroyAbilities();
+	destroyJobs();
 	jobQueue.push_back(job);
 }
 
-void Unit::setHome(Building* _home) {
-	home = _home;
+void Unit::destroyJobs() {
+	for (auto job : jobQueue) delete job;
+	jobQueue.clear();
+}
+
+void Unit::setHome(Building& home) {
+	homeLookup = home;
 }
 
 bool Unit::moveTowards(const Vec2i targetTile) {
@@ -173,21 +222,3 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 	return reachedTarget;
 }
 
-Building::Building(const BuildingType& _type, const Vec2i _tile) :
-	ComplexEntity(_type, _tile),
-	type(_type),
-	resources(type.resources)
-{}
-
-void Building::getSelectionText(std::ostringstream& s) {
-	Entity::getSelectionText(s);
-	if (resources.empty() == false) {
-		s << "Resources:\n";
-		for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
-			if (resources[resourceType] > 0) {
-				s << "    " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
-			}
-		}
-	}
-
-}

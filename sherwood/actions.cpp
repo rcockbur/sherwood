@@ -3,23 +3,36 @@
 #include "pathfinding.h"
 #include "job.h"
 
-void unitMoveToTile(Unit* unit, Vec2i targetTile) {
-	if (astar.search(unit->tile, targetTile)) {
-		std::list<Vec2i> path = astar.path(false);
-		Move* move = new Move(*unit, path);
-		unit->setAbility(move);
+void unitMoveToTile(Unit& unit, Vec2i targetTile) {
+	unit.destroyJobs();
+	Move* move = new Move(unit, targetTile);
+	if (shiftIsDown) {
+		unit.addAbility(move);
+	}
+	else {
+		unit.setAbility(move);
 	}
 }
 
 void unitHarvestDeposit(Unit& unit, Deposit& deposit) {
+	std::cout << "assigning harvester job\n";
 	Harvester* harvester = new Harvester(unit, deposit);
-	unit.setJob(harvester);
+	if (shiftIsDown) {
+		unit.addJob(harvester);
+	}
+	else {
+		unit.setJob(harvester);
+	}
 }
 
-void unitReturnResources(Unit* unit) {
-	if (astar.search(unit->tile, unit->home->tile)) {
-		std::list<Vec2i> path = astar.path(true);
-		ReturnResources* returnResources = new ReturnResources(*unit, path);
-		unit->setAbility(returnResources);
+void unitReturnResources(Unit& unit) {
+	
+	ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
+	unit.destroyJobs();
+	if (shiftIsDown) {
+		unit.addAbility(returnResources);
+	}
+	else {
+		unit.setAbility(returnResources);
 	}
 }

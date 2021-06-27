@@ -12,8 +12,9 @@ typedef sf::Vector2u Vec2u;
 typedef sf::Color Color;
 typedef sf::Rect<float> Rect;
 
-//enum RT { food };
-enum ResourceTypes { food, wood };
+//enum RT { food }; 
+enum ResourceType { food, wood };
+enum Status { success, failure, inProgress };
 
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);

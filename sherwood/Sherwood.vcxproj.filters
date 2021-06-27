@@ -66,6 +66,9 @@
     <ClCompile Include="job.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lookup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="entity.h">
@@ -114,6 +117,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="job.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lookup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

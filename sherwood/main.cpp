@@ -7,20 +7,22 @@ int main()
 {
 	initWindow();
 	initEntityTypes();
-	em.createUnit(person, Vec2i(2, 1));
-	em.createUnit(person, Vec2i(3, 1));
-	Unit* peter = em.createUnit(person, Vec2i(2, 2));
 
-	em.createDoodad(rock, Vec2i(5, 5));
-	
+	new Doodad(rock, Vec2i(4, 0));
 
-	em.createDeposit(berryBush, Vec2i(3, 4));
-	em.createDeposit(berryBush, Vec2i(20, 20));
-	em.createDeposit(tree, Vec2i(5, 2));
+	Building* myHome = new Building(house, Vec2i(0, 3));
 
-	Building* petersHome = em.createBuilding(house, Vec2i(3, 8));
+	(new Unit(person, Vec2i(0, 0)))->setHome(*myHome);
+	(new Unit(person, Vec2i(1, 0)))->setHome(*myHome);
+	(new Unit(person, Vec2i(2, 0)))->setHome(*myHome);
 
-	peter->setHome(petersHome);
+	new Deposit(berryBush, Vec2i(5, 3));
+	new Deposit(berryBush, Vec2i(4, 12));
+	new Deposit(berryBush, Vec2i(20, 20));
+
+	new Deposit(tree, Vec2i(8, 0));
+	new Deposit(tree, Vec2i(9, 0));
+	new Deposit(tree, Vec2i(9, 1));
 
 	while (renderWindow.isOpen()) {
 		input.handleInput();

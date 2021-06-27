@@ -25,6 +25,11 @@ bool Map::isPathable(Vec2i tile) {
 	return (terrainGrid[tile.x][tile.y] == 0);
 }
 
+void Map::validateWithinBounds(Vec2i tile) const {
+	if (tile.x < 0 || tile.x >= tileCount.x || tile.y < 0 || tile.y >= tileCount.y)
+		throw std::logic_error("tile is out of bounds");
+}
+
 Vec2i Map::calculateTileCount(std::string fileName) {
 	std::ifstream inFile(fileName);
 	int x = 0;

@@ -1,17 +1,18 @@
 #pragma once
 #include "entity.h"
+#include "lookup.h"
 
 class Job {
 public:
 	Unit& unit;
 	Job(Unit& unit);
-	virtual bool addAbility() = 0;
+	virtual Status addAbility() = 0;
 };
 
 class Harvester : public Job {
 public:
-	//Deposit& deposit;
-	int depositID;
-	Harvester(Unit&, Deposit&);
-	bool addAbility();
+	const Lookup depositLookup;
+	bool forcedHarvest;
+	Harvester(Unit&, const Lookup depositLookup);
+	Status addAbility();
 };

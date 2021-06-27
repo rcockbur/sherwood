@@ -2,6 +2,9 @@
 #include "types.h"
 #include <list>
 #include <unordered_map>
+#include <set>
+#include "entity.h"
+#include "lookup.h"
 
 class UnitType;
 class BuildingType;
@@ -16,17 +19,26 @@ class Deposit;
 class EntityManager {
 public:
 	EntityManager();
-	Doodad* createDoodad(const DoodadType&, const Vec2i);
-	Deposit* createDeposit(const DepositType&, const Vec2i);
-	Unit* createUnit(const UnitType&, const Vec2i);
-	Building* createBuilding(const BuildingType&, const Vec2i);
-	//void destroyEntity(Entity* entity);
 	void updateEntities();
 	void selectEntity(Entity*);
 	Entity* getEntityAtWorldPos(const Vec2f& worldPosition) const;
-	std::unordered_map<int, Entity*> entityMap;
+	Entity* getEntityFromTile(const Vec2i& tile) const;
+	template <typename T>
+	T lookupFixedEntity(const Lookup) const;
+	Unit* getUnitByID(const int id) const;
+	std::set<Entity*> entities;
 	std::unordered_map<int, Unit*> unitMap;
-	std::unordered_map<int, Deposit*> depositMap;
-private:
-	//std::list<Unit*> units;
+	std::vector<std::vector<FixedEntity*>> staticEntityGrid; //does not include units
+	void validateStaticEntityGridAvailable(const Vec2i tile);
 };
+
+//if entity matches provided ID, then ptr is provided
+template <typename T>
+T EntityManager::lookupFixedEntity(const Lookup lookup) const {
+	if (staticEntityGrid[lookup.tile.x][lookup.tile.y] != nullptr) {
+		if(staticEntityGrid[lookup.tile.x][lookup.tile.y]->id == lookup.id) {
+			return dynamic_cast<T>(staticEntityGrid[lookup.tile.x][lookup.tile.y]);
+		}
+	}
+	return nullptr;
+}

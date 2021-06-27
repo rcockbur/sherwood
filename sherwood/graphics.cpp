@@ -13,8 +13,8 @@
 
 Graphics::Graphics() 
 {
-	viewportShape.setSize(VIEWPORT_SIZE);
-	viewportShape.setPosition(VIEWPORT_OFFSET);
+	viewportShape.setSize(Vec2f(VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]));
+	viewportShape.setPosition(Vec2f(VIEWPORT_OFFSET[0], VIEWPORT_OFFSET[1]));
 	viewportShape.setOutlineColor(color.red);
 	viewportShape.setOutlineThickness(1);
 	viewportShape.setFillColor(color.transparent);
@@ -49,7 +49,7 @@ Graphics::Graphics()
 	if (!arial.loadFromFile("resources/sansation.ttf"))
 		throw std::logic_error("font cannot be found");
 	initText(fpsText, Vec2f(WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP));
-	initText(selectionText, RIGHT_PANEL_OFFSET);
+	initText(selectionText, Vec2f(RIGHT_PANEL_OFFSET[0], RIGHT_PANEL_OFFSET[1]));
 }
 
 void Graphics::initText(sf::Text& text, const Vec2f& position) {
@@ -91,12 +91,12 @@ void Graphics::drawTerrain() {
 }
 
 void Graphics::drawEntities() {
-	for (auto& it : em.entityMap) {
-		Vec2f graphicalPosition = it.second->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
+	for (auto& entity : em.entities) {
+		Vec2f graphicalPosition = entity->position - Vec2f(ENTITY_SIZE / 2, ENTITY_SIZE / 2);
 		entityShape.setPosition(graphicalPosition);
-		entityShape.setFillColor(it.second->color);
+		entityShape.setFillColor(entity->color);
 		renderWindow.draw(entityShape);
-		if (it.second->isSelected) {
+		if (entity->isSelected) {
 			selectionShape.setPosition(graphicalPosition);
 			renderWindow.draw(selectionShape);
 		}
@@ -124,7 +124,6 @@ void Graphics::drawTopText() {
 	s << "Target FPS: " << targetFPS;
 	s << "   Actual FPS: " << (int)actualFPS;
 	s << "   Units: " << em.unitMap.size();
-	s << "   Deposits: " << em.depositMap.size();
 	fpsText.setString(s.str());
 	renderWindow.draw(fpsText);
 }

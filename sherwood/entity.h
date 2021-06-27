@@ -3,11 +3,12 @@
 #include <sstream>
 #include <deque>
 #include "resources.h"
+#include "lookup.h"
 
 class Ability;
 class EntityType;
 class DoodadType;
-class ComplexEntityType;
+class FixedEntityType;
 class UnitType;
 class BuildingType;
 class DepositType;
@@ -25,65 +26,76 @@ public:
 	Rect bounds;
 	sf::Color color;
 	bool isSelected;
+
 	Entity(const EntityType& type, const Vec2i tile);
 	~Entity();
+	bool operator==(const Lookup& lookup);
 	virtual void getSelectionText(std::ostringstream&);
 protected:
 	Rect calculateBounds(const Vec2f& pos);
 };
 
-class Doodad : public Entity {
+class FixedEntity : public Entity {
+public:
+	const FixedEntityType& type;
+
+	FixedEntity(const FixedEntityType&, const Vec2i tile);
+	~FixedEntity();
+	virtual void getSelectionText(std::ostringstream&);
+};
+
+class Doodad : public FixedEntity {
 public:
 	const DoodadType& type;
+
 	Doodad(const DoodadType&, const Vec2i tile);
 	~Doodad();
 };
 
-class Deposit : public Entity {
+class Deposit : public FixedEntity {
 public:
 	const DepositType& type;
 	int amount;
+
 	Deposit(const DepositType& type, const Vec2i tile);
 	~Deposit();
 	void getSelectionText(std::ostringstream&);
 };
 
-class ComplexEntity : public Entity {
+class Building : public FixedEntity {
 public:
-	const ComplexEntityType& type;
-	
-	ComplexEntity(const ComplexEntityType&, const Vec2i tile);
-	virtual void getSelectionText(std::ostringstream&);
+	const BuildingType& type;
+	Resources resources;
+
+	Building(const BuildingType& type, const Vec2i tile);
+	void getSelectionText(std::ostringstream&);
 };
 
-class Unit : public ComplexEntity {
+
+class Unit : public Entity {
 public:
 	const UnitType& type;
 	std::deque<Ability*> abilityQueue;
 	std::deque<Job*> jobQueue;
 	int canMoveAt;
 	int canGatherAt;
-	Building* home;
-	//Job* job;
+	//Building* home;
+	Lookup homeLookup;
 	int carryType;
 	int carryAmmount;
+
 	Unit(const UnitType& type, const Vec2i tile);
 	~Unit();
 	void update();
 	void getSelectionText(std::ostringstream&);
 	void addAbility(Ability* ability);
 	void setAbility(Ability* ability);
+	void destroyAbilities();
 	void addJob(Job* job);
 	void setJob(Job* job);
-	void setHome(Building* home);
+	void destroyJobs();
+	void setHome(Building& home);
 	bool moveTowards(const Vec2i targetTile);
 };
 
-class Building : public ComplexEntity {
-public:
-	const BuildingType& type;
-	Resources resources;
-	Building(const BuildingType& type, const Vec2i tile);
-	void getSelectionText(std::ostringstream&);
-};
 

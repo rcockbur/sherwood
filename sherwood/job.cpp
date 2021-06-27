@@ -2,44 +2,41 @@
 #include "ability.h"
 #include "entity_type.h"
 #include "globals.h"
-//#include "actions.h"
 
 Job::Job(Unit& _unit) :
 	unit(_unit)
 {}
 
-Harvester::Harvester(Unit& _unit, Deposit& deposit) :
+Harvester::Harvester(Unit& _unit, const Lookup depositLookup) :
 	Job(_unit),
-	depositID(deposit.id)
+	depositLookup(depositLookup),
+	forcedHarvest(true)
 {}
 
-bool Harvester::addAbility() {
-	if (unit.carryAmmount < unit.type.carryCapacity) {
-		auto it = em.depositMap.find(depositID);
-		Deposit* deposit = (it == em.depositMap.end()) ? nullptr : it->second;
-		if (deposit != nullptr) {
-			if (astar.search(unit.tile, deposit->tile)) {
-				std::list<Vec2i> path = astar.path(true);
-				Harvest* harvest = new Harvest(unit, path, *deposit);
-				unit.setAbility(harvest);
-			}
-			return false;
+Status Harvester::addAbility() {
+	if (forcedHarvest == true || unit.carryAmmount == 0) {
+		Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
+		if (deposit == nullptr) {
+			return success;
 		}
 		else {
-			return true;
+			forcedHarvest = false;
+			std::cout << "issuing harvest ability\n";
+			Harvest* harvest = new Harvest(unit, depositLookup);
+			unit.setAbility(harvest);
+			return inProgress;
 		}
 	}
 	else {
-		if (unit.home == nullptr) {
-			return true;
+		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
+		if (home == nullptr) {
+			return failure;
 		}
 		else {
-			if (astar.search(unit.tile, unit.home->tile)) {
-				std::list<Vec2i> path = astar.path(true);
-				ReturnResources* returnResources = new ReturnResources(unit, path);
-				unit.setAbility(returnResources);
-			}
-			return false;
+			std::cout << "issuing return ability\n";
+			ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
+			unit.setAbility(returnResources);
+			return inProgress;
 		}
 	}
 }

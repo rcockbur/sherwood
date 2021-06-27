@@ -79,6 +79,8 @@ void aStar::fillOpen(node& n) {
     }
 }
 
+
+
 bool aStar::search(const Vec2i& s, const Vec2i& e) {
     clear();
     if (showPathfinding) renderWindow.setFramerateLimit(1000);

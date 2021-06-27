@@ -8,11 +8,13 @@
 #include "utility.h"
 #include "actions.h"
 
-Input::Input()
+Input::Input() :
+	VIEWPORT_RECT(VIEWPORT_OFFSET[0], VIEWPORT_OFFSET[1], VIEWPORT_SIZE[0], VIEWPORT_SIZE[1])
 {}
 
 void Input::handleInput()
 {
+	shiftIsDown = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 	sf::Event event;
 	while (renderWindow.pollEvent(event)) {
 		Vec2f screen_pos((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
@@ -41,22 +43,20 @@ void Input::handleInput()
 }
 
 void Input::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
-	std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y;
-
+	//std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y << "\n";
 	if (VIEWPORT_RECT.contains(screenPos)) {
 		Vec2f worldPos = screenToWorld(screenPos);
 		handleWorldClick(worldPos, isRightClick);
 	}
 	else {
-		std::cout << "Out of bounds\n";
+		//std::cout << "Out of bounds\n";
 	}
-	std::cout << "\n";
 }
 
 void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
-	std::cout << "  WorldPosition:" << worldPosition.x << "," << worldPosition.y;
+	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPosition);
-	std::cout << "  Tile:" << clickedTile.x << "," << clickedTile.y;
+	//std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	Entity* clickedEntity = em.getEntityAtWorldPos(worldPosition);
 	if (isRightClick) {
 		Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
@@ -67,12 +67,12 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 				unitHarvestDeposit(*selectedUnit, *clickedDeposit);
 			}
 			else if (clickedBuilding != nullptr) {
-				if (clickedBuilding == selectedUnit->home && selectedUnit->carryAmmount > 0) {
-					unitReturnResources(selectedUnit);
+				if (*clickedBuilding == selectedUnit->homeLookup && selectedUnit->carryAmmount > 0) {
+					unitReturnResources(*selectedUnit);
 				}
 			}
 			else if (selectedEntity->tile != clickedTile) {
-				unitMoveToTile(selectedUnit, clickedTile);
+				unitMoveToTile(*selectedUnit, clickedTile);
 			}
 		}
 	}

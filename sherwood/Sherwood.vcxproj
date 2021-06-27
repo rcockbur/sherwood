@@ -167,6 +167,7 @@
     <ClCompile Include="node.cpp" />
     <ClCompile Include="pathfinding.cpp" />
     <ClCompile Include="resources.cpp" />
+    <ClCompile Include="lookup.cpp" />
     <ClCompile Include="types.cpp" />
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="main.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="ability.h" />
     <ClInclude Include="actions.h" />
     <ClInclude Include="color.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="entity.h" />
@@ -185,6 +187,7 @@
     <ClInclude Include="node.h" />
     <ClInclude Include="pathfinding.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="lookup.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="utility.h" />

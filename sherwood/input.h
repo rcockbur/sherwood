@@ -6,6 +6,7 @@ class Window;
 class EntityManager;
 
 class Input {
+	const sf::Rect<float> VIEWPORT_RECT;
 public:
 	Input();
 	void handleInput();

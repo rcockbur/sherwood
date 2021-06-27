@@ -3,36 +3,38 @@
 #include <list>
 #include "entity.h"
 #include "resources.h"
+#include "lookup.h"
 
 
 class Ability {
 public:
-	virtual bool execute() = 0;
+	virtual Status execute() = 0;
 };
 
 class Move : public Ability {
 public:
-	std::list<Vec2i> path;
 	Unit& unit;
-
-	Move(Unit& unit, std::list<Vec2i> path);
+	const Vec2i dest;
+	std::list<Vec2i> path;
+	bool hasStarted;
+	bool stopShort;
+	Move(Unit& unit, const Vec2i dest);
 	
-	bool execute();
+	Status execute();
 protected:
 	void followPath();
 };
 
 class Harvest : public Move {
 public:
-	//Deposit& deposit;
-	int depositID;
-	bool hasReachedDeposit;
-	Harvest(Unit& unit, std::list<Vec2i> path, Deposit& source);
-	bool execute();
+	const Lookup depositLookup;
+	bool hasStartedHarvesting;
+	Harvest(Unit& unit, const Lookup depositLookup);
+	Status execute();
 };
 
 class ReturnResources : public Move {
 public :
-	ReturnResources(Unit& unit, std::list<Vec2i> path);
-	bool execute();
+	ReturnResources(Unit& unit, const Lookup buildingLookup);
+	Status execute();
 };

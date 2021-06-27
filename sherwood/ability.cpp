@@ -2,20 +2,30 @@
 #include "entity.h"
 #include "entity_type.h"
 #include "globals.h"
+#include "pathfinding.h"
 
-Move::Move(Unit& unit, std::list<Vec2i> _path)
-	: unit(unit), path(_path)
+Move::Move(Unit& unit, const Vec2i dest)
+	: unit(unit), dest(dest), hasStarted(false), stopShort(false)
 {
 
 }
 
-bool Move::execute() {
+Status Move::execute() {
+	if (hasStarted == false) {
+		hasStarted = true;
+		if (astar.search(unit.tile, dest)) {
+			path = astar.path(stopShort);
+		}
+		else {
+			return failure;
+		}
+	}
 	if (path.empty()) {
-		return true;
+		return success;
 	}
 	else {
 		followPath();
-		return false;
+		return inProgress;
 	}
 }
 
@@ -30,70 +40,91 @@ void Move::followPath() {
 	}
 }
 
-Harvest::Harvest(Unit& unit, std::list<Vec2i> path, Deposit& deposit) :
-	Move(unit, path),
-	depositID(deposit.id),
-	hasReachedDeposit(false)
+Harvest::Harvest(Unit& unit, const Lookup depositLookup) :
+	Move(unit, depositLookup.tile),
+	depositLookup(depositLookup),
+	hasStartedHarvesting(false)
+	
 {
-
+	stopShort = true;
 }
 
-bool Harvest::execute() {
-	if (hasReachedDeposit) {
-		auto it = em.depositMap.find(depositID);
-		Deposit* deposit = (it == em.depositMap.end()) ? nullptr : it->second;
-		if (unit.carryAmmount == unit.type.carryCapacity || deposit == nullptr) {
-			return true; //done gathering
+Status Harvest::execute() {
+	if (hasStarted == false) {
+		hasStarted = true;
+		if (astar.search(unit.tile, dest)) {
+			path = astar.path(stopShort);
 		}
 		else {
-			if (tic >= unit.canGatherAt) {
-				++unit.carryAmmount;
-				--deposit->amount;
-				unit.canGatherAt = tic + unit.type.gatherPeriod;
-				if (deposit->amount == 0) {
-					delete deposit;
-				}
-			}
-			return false; //not done gathering
+			return failure;
 		}
 	}
-	else {
-		followPath();
-		if (path.empty()) {
-			auto it = em.depositMap.find(depositID);
-			Deposit* deposit = (it == em.depositMap.end()) ? nullptr : it->second;
-			if (deposit != nullptr) {
-				hasReachedDeposit = true;
-				unit.canGatherAt = tic + unit.type.gatherPeriod;
+	if (path.empty()) {
+		if (tic >= unit.canGatherAt) {
+			Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
+			if (deposit == nullptr) {
+				if (hasStartedHarvesting) {
+					return success; //deposit destroyed while gathering
+				}
+				else {
+					return failure; //deposit destroyed before reached
+				}
+			}
+			if (hasStartedHarvesting == false) {
+				hasStartedHarvesting = true;
 				if (unit.carryType != deposit->type.resourceType) {
 					unit.carryType = deposit->type.resourceType;
 					unit.carryAmmount = 0;
 				}
 			}
-			else {
-				return true;
+			++unit.carryAmmount;
+			--deposit->amount;
+			unit.canGatherAt = tic + unit.type.gatherPeriod;
+			if (deposit->amount == 0) {
+				delete deposit;
+				return success; //deposit has expired
 			}
-			
-			
+			if (unit.carryAmmount == unit.type.carryCapacity) {
+				return success; //done gathering
+			}
 		}
-		
-		return false; //not done moving
-		
+		return inProgress; //still gathering
 	}
+
+	else {
+		followPath();
+		if (path.empty()) {
+			unit.canGatherAt = tic + unit.type.gatherPeriod;
+		}
+		return inProgress; //still moving
+	}
+
 }
 
-ReturnResources::ReturnResources(Unit& unit, std::list<Vec2i> path) :
-	Move(unit, path)
-{}
+ReturnResources::ReturnResources(Unit& unit, const Lookup buildingLookup) :
+	Move(unit, buildingLookup.tile)
+{
+	stopShort = true;
+}
 
-bool ReturnResources::execute() {
+Status ReturnResources::execute() {
+	if (hasStarted == false) {
+		hasStarted = true;
+		if (astar.search(unit.tile, dest)) {
+			path = astar.path(stopShort);
+		}
+		else {
+			return failure;
+		}
+	}
 	if (path.empty()) {
-		unit.home->resources[unit.carryType] += unit.carryAmmount;
+		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
+		home->resources[unit.carryType] += unit.carryAmmount;
 		unit.carryAmmount = 0;
-		return true;
+		return success;
 	}
 	else {
 		followPath();
-		return false;
+		return inProgress;
 	}
 }

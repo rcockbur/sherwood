@@ -1,6 +1,6 @@
 #pragma once
 #include "types.h"
-#include "globals.h"
+#include "constants.h"
 
 class Resources {
 public:
