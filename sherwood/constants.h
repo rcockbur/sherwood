@@ -3,9 +3,7 @@ constexpr float LINE_WIDTH_HALF = 1;
 constexpr float LINE_WIDTH = (LINE_WIDTH_HALF * 2);
 constexpr float OUTLINE_WIDTH = 1;
 constexpr float TILE_SIZE = 20;
-constexpr float ENTITY_SIZE = 18 - LINE_WIDTH * 2;
-constexpr float UNIT_RADIUS = 8 - LINE_WIDTH;
-constexpr float PATH_DEBUG_SIZE = 10;
+constexpr float PATH_DEBUG_SIZE = 8;
 constexpr float WINDOW_PADDING_TOP = 5;
 constexpr float WINDOW_PADDING_LEFT = 5;
 constexpr float WINDOW_PADDING_BOT = 10;
@@ -15,7 +13,9 @@ constexpr float VIEWPORT_SIZE[2] = { 900,660 };
 constexpr float VIEWPORT_OFFSET[2] = { WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP + TOP_PANEL_HEIGHT };
 constexpr float RIGHT_PANEL_OFFSET[2] = { VIEWPORT_OFFSET[0] + VIEWPORT_SIZE[0] + 3, VIEWPORT_OFFSET[1] };
 
-constexpr float CAMERA_SPEED = 5;
+constexpr float CAMERA_SPEED = 10;
 
-constexpr int NUM_RESOURCES = 2;
-constexpr const char* resourceNames[NUM_RESOURCES] = { "food", "wood" };
+constexpr int TICS_PER_MINUTE = 30;
+
+constexpr int NUM_RESOURCES = 4;
+constexpr const char* resourceNames[NUM_RESOURCES] = { "food", "wood", "gold", "stone"};

@@ -24,15 +24,26 @@ int main()
 	new Deposit(tree, Vec2i(9, 0));
 	new Deposit(tree, Vec2i(9, 1));
 
+	new Deposit(goldMine, Vec2i(30, 20));
+
+	new Deposit(stoneMine, Vec2i(24, 25));
+
+	float lastFPSUpdate = gameClock.getElapsedTime().asSeconds();
 	while (renderWindow.isOpen()) {
 		input.handleInput();
 		em.updateEntities();
 		graphics.draw();
 		if (hasPrinted) std::cout << "---------------------" << std::endl;
 		hasPrinted = false;
-		++tic;
+		++tics;
+		seconds = tics / TICS_PER_MINUTE;
 		dt = deltaClock.restart();
-		actualFPS = 1 / dt.asSeconds();
+		
+		if ((gameClock.getElapsedTime().asSeconds() - lastFPSUpdate) >= 0.3f) {
+			lastFPSUpdate = gameClock.getElapsedTime().asSeconds();
+			actualFPS = 1 / dt.asSeconds();
+		}
+		
 	}
     return 0;
 }

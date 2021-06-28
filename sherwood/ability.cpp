@@ -36,8 +36,8 @@ ActivityStatus Move::execute() {
 
 void Move::followPath() {
 	if (path.size() > 0) {
-		if (tic >= unit.canMoveAt) {
-			unit.canMoveAt = tic + unit.type.movePeriod;
+		if (tics >= unit.canMoveAt) {
+			unit.canMoveAt = tics + unit.type.movePeriod;
 			bool hasReachedTile = unit.moveTowards(path.front());
 			if (hasReachedTile)
 				path.pop_front();
@@ -70,7 +70,7 @@ ActivityStatus Harvest::execute() {
 			return ActivityStatus::failure;
 	}
 	if (path.empty()) {
-		if (tic >= unit.canGatherAt) {
+		if (tics >= unit.canGatherAt) {
 			Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
 			if (deposit == nullptr) {
 				if (hasStartedHarvesting) {
@@ -87,24 +87,22 @@ ActivityStatus Harvest::execute() {
 					unit.carryAmmount = 0;
 				}
 			}
+			if (unit.carryAmmount >= unit.type.carryCapacity) {
+				return ActivityStatus::success; //done gathering
+			}
 			++unit.carryAmmount;
 			--deposit->amount;
-			unit.canGatherAt = tic + unit.type.gatherPeriod;
+			unit.canGatherAt = tics + unit.type.gatherPeriod;
 			if (deposit->amount == 0) {
 				delete deposit;
 				return ActivityStatus::success; //deposit has expired
 			}
-			if (unit.carryAmmount == unit.type.carryCapacity) {
-				return ActivityStatus::success; //done gathering
-			}
+			
 		}
 		return ActivityStatus::inProgress; //still gathering
 	}
 	else {
 		followPath();
-		if (path.empty()) {
-			unit.canGatherAt = tic + unit.type.gatherPeriod;
-		}
 		return ActivityStatus::inProgress; //still moving
 	}
 

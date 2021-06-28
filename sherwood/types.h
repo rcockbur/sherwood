@@ -12,7 +12,7 @@ typedef sf::Vector2u Vec2u;
 typedef sf::Color Color;
 typedef sf::Rect<float> Rect;
 
-enum ResourceType { food, wood };
+enum ResourceType { food, wood, gold, stone };
 enum TerrainType { water, grass };
 enum class ActivityStatus { success, failure, inProgress };
 enum class CompleteStatus { complete, incomplete };

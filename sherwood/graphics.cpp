@@ -116,6 +116,7 @@ void Graphics::drawTopText() {
 	s << "Target FPS: " << targetFPS;
 	s << "   Actual FPS: " << (int)actualFPS;
 	s << "   Units: " << em.unitMap.size();
+	s << "   Seconds: " << seconds;
 	fpsText.setString(s.str());
 	renderWindow.draw(fpsText);
 }

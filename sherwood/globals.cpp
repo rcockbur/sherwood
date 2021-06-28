@@ -10,10 +10,13 @@ bool showPathfinding = false;
 bool hasPrinted = false;
 bool shiftIsDown = false;
 int targetFPS = 30;
+int tics = 0;
+int seconds = 0;
 float actualFPS = (float)targetFPS;
 Entity* selectedEntity(nullptr);
-int tic(0);
+
 sf::Clock deltaClock;
+sf::Clock gameClock;
 sf::Time dt = deltaClock.restart();
 
 const Colors colors;
@@ -31,8 +34,10 @@ aStar astar;
 UnitType person = UnitType("Person");
 DoodadType rock = DoodadType("Rock");
 BuildingType house = BuildingType("House");
-DepositType berryBush = DepositType("Berries");
+DepositType berryBush = DepositType("Berry Bush");
 DepositType tree = DepositType("Tree");
+DepositType goldMine = DepositType("Gold Mine");
+DepositType stoneMine = DepositType("Stone Mine");
 
 sf::RectangleShape FixedEntityType::shape = sf::RectangleShape();
 sf::RectangleShape FixedEntityType::outlineShape = sf::RectangleShape();
@@ -43,8 +48,8 @@ void initEntityTypes() {
 	person.color = colors.lightBlue;
 	person.movePeriod = 1;
 	person.moveDistance = 4.0f;
-	person.carryCapacity = 5;
-	person.gatherPeriod = 15;
+	person.carryCapacity = 10;
+	person.gatherPeriod = 8;
 	person.size = 12;
 
 	rock.color = colors.darkGrey;
@@ -57,13 +62,23 @@ void initEntityTypes() {
 
 	berryBush.color = colors.red;
 	berryBush.resourceType = food;
-	berryBush.amount = 10;
+	berryBush.amount = 100;
 	berryBush.size = 14;
 
 	tree.color = colors.brown;
 	tree.resourceType = wood;
-	tree.amount = 50;
+	tree.amount = 100;
 	tree.size = 12;
+
+	goldMine.color = colors.yellow;
+	goldMine.resourceType = gold;
+	goldMine.amount = 1000;
+	goldMine.size = 12;
+
+	stoneMine.color = colors.darkGrey;
+	stoneMine.resourceType = stone;
+	stoneMine.amount = 1000;
+	stoneMine.size = 12;
 
 	FixedEntityType::outlineShape.setFillColor(colors.transparent);
 	FixedEntityType::outlineShape.setOutlineColor(colors.yellow);

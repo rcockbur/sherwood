@@ -12,12 +12,15 @@ extern bool showGrid;
 extern bool showPathfinding;
 extern bool hasPrinted;
 extern bool shiftIsDown;
-extern int tic;
+extern int tics;
+extern int seconds;
 extern int targetFPS;
 extern float actualFPS;
 
+
 extern Entity* selectedEntity;
 extern sf::Clock deltaClock;
+extern sf::Clock gameClock;
 extern sf::Time dt;
 
 extern Map map;
@@ -36,6 +39,8 @@ extern DoodadType rock;
 extern BuildingType house;
 extern DepositType berryBush;
 extern DepositType tree;
+extern DepositType goldMine;
+extern DepositType stoneMine;
 
 void initEntityTypes();
 void initWindow();

@@ -4,14 +4,16 @@
 #include "job.h"
 
 void unitMoveToTile(Unit& unit, Vec2i targetTile) {
-	Mover* mover = new Mover(unit, targetTile);
-	if (shiftIsDown) {
-		unit.addJob(mover);
-	}
-	else {
-		ActivityStatus status = mover->start();
-		if (status == ActivityStatus::success)
-			unit.setJob(mover);
+	if (map.isPathable(targetTile) == true) {
+		Mover* mover = new Mover(unit, targetTile);
+		if (shiftIsDown) {
+			unit.addJob(mover);
+		}
+		else {
+			ActivityStatus status = mover->start();
+			if (status == ActivityStatus::success)
+				unit.setJob(mover);
+		}
 	}
 }
 
