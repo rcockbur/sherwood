@@ -4,35 +4,27 @@
 #include "job.h"
 
 void unitMoveToTile(Unit& unit, Vec2i targetTile) {
-	unit.destroyJobs();
-	Move* move = new Move(unit, targetTile);
+	Mover* mover = new Mover(unit, targetTile);
 	if (shiftIsDown) {
-		unit.addAbility(move);
+		unit.addJob(mover);
 	}
 	else {
-		unit.setAbility(move);
+		ActivityStatus status = mover->start();
+		if (status == ActivityStatus::success)
+			unit.setJob(mover);
 	}
 }
 
 void unitHarvestDeposit(Unit& unit, Deposit& deposit) {
-	std::cout << "assigning harvester job\n";
 	Harvester* harvester = new Harvester(unit, deposit);
 	if (shiftIsDown) {
 		unit.addJob(harvester);
 	}
 	else {
-		unit.setJob(harvester);
+		ActivityStatus status = harvester->start();
+		if (status == ActivityStatus::success)
+			unit.setJob(harvester);
 	}
 }
 
-void unitReturnResources(Unit& unit) {
-	
-	ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
-	unit.destroyJobs();
-	if (shiftIsDown) {
-		unit.addAbility(returnResources);
-	}
-	else {
-		unit.setAbility(returnResources);
-	}
-}
+void unitReturnResources(Unit& unit) {}

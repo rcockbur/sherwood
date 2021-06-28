@@ -5,27 +5,32 @@
 #include "pathfinding.h"
 
 Move::Move(Unit& unit, const Vec2i dest)
-	: unit(unit), dest(dest), hasStarted(false), stopShort(false)
-{
+	: unit(unit), dest(dest), hasStarted(false)
+{}
 
+ActivityStatus Move::start() {
+	hasStarted = true;
+	if (astar.search(unit.tile, dest)) {
+		path = astar.path();
+		return ActivityStatus::success;
+	}
+	else {
+		return ActivityStatus::failure;
+	}
 }
 
-Status Move::execute() {
+ActivityStatus Move::execute() {
 	if (hasStarted == false) {
-		hasStarted = true;
-		if (astar.search(unit.tile, dest)) {
-			path = astar.path(stopShort);
-		}
-		else {
-			return failure;
-		}
+		ActivityStatus startStatus = start();
+		if (startStatus == ActivityStatus::failure)
+			return ActivityStatus::failure;
 	}
 	if (path.empty()) {
-		return success;
+		return ActivityStatus::success;
 	}
 	else {
 		followPath();
-		return inProgress;
+		return ActivityStatus::inProgress;
 	}
 }
 
@@ -45,29 +50,34 @@ Harvest::Harvest(Unit& unit, const Lookup depositLookup) :
 	depositLookup(depositLookup),
 	hasStartedHarvesting(false)
 	
-{
-	stopShort = true;
+{}
+
+ActivityStatus Harvest::start() {
+	hasStarted = true;
+	if (astar.search(unit.tile, dest)) {
+		path = astar.path();
+		return ActivityStatus::success;
+	}
+	else {
+		return ActivityStatus::failure;
+	}
 }
 
-Status Harvest::execute() {
+ActivityStatus Harvest::execute() {
 	if (hasStarted == false) {
-		hasStarted = true;
-		if (astar.search(unit.tile, dest)) {
-			path = astar.path(stopShort);
-		}
-		else {
-			return failure;
-		}
+		ActivityStatus startStatus = start();
+		if (startStatus == ActivityStatus::failure)
+			return ActivityStatus::failure;
 	}
 	if (path.empty()) {
 		if (tic >= unit.canGatherAt) {
 			Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
 			if (deposit == nullptr) {
 				if (hasStartedHarvesting) {
-					return success; //deposit destroyed while gathering
+					return ActivityStatus::success; //deposit destroyed while gathering
 				}
 				else {
-					return failure; //deposit destroyed before reached
+					return ActivityStatus::failure; //deposit destroyed before reached
 				}
 			}
 			if (hasStartedHarvesting == false) {
@@ -82,49 +92,42 @@ Status Harvest::execute() {
 			unit.canGatherAt = tic + unit.type.gatherPeriod;
 			if (deposit->amount == 0) {
 				delete deposit;
-				return success; //deposit has expired
+				return ActivityStatus::success; //deposit has expired
 			}
 			if (unit.carryAmmount == unit.type.carryCapacity) {
-				return success; //done gathering
+				return ActivityStatus::success; //done gathering
 			}
 		}
-		return inProgress; //still gathering
+		return ActivityStatus::inProgress; //still gathering
 	}
-
 	else {
 		followPath();
 		if (path.empty()) {
 			unit.canGatherAt = tic + unit.type.gatherPeriod;
 		}
-		return inProgress; //still moving
+		return ActivityStatus::inProgress; //still moving
 	}
 
 }
 
 ReturnResources::ReturnResources(Unit& unit, const Lookup buildingLookup) :
 	Move(unit, buildingLookup.tile)
-{
-	stopShort = true;
-}
+{}
 
-Status ReturnResources::execute() {
+ActivityStatus ReturnResources::execute() {
 	if (hasStarted == false) {
-		hasStarted = true;
-		if (astar.search(unit.tile, dest)) {
-			path = astar.path(stopShort);
-		}
-		else {
-			return failure;
-		}
+		ActivityStatus startStatus = start();
+		if (startStatus == ActivityStatus::failure)
+			return ActivityStatus::failure;
 	}
 	if (path.empty()) {
 		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
 		home->resources[unit.carryType] += unit.carryAmmount;
 		unit.carryAmmount = 0;
-		return success;
+		return ActivityStatus::success;
 	}
 	else {
 		followPath();
-		return inProgress;
+		return ActivityStatus::inProgress;
 	}
 }

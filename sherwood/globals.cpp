@@ -16,7 +16,7 @@ int tic(0);
 sf::Clock deltaClock;
 sf::Time dt = deltaClock.restart();
 
-const Colors color;
+const Colors colors;
 Map map("data/map.txt");
 sf::View mapView(sf::FloatRect(0, 0, VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]));
 //sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
@@ -28,38 +28,50 @@ EntityManager em;
 Input input;
 aStar astar;
 
+UnitType person = UnitType("Person");
+DoodadType rock = DoodadType("Rock");
+BuildingType house = BuildingType("House");
+DepositType berryBush = DepositType("Berries");
+DepositType tree = DepositType("Tree");
 
-UnitType person = UnitType("person");
-DoodadType rock = DoodadType("rock");
-BuildingType house = BuildingType("house");
-DepositType berryBush = DepositType("berry bush");
-DepositType tree = DepositType("tree");
+sf::RectangleShape FixedEntityType::shape = sf::RectangleShape();
+sf::RectangleShape FixedEntityType::outlineShape = sf::RectangleShape();
+sf::CircleShape UnitType::shape = sf::CircleShape();
+sf::CircleShape UnitType::outlineShape = sf::CircleShape();
 
 void initEntityTypes() {
-	person.color = color.lightBlue;
+	person.color = colors.lightBlue;
 	person.movePeriod = 1;
 	person.moveDistance = 4.0f;
 	person.carryCapacity = 5;
-	person.gatherPeriod = 30;
+	person.gatherPeriod = 15;
 	person.size = 12;
 
-	rock.color = color.darkGrey;
+	rock.color = colors.darkGrey;
 	rock.size = 12;
 
-	house.color = color.black;
+	house.color = colors.black;
 	house.resources[food] = 50;
 	house.resources[wood] = 100;
 	house.size = 16;
 
-	berryBush.color = color.red;
+	berryBush.color = colors.red;
 	berryBush.resourceType = food;
 	berryBush.amount = 10;
 	berryBush.size = 14;
 
-	tree.color = color.brown;
+	tree.color = colors.brown;
 	tree.resourceType = wood;
 	tree.amount = 50;
 	tree.size = 12;
+
+	FixedEntityType::outlineShape.setFillColor(colors.transparent);
+	FixedEntityType::outlineShape.setOutlineColor(colors.yellow);
+	FixedEntityType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
+
+	UnitType::outlineShape.setFillColor(colors.transparent);
+	UnitType::outlineShape.setOutlineColor(colors.yellow);
+	UnitType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
 }
 
 void initWindow() {

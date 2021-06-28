@@ -11,29 +11,30 @@
 #include "entity_manager.h"
 #include "utility.h"
 
+
 Graphics::Graphics() 
 {
 	viewportShape.setSize(Vec2f(VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]));
 	viewportShape.setPosition(Vec2f(VIEWPORT_OFFSET[0], VIEWPORT_OFFSET[1]));
-	viewportShape.setOutlineColor(color.red);
+	viewportShape.setOutlineColor(colors.red);
 	viewportShape.setOutlineThickness(1);
-	viewportShape.setFillColor(color.transparent);
+	viewportShape.setFillColor(colors.transparent);
 
 	verticalLine.setSize(Vec2f(LINE_WIDTH, GRID_SIZE.y + LINE_WIDTH));
-	verticalLine.setFillColor(color.lightGrey);
+	verticalLine.setFillColor(colors.lightGrey);
 
 	horizontalLine.setSize(Vec2f(GRID_SIZE.x + LINE_WIDTH, LINE_WIDTH));
-	horizontalLine.setFillColor(color.lightGrey);
+	horizontalLine.setFillColor(colors.lightGrey);
 
 	sf::RectangleShape grassRect;
 	sf::RectangleShape waterRect;
 
 	waterRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
-	waterRect.setFillColor(color.blue);
+	waterRect.setFillColor(colors.blue);
 	terrainShapes.push_back(waterRect);
 
 	grassRect.setSize(Vec2f(TILE_SIZE, TILE_SIZE));
-	grassRect.setFillColor(color.green);
+	grassRect.setFillColor(colors.green);
 	terrainShapes.push_back(grassRect);
 
 	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2);
@@ -85,18 +86,10 @@ void Graphics::drawTerrain() {
 void Graphics::drawEntities() {
 	for (auto& entity : em.entities) {
 		Vec2f graphicalPos = entity->position - Vec2f(entity->type.size / 2, entity->type.size / 2);
-		sf::Shape* shape = entity->type.getShape();
-		entity->type.updateShapeSize();
-		shape->setPosition(graphicalPos);
-		shape->setFillColor(entity->color);
+		sf::Shape* shape = entity->type.getShape(graphicalPos);
 		renderWindow.draw(*shape);
 		if (entity->isSelected) {
-			entity->type.updateOutlineShapeSize();
-			sf::Shape* outlineShape = entity->type.getOutlineShape();
-			outlineShape->setPosition(graphicalPos);
-			outlineShape->setFillColor(color.transparent);
-			outlineShape->setOutlineColor(color.yellow);
-			outlineShape->setOutlineThickness(-OUTLINE_WIDTH);
+			sf::Shape* outlineShape = entity->type.getOutlineShape(graphicalPos);
 			renderWindow.draw(*outlineShape);
 		}	
 	}
@@ -141,43 +134,42 @@ void Graphics::drawViewportOutline() {
 	renderWindow.draw(viewportShape);
 }
 
-void Graphics::drawPathDebug(const std::list<node>& open, const std::list<node>& closed, 
-	const Vec2i& s, const Vec2i& e, std::list<Vec2i> * path) {
+void Graphics::drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, 
+	const Vec2i& start, const Vec2i& end, std::list<Vec2i> * path) {
+
 	renderWindow.clear();
 	drawWorld();
 	
-	pathDebugShape.setFillColor(color.red);
-	for (std::list<node>::const_iterator i = open.begin(); i != open.end(); i++) {
-		if ((*i).tile != s) {
-			pathDebugShape.setPosition(tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
-			renderWindow.draw(pathDebugShape);
-		}
-		
-	}
-	pathDebugShape.setFillColor(color.purple);
-	for (std::list<node>::const_iterator i = closed.begin(); i != closed.end(); i++) {
-		if ((*i).tile != s) {
-			pathDebugShape.setPosition(tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
-			renderWindow.draw(pathDebugShape);
-		}	
-	}
-	if (path != nullptr) {
-		pathDebugShape.setFillColor(color.teal);
-		for (std::list<Vec2i>::iterator i = (*path).begin(); i != (*path).end(); i++) {
-			pathDebugShape.setPosition(tileToWorld((*i)) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
-			renderWindow.draw(pathDebugShape);
-		}
-	}
+	drawSearchNodes(open, colors.red);
+	drawSearchNodes(closed, colors.purple);
+	if (path != nullptr)
+		drawSearchPath(*path, colors.teal);
 
-	pathDebugShape.setFillColor(color.white);
-	pathDebugShape.setPosition(tileToWorld(s) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
-	renderWindow.draw(pathDebugShape);
-
-	pathDebugShape.setFillColor(color.yellow);
-	pathDebugShape.setPosition(tileToWorld(e) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
-	renderWindow.draw(pathDebugShape);
+	drawSearchTile(start, colors.white);
+	drawSearchTile(end, colors.yellow);
 
 	drawHUD();
 	renderWindow.display();
 }
 
+void Graphics::drawSearchNodes(const std::list<node>& nodes, const Color& color) {
+	pathDebugShape.setFillColor(color);
+	for (std::list<node>::const_iterator i = nodes.begin(); i != nodes.end(); i++) {
+		pathDebugShape.setPosition(tileToWorld((*i).tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+		renderWindow.draw(pathDebugShape);
+
+	}
+}
+void Graphics::drawSearchPath(const std::list<Vec2i>& path, const Color& color) {
+	pathDebugShape.setFillColor(color);
+	for (std::list<Vec2i>::const_iterator i = path.begin(); i != path.end(); i++) {
+		pathDebugShape.setPosition(tileToWorld((*i)) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+		renderWindow.draw(pathDebugShape);
+	}
+}
+
+void Graphics::drawSearchTile(const Vec2i& tile, const Color& color) {
+	pathDebugShape.setFillColor(color);
+	pathDebugShape.setPosition(tileToWorld(tile) - Vec2f(PATH_DEBUG_SIZE / 2, PATH_DEBUG_SIZE / 2));
+	renderWindow.draw(pathDebugShape);
+}

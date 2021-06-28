@@ -8,10 +8,8 @@ public:
 	sf::Color color;	
 	float size;
 	EntityType(std::string&&);
-	virtual sf::Shape* getShape() const = 0;
-	virtual sf::Shape* getOutlineShape() const = 0;
-	virtual void updateShapeSize() const = 0;
-	virtual void updateOutlineShapeSize() const = 0;
+	virtual sf::Shape* getShape(const Vec2f graphicalPosition) const = 0;
+	virtual sf::Shape* getOutlineShape(const Vec2f graphicalPosition) const = 0;
 };
 
 class FixedEntityType : public EntityType {
@@ -20,10 +18,8 @@ public:
 	static sf::RectangleShape outlineShape;
 
 	FixedEntityType(std::string&& _name);
-	sf::Shape* getShape() const;
-	sf::Shape* getOutlineShape() const;
-	void updateShapeSize() const;
-	void updateOutlineShapeSize() const;
+	sf::Shape* getShape(const Vec2f graphicalPosition) const;
+	sf::Shape* getOutlineShape(const Vec2f graphicalPosition) const;
 };
 
 class DoodadType: public FixedEntityType {
@@ -50,16 +46,15 @@ class UnitType : public EntityType {
 public:
 	static sf::CircleShape shape;
 	static sf::CircleShape outlineShape;
+
 	int movePeriod;
 	float moveDistance;
 	int carryCapacity;
 	int gatherPeriod;
 
 	UnitType(std::string&& _name);
-	sf::Shape* getShape() const;
-	sf::Shape* getOutlineShape() const;
-	void updateShapeSize() const;
-	void updateOutlineShapeSize() const;
+	sf::Shape* getShape(const Vec2f graphicalPosition) const;
+	sf::Shape* getOutlineShape(const Vec2f graphicalPosition) const;
 };
 
 

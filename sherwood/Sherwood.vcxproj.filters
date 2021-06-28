@@ -36,9 +36,6 @@
     <ClCompile Include="ability.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="color.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="actions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

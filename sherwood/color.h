@@ -22,4 +22,4 @@ struct Colors {
 	const Color brown =		Color(150, 82, 8);
 };
 
-extern const Colors color;
+extern const Colors colors;

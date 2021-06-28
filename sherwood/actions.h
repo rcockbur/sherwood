@@ -1,6 +1,5 @@
 #pragma once
 #include "types.h"
-//#include "globals.h"
 #include "entity.h"
 #include "ability.h"
 

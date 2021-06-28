@@ -16,6 +16,17 @@ aStar::aStar() {
     neighbours[6] = Vec2i(0, 1); 
     neighbours[7] = Vec2i(1, 0);
 }
+
+bool aStar::orthoginalNeighborIsPathable(const Vec2i tile) {
+    Vec2i neighbourTile;
+    for (int x = 4; x < 8; x++) {
+        neighbourTile = tile + neighbours[x];
+        if (map.isWithinBounds(neighbourTile) && map.isPathable(neighbourTile))
+            return true;
+    }
+    return false;
+}
+
 int aStar::heuristic(const Vec2i& p) {
     int deltaX = std::abs(end.x - p.x);
     int deltaY = std::abs(end.y - p.y);
@@ -57,7 +68,7 @@ void aStar::fillOpen(node& n) {
         std::list<node>::iterator i;
         i = std::find(closed.begin(), closed.end(), neighbourTile);
         if (i == closed.end()) {
-            if (map.isWithinBounds(neighbourTile) && map.isPathable(neighbourTile)) {
+            if (map.isWithinBounds(neighbourTile)) {
                 if (x >= 4 || validDiagonal(n.tile, neighbours[x])) {
                     neighborG = stepCost + n.g;
                     neighborH = heuristic(neighbourTile);
@@ -85,7 +96,7 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
     clear();
     if (showPathfinding) renderWindow.setFramerateLimit(1000);
     bool pathFound = false;
-    if (map.isPathable(e)) {
+    if (map.isPathable(e) || orthoginalNeighborIsPathable(e)) {
         node n;
         end = e;
         start = s;
@@ -107,15 +118,16 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
                 pathFound = true;
                 break;
             }
-            fillOpen(n);
+            if (map.isPathable(n.tile))
+                fillOpen(n);
             if (showPathfinding) 
-                graphics.drawPathDebug(open, closed, start, end, nullptr);//after each node
+                graphics.drawSearchDebug(open, closed, start, end, nullptr);//after each node
         }     
     }
     if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
     return pathFound;
 }
-std::list<Vec2i> aStar::path(const bool stopShort) {
+std::list<Vec2i> aStar::path() {
     if (showPathfinding) {
         Sleep(200);
         renderWindow.setFramerateLimit(1000);
@@ -128,7 +140,7 @@ std::list<Vec2i> aStar::path(const bool stopShort) {
             path.push_front((*i).tile);
             parent = (*i).parent;
             if (showPathfinding) {
-                graphics.drawPathDebug(open, closed, start, end, &path);
+                graphics.drawSearchDebug(open, closed, start, end, &path);
                 Sleep(10); //after each path node
             }
         }
@@ -137,7 +149,9 @@ std::list<Vec2i> aStar::path(const bool stopShort) {
         Sleep(200);
         renderWindow.setFramerateLimit(targetFPS);
     }
-    if (stopShort) path.pop_back();
+    if (map.isPathable(path.back()) == false) {
+        path.pop_back();
+    }
     
     return path;
 }

@@ -4,8 +4,52 @@
 #include "globals.h"
 
 Job::Job(Unit& _unit) :
-	unit(_unit)
+	unit(_unit),
+	hasStarted(false)
 {}
+
+Job::~Job() {
+	if (ability != nullptr) delete ability;
+}
+
+void Job::setAbility(Ability* _ability) {
+	if (ability != nullptr) delete ability;
+	ability = _ability;
+}
+
+void Job::destroyAbility() {
+	if (ability != nullptr) delete ability;
+	ability = nullptr;
+}
+
+ActivityStatus Job::start() {
+	checkForAnotherAbility();
+	if (ability == nullptr)
+		return ActivityStatus::failure;
+	hasStarted = true;
+	return ability->start();
+}
+
+CompleteStatus Job::execute() {
+	if (hasStarted == false)
+		if(start() == ActivityStatus::failure)
+			return CompleteStatus::complete;
+
+	ActivityStatus abilityStatus = ability->execute();
+	switch (abilityStatus) {
+	case(ActivityStatus::success):
+		destroyAbility();
+		checkForAnotherAbility();
+		if (ability == nullptr)
+			return CompleteStatus::complete;
+		else
+			return CompleteStatus::incomplete;
+	case(ActivityStatus::failure):
+		return CompleteStatus::complete;
+	default:
+		return CompleteStatus::incomplete;
+	}
+}
 
 Harvester::Harvester(Unit& _unit, const Lookup depositLookup) :
 	Job(_unit),
@@ -13,30 +57,33 @@ Harvester::Harvester(Unit& _unit, const Lookup depositLookup) :
 	forcedHarvest(true)
 {}
 
-Status Harvester::addAbility() {
+void Harvester::checkForAnotherAbility() {
 	if (forcedHarvest == true || unit.carryAmmount == 0) {
 		Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
-		if (deposit == nullptr) {
-			return success;
-		}
-		else {
+		if (deposit != nullptr) {
 			forcedHarvest = false;
-			std::cout << "issuing harvest ability\n";
 			Harvest* harvest = new Harvest(unit, depositLookup);
-			unit.setAbility(harvest);
-			return inProgress;
+			setAbility(harvest);
 		}
 	}
 	else {
 		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
-		if (home == nullptr) {
-			return failure;
-		}
-		else {
-			std::cout << "issuing return ability\n";
+		if (home != nullptr) {
 			ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
-			unit.setAbility(returnResources);
-			return inProgress;
+			setAbility(returnResources);
 		}
+	}
+}
+
+Mover::Mover(Unit& _unit, const Vec2i targetTile) :
+	Job(_unit),
+	targetTile(targetTile)
+{}
+
+void Mover::checkForAnotherAbility() {
+	if (hasStarted == false) {
+		hasStarted = true;
+		Move* move = new Move(unit, targetTile);
+		setAbility(move);
 	}
 }

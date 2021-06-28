@@ -156,7 +156,6 @@
   <ItemGroup>
     <ClCompile Include="ability.cpp" />
     <ClCompile Include="actions.cpp" />
-    <ClCompile Include="color.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="entity.cpp" />

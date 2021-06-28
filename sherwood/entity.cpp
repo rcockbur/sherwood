@@ -39,7 +39,7 @@ void Entity::getSelectionText(std::ostringstream& s) {
 	s << "Type: " << type.name << "\n";
 	s << "ID: " << id << "\n";
 	s << "Tile: " << tile << "\n";
-	s << "Pos: " << position << "\n";
+	//s << "Pos: " << position << "\n";
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
@@ -120,9 +120,6 @@ Unit::Unit(const UnitType& _type, const Vec2i _tile) :
 }
 
 Unit::~Unit() {
-	for (Ability* ability : abilityQueue) {
-		delete ability;
-	}
 	for (Job* job : jobQueue) {
 		delete job;
 	}
@@ -131,30 +128,12 @@ Unit::~Unit() {
 
 void Unit::update()
 {
-	bool finishedAnAbility = false;
-	Status abilityStatus;
-	if (abilityQueue.size() > 0) {
-		Ability* ability = abilityQueue.front();
-		abilityStatus = ability->execute();
-		if (abilityStatus != inProgress) {
-			delete ability;
-			abilityQueue.pop_front();
-			finishedAnAbility = true;
-		}	
-	}
-	if (abilityQueue.size() == 0 && jobQueue.size() > 0) {
+	if (jobQueue.size() > 0) {
 		Job* job = jobQueue.front();
-		if (finishedAnAbility && abilityStatus == failure) {
+		CompleteStatus jobStatus = job->execute();
+		if (jobStatus == CompleteStatus::complete) {
 			delete job;
 			jobQueue.pop_front();
-		}
-		else {
-			
-			Status jobStatus = job->addAbility();
-			if (jobStatus != inProgress) {
-				delete job;
-				jobQueue.pop_front();
-			}
 		}
 	}
 }
@@ -162,29 +141,12 @@ void Unit::update()
 void Unit::getSelectionText(std::ostringstream& s) {
 	Entity::getSelectionText(s);
 	s << "Home: " << ((homeLookup.id >= 0) ? std::to_string(homeLookup.id) : "-") << "\n";
-	s << "AbilityQueue: " << abilityQueue.size() << "\n";
 	s << "JobQueue: " << jobQueue.size() << "\n";
 	s << "Carrying: ";
-	if (carryAmmount > 0) {
+	if (carryAmmount > 0)
 		s << std::to_string(carryAmmount) << " " << resourceNames[carryType] << "\n";
-	}
-	else {
+	else
 		s << "-\n";
-	}
-}
-
-void Unit::addAbility(Ability* ability) {
-	abilityQueue.push_back(ability);
-}
-
-void Unit::setAbility(Ability* ability) {
-	destroyAbilities();
-	abilityQueue.push_back(ability);
-}
-
-void Unit::destroyAbilities() {
-	for (auto ability : abilityQueue) delete ability;
-	abilityQueue.clear();
 }
 
 void Unit::addJob(Job* job) {
@@ -192,7 +154,6 @@ void Unit::addJob(Job* job) {
 }
 
 void Unit::setJob(Job* job) {
-	destroyAbilities();
 	destroyJobs();
 	jobQueue.push_back(job);
 }

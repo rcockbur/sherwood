@@ -14,7 +14,8 @@ typedef sf::Rect<float> Rect;
 
 enum ResourceType { food, wood };
 enum TerrainType { water, grass };
-enum Status { success, failure, inProgress };
+enum class ActivityStatus { success, failure, inProgress };
+enum class CompleteStatus { complete, incomplete };
 
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);

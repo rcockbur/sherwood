@@ -75,11 +75,9 @@ public:
 class Unit : public Entity {
 public:
 	const UnitType& type;
-	std::deque<Ability*> abilityQueue;
 	std::deque<Job*> jobQueue;
 	int canMoveAt;
 	int canGatherAt;
-	//Building* home;
 	Lookup homeLookup;
 	int carryType;
 	int carryAmmount;
@@ -88,9 +86,6 @@ public:
 	~Unit();
 	void update();
 	void getSelectionText(std::ostringstream&);
-	void addAbility(Ability* ability);
-	void setAbility(Ability* ability);
-	void destroyAbilities();
 	void addJob(Job* job);
 	void setJob(Job* job);
 	void destroyJobs();

@@ -5,6 +5,7 @@
 #include <fstream>
 #include "map.h"
 
+
 Map::Map(std::string fileName)
 	: tileCount(calculateTileCount(fileName))
 {
@@ -16,6 +17,7 @@ Map::Map(std::string fileName)
 		impassGrid[x].resize(tileCount.y);
 	}
 	loadMapData("data/map.txt");
+	
 	std::cout << "Map data loaded\n";
 }
 
@@ -24,8 +26,7 @@ bool Map::isWithinBounds(Vec2i tile) {
 }
 
 bool Map::isPathable(Vec2i tile) {
-	return (terrainGrid[tile.x][tile.y] > 0);
-	//return (impassGrid[tile.x][tile.y] == false);
+	return (impassGrid[tile.x][tile.y] == false);
 }
 
 void Map::validateWithinBounds(Vec2i tile) const {

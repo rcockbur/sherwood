@@ -57,7 +57,8 @@ void Input::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
 	//std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y << "\n";
 	if (VIEWPORT_RECT.contains(screenPos)) {
 		Vec2f worldPos = screenToWorld(screenPos);
-		handleWorldClick(worldPos, isRightClick);
+		if(worldPos.x >= 0 && worldPos.x < GRID_SIZE.x && worldPos.y >= 0 && worldPos.y < GRID_SIZE.y) 
+			handleWorldClick(worldPos, isRightClick);
 	}
 	else {
 		//std::cout << "Out of bounds\n";
@@ -121,18 +122,6 @@ void Input::handleKeyPress(sf::Keyboard::Key code) {
 	case(sf::Keyboard::P):
 		showPathfinding = !showPathfinding;
 		break;
-	//case(sf::Keyboard::Up):
-	//	mapView.move(Vec2f(0, -CAMERA_SPEED));
-	//	break;
-	//case(sf::Keyboard::Down):
-	//	mapView.move(Vec2f(0, CAMERA_SPEED));
-	//	break;
-	//case(sf::Keyboard::Left):
-	//	mapView.move(Vec2f(-CAMERA_SPEED, 0));
-	//	break;
-	//case(sf::Keyboard::Right):
-	//	mapView.move(Vec2f(CAMERA_SPEED, 0));
-	//	break;
 	case(sf::Keyboard::Add):
 		updateFPS(targetFPS + 1);
 		break;

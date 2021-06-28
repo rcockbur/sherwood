@@ -15,9 +15,10 @@ public:
     std::list<node> closed;
 	aStar();
     bool search(const Vec2i& s, const Vec2i& e);
-    std::list<Vec2i> path(const bool stopShort);
+    std::list<Vec2i> path();
     void clear();
 private:
+    bool orthoginalNeighborIsPathable(const Vec2i);
     int heuristic(const Vec2i& p);
     bool checkNeighbor(Vec2i& p, int cost);
     void fillOpen(node& n);

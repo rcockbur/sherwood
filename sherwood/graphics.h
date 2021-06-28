@@ -10,7 +10,7 @@ class Graphics {
 public:
 	Graphics();
 	void draw();
-	void drawPathDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
+	void drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
 		const Vec2i& e, std::list<Vec2i> * path);
 private:
 	const sf::Color gridColor;
@@ -33,5 +33,8 @@ private:
 	void drawText();
 	void drawTopText();
 	void drawTextSelection();
+	void drawSearchNodes(const std::list<node>& nodes, const Color& color);
+	void drawSearchPath(const std::list<Vec2i>& path, const Color& color);
+	void drawSearchTile(const Vec2i& node, const Color& color);
 };
 

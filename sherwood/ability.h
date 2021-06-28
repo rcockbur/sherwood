@@ -8,7 +8,8 @@
 
 class Ability {
 public:
-	virtual Status execute() = 0;
+	virtual ActivityStatus start() = 0;
+	virtual ActivityStatus execute() = 0;
 };
 
 class Move : public Ability {
@@ -17,10 +18,9 @@ public:
 	const Vec2i dest;
 	std::list<Vec2i> path;
 	bool hasStarted;
-	bool stopShort;
 	Move(Unit& unit, const Vec2i dest);
-	
-	Status execute();
+	ActivityStatus start();
+	ActivityStatus execute();
 protected:
 	void followPath();
 };
@@ -30,11 +30,12 @@ public:
 	const Lookup depositLookup;
 	bool hasStartedHarvesting;
 	Harvest(Unit& unit, const Lookup depositLookup);
-	Status execute();
+	ActivityStatus start();
+	ActivityStatus execute();
 };
 
 class ReturnResources : public Move {
 public :
 	ReturnResources(Unit& unit, const Lookup buildingLookup);
-	Status execute();
+	ActivityStatus execute();
 };
