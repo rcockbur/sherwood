@@ -35,7 +35,6 @@ Panel::Panel() :
 	text.setCharacterSize(14);
 	text.setFillColor(sf::Color::White);
 
-	//border.setOutlineColor(colors.transparent);
 	border.setOutlineThickness(-1);
 	border.setFillColor(colors.transparent);
 }

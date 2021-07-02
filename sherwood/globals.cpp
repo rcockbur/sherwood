@@ -28,11 +28,7 @@ sf::View mapView(sf::FloatRect(Vec2f(), ui.viewportPanel.getSize()));
 //sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
 sf::RenderWindow renderWindow(sf::VideoMode((int)ui.hud.getSize().x, (int)ui.hud.getSize().y), "Sherwood");
 const Vec2f GRID_SIZE((float)map.tileCount.x * TILE_SIZE, ((float)map.tileCount.y * TILE_SIZE));
-
-
 Graphics graphics;
-Input input;
-
 EntityManager em;
 aStar astar;
 
@@ -97,10 +93,9 @@ void initEntityTypes() {
 void initWindow() {
 	renderWindow.setPosition(Vec2i(0, 0));
 	renderWindow.setFramerateLimit(targetFPS);
-	//Vec2f viewportOffsetRatio(ui.viewportPanel.getPosition().x / ui.hud.getSize().x, ui.viewportPanel.getPosition().y / ui.hud.getSize().y);
-	//DivideVec2<float>(ui.viewportPanel.getPosition(), ui.hud.getSize());
 	Vec2f viewportOffsetRatio(DivideVec2<float>(ui.viewportPanel.getPosition(), ui.hud.getSize()));
-	Vec2f viewportSizeRatio(ui.viewportPanel.getSize().x / ui.hud.getSize().x, ui.viewportPanel.getSize().y / ui.hud.getSize().y);
+	Vec2f viewportSizeRatio(DivideVec2<float>(ui.viewportPanel.getSize(), ui.hud.getSize()));
+	//Vec2f viewportSizeRatio(ui.viewportPanel.getSize().x / ui.hud.getSize().x, ui.viewportPanel.getSize().y / ui.hud.getSize().y);
 	mapView.setViewport(sf::FloatRect(viewportOffsetRatio.x, viewportOffsetRatio.y, viewportSizeRatio.x, viewportSizeRatio.y));
 	mapView.move(Vec2f(-10, -10));
 }

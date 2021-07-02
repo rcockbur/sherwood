@@ -30,10 +30,9 @@ int main()
 
 	float lastFPSUpdate = gameClock.getElapsedTime().asSeconds();
 	while (renderWindow.isOpen()) {
-		input.handleInput();
+		handleInput();
 		em.updateEntities();
 		graphics.draw();
-		//renderWindow.draw(ui);
 		if (hasPrinted) std::cout << "---------------------" << std::endl;
 		hasPrinted = false;
 		++tics;

@@ -30,7 +30,6 @@ extern const Vec2f GRID_SIZE;
 
 extern Graphics graphics;
 extern EntityManager em;
-extern Input input;
 extern UI ui;
 extern aStar astar;
 

@@ -1,6 +1,8 @@
 #include "ui.h"
 #include "globals.h"
 #include "color.h"
+#include "input.h"
+#include "actions.h"
 
 UI::UI()
 {
@@ -42,6 +44,7 @@ UI::UI()
 	viewportPanel.moveBelowPanel(topPanel);
 	viewportPanel.setSize(Vec2f(900, 660));
 	viewportPanel.setBorderColor(colors.blue);
+	viewportPanel.setCallback(handleWorldClick);
 
 	rightPanel.setName("rightPanel");
 	rightPanel.setParent(hud);
