@@ -26,6 +26,10 @@ Vec2f Panel::getSize() const {
 	return size;
 }
 
+BuildingType* Panel::getBuildingType() const {
+	return buildingType;
+}
+
 Panel::Panel() :
 	parent(nullptr),
 	drawBorder(false),
@@ -78,6 +82,10 @@ void Panel::setPosition(const Vec2f _pos) {
 	text.setPosition(pos + padding.topLeft());
 }
 
+void Panel::setBuildingType(BuildingType* _buildingType){
+	buildingType = _buildingType;
+}
+
 void Panel::setString(const std::string& string) {
 	text.setString(string);
 	text.setPosition(getInnerPosition());
@@ -116,17 +124,21 @@ void Panel::setBorderColor(const Color& color) {
 	border.setOutlineColor(color);
 }
 
-void Panel::handleClick(const Vec2f screenPos, const bool isLeftClick) {
+void Panel::handleClick(const bool isLeftClick) {
 	if (callback != nullptr) {
-		callback(screenPos, isLeftClick);
+		callback(*this, isLeftClick);
 	}
 	for (auto child : children) {
-		if(screenPos.x >= child->pos.x && screenPos.x < child->pos.x + child->size.x &&
-			screenPos.y >= child->pos.y && screenPos.y < child->pos.y + child->size.y)
-			child->handleClick(screenPos, isLeftClick);
+		if (child->containsScreenPos(mouseScreenPos)) 
+			child->handleClick(isLeftClick);
 	}
 }
 
-void Panel::setCallback(void (*_callback)(const Vec2f, const bool)) {
+void Panel::setCallback(void (*_callback)(const Panel&, const bool)) {
 	callback = _callback;
 }
+
+bool Panel::containsScreenPos(const Vec2f _pos) {
+	return (_pos.x >= pos.x && _pos.x < pos.x + size.x && _pos.y >= pos.y && _pos.y < pos.y + size.y);
+}
+

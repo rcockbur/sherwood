@@ -14,10 +14,10 @@
 
 Graphics::Graphics()
 {
-	verticalLine.setSize(Vec2f(LINE_WIDTH, GRID_SIZE.y + LINE_WIDTH));
+	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));
 	verticalLine.setFillColor(colors.lightGrey);
 
-	horizontalLine.setSize(Vec2f(GRID_SIZE.x + LINE_WIDTH, LINE_WIDTH));
+	horizontalLine.setSize(Vec2f(map.size.x + LINE_WIDTH, LINE_WIDTH));
 	horizontalLine.setFillColor(colors.lightGrey);
 
 	sf::RectangleShape grassRect;
@@ -78,6 +78,15 @@ void Graphics::drawEntities() {
 		if (entity->isSelected) {
 			sf::Shape* outlineShape = entity->type.getOutlineShape(graphicalPos);
 			renderWindow.draw(*outlineShape);
+		}
+	}
+	if (placementBuildingType != nullptr) {
+		if (mouseWorldPos != Vec2f(-1, -1)) {
+			Vec2f snappedPos = tileToWorld(worldToTile(mouseWorldPos));
+			Vec2f graphicalPos = snappedPos - Vec2f(placementBuildingType->size / 2, placementBuildingType->size / 2);
+
+			sf::Shape* placementShape = placementBuildingType->getShape(graphicalPos);
+			renderWindow.draw(*placementShape);
 		}
 	}
 }

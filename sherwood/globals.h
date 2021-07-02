@@ -19,6 +19,10 @@ extern int targetFPS;
 extern float actualFPS;
 
 extern Entity* selectedEntity;
+extern BuildingType* placementBuildingType;
+extern Vec2f mouseScreenPos;
+extern Vec2f mouseWorldPos;
+extern Vec2i mouseTile;
 extern sf::Clock deltaClock;
 extern sf::Clock gameClock;
 extern sf::Time dt;
@@ -26,7 +30,6 @@ extern sf::Time dt;
 extern Map map;
 extern sf::View mapView;
 extern sf::RenderWindow renderWindow;
-extern const Vec2f GRID_SIZE;
 
 extern Graphics graphics;
 extern EntityManager em;
@@ -34,8 +37,12 @@ extern UI ui;
 extern aStar astar;
 
 extern UnitType person;
+
 extern DoodadType rock;
+
 extern BuildingType house;
+extern BuildingType mill;
+
 extern DepositType berryBush;
 extern DepositType tree;
 extern DepositType goldMine;

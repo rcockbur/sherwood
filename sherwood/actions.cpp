@@ -3,15 +3,23 @@
 #include "pathfinding.h"
 #include "job.h"
 #include "utility.h"
+#include "entity_type.h"
 
-void handleWorldClick(const Vec2f screenPos, const bool isLeftClick) {
-	Vec2f worldPos = screenToWorld(screenPos);
+void handleWorldClick(const Panel& panel, const bool isLeftClick) {
+	Vec2f worldPos = screenToWorld(mouseScreenPos);
 	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
 	//std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	Entity* clickedEntity = em.getEntityAtWorldPos(worldPos);
 	if (isLeftClick) {
-		if (clickedEntity != nullptr)
+		if (placementBuildingType != nullptr) {
+			if (mouseTile != Vec2i(-1, -1)) {
+				new Building(*placementBuildingType, mouseTile);
+				placementBuildingType = nullptr;
+			}
+		}
+
+		else if (clickedEntity != nullptr)
 			em.selectEntity(clickedEntity);
 	}
 	else {
@@ -30,6 +38,20 @@ void handleWorldClick(const Vec2f screenPos, const bool isLeftClick) {
 			}
 		}
 	}
+}
+
+//void houseButtonClicked(const bool isLeftClick) {
+//	std::cout << "house button\n";
+//	placementBuildingType = &house;
+//}
+//
+//void millButtonClicked(const bool isLeftClick) {
+//	std::cout << "mill button\n";
+//	placementBuildingType = &mill;
+//}
+
+void buildingButtonClicked(const Panel& panel, const bool isLeftClick) {
+	placementBuildingType = panel.getBuildingType();
 }
 
 void unitMoveToTile(Unit& unit, Vec2i targetTile) {

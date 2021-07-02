@@ -2,6 +2,7 @@
 #include "types.h"
 #include <vector>
 #include <list>
+#include "entity_type.h"
 
 class Padding {
 public:
@@ -16,12 +17,16 @@ public:
 	Vec2f getPosition() const;
 	Vec2f getInnerPosition() const;
 	Vec2f getSize() const;
+	BuildingType* getBuildingType() const;
 	void setString(const std::string& string);
-	void handleClick(const Vec2f screenPos, const bool isLeftClick);
-	void setCallback(void (*callback)(const Vec2f, const bool));
+	void setBuildingType(BuildingType* BuildingType);
+	void setCallback(void (*callback)(const Panel&, const bool));
+	void handleClick(const bool isLeftClick);
+	bool containsScreenPos(const Vec2f pos);
 private:
+	BuildingType* buildingType;
 	std::string name;
-	void (*callback)(const Vec2f, const bool);
+	void (*callback)(const Panel&, const bool);
 	Panel* parent;
 	Vec2f pos;
 	Vec2f size;

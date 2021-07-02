@@ -17,6 +17,9 @@ public:
 	Panel viewportPanel;
 	Panel rightPanel;
 	Panel selectionPanel;
+	Panel buttonGridPanel;
+	Panel houseButton;
+	Panel millButton;
 	sf::Text text;
 	sf::Font font;
 	UI();

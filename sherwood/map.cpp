@@ -4,12 +4,15 @@
 #include <sstream>
 #include <fstream>
 #include "map.h"
+#include "constants.h"
 
 
-Map::Map(std::string fileName)
-	: tileCount(calculateTileCount(fileName))
+Map::Map(std::string fileName) : 
+	tileCount(calculateTileCount(fileName)),
+	size((float)tileCount.x * TILE_SIZE, ((float)tileCount.y * TILE_SIZE))
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
+	
 	terrainGrid.resize(tileCount.x);
 	impassGrid.resize(tileCount.x);
 	for (int x = 0; x < tileCount.x; x++) {
@@ -29,7 +32,7 @@ bool Map::isPathable(Vec2i tile) {
 	return (impassGrid[tile.x][tile.y] == false);
 }
 
-void Map::validateWithinBounds(Vec2i tile) const {
+void Map::validateWithinBounds(const Vec2i tile) const {
 	if (tile.x < 0 || tile.x >= tileCount.x || tile.y < 0 || tile.y >= tileCount.y)
 		throw std::logic_error("tile is out of bounds");
 }
@@ -75,4 +78,8 @@ void Map::loadMapData(std::string fileName) {
 			++y;
 		}
 	}
+}
+
+bool Map::containsWorldPos(const Vec2f pos) const {
+	return (pos.x >= 0 && pos.x < size.x&& pos.y >= 0 && pos.y < size.y);
 }

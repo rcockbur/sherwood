@@ -12,6 +12,8 @@ int main()
 
 	Building* myHome = new Building(house, Vec2i(0, 3));
 
+	new Building(mill, Vec2i(12, 4));
+
 	(new Unit(person, Vec2i(0, 0)))->setHome(*myHome);
 	(new Unit(person, Vec2i(1, 0)))->setHome(*myHome);
 	(new Unit(person, Vec2i(2, 0)))->setHome(*myHome);

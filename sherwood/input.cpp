@@ -13,8 +13,19 @@ void handleInput()
 	handleKeysDown();
 	sf::Event event;
 	while (renderWindow.pollEvent(event)) {
-		Vec2f screenPos((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
-
+		mouseScreenPos = Vec2f((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
+		if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
+			mouseWorldPos = screenToWorld(mouseScreenPos);
+			mouseTile = worldToTile(mouseWorldPos);
+			if (map.containsWorldPos(mouseWorldPos) == false) {
+				mouseWorldPos = Vec2f(-1, -1);
+				mouseTile = Vec2i(-1, -1);
+			}
+		}
+		else {
+			mouseWorldPos = Vec2f(-1, -1);
+			mouseTile = Vec2i(-1, -1);
+		}
 		switch (event.type) {
 		case sf::Event::Closed:
 			renderWindow.close();
@@ -24,10 +35,10 @@ void handleInput()
 		case sf::Event::MouseButtonPressed:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				ui.hud.handleClick(screenPos, true);
+				ui.hud.handleClick(true);
 				break;
 			case(sf::Mouse::Right):
-				ui.hud.handleClick(screenPos, false);
+				ui.hud.handleClick(false);
 				break;
 			default:
 				break;
@@ -57,6 +68,11 @@ void handleKeyPress(sf::Keyboard::Key code) {
 	case(sf::Keyboard::Q):
 		renderWindow.close();
 		break;
+	case(sf::Keyboard::Delete):
+		if (selectedEntity != nullptr) {
+			delete selectedEntity;
+			break;
+		}
 	case(sf::Keyboard::G):
 		showGrid = !showGrid;
 		break;

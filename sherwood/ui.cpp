@@ -52,10 +52,35 @@ UI::UI()
 	rightPanel.moveRightOfPanel(viewportPanel);
 	rightPanel.moveBelowPanel(topPanel);
 	rightPanel.setSize(Vec2f(-1, viewportPanel.size.y));
-	rightPanel.setBorderColor(colors.yellow);
 
 	selectionPanel.setName("selectionPanel");
 	selectionPanel.setParent(rightPanel);
-	selectionPanel.setSize((Vec2f(-1, -1)));
+	selectionPanel.setSize((Vec2f(-1, 200)));
+	selectionPanel.setBorderColor(colors.yellow);
+
+	buttonGridPanel.setName("buttonGridPanel");
+	buttonGridPanel.setParent(rightPanel);
+	buttonGridPanel.moveBelowPanel(selectionPanel);
+	buttonGridPanel.setSize(Vec2f(-1, -1));
+	buttonGridPanel.setBorderColor(colors.purple);
+
+	houseButton.setName("houseButton");
+	houseButton.setParent(buttonGridPanel);
+	houseButton.setString("House");
+	houseButton.setSize(Vec2f(70, 50));
+	houseButton.setBorderColor(colors.white);
+	houseButton.setPadding(Padding(3, 3, 3, 3));
+	houseButton.setCallback(buildingButtonClicked);
+	houseButton.setBuildingType(&house);
+
+	millButton.setName("millButton");
+	millButton.setParent(buttonGridPanel);
+	millButton.setString("Mill");
+	millButton.moveRightOfPanel(houseButton);
+	millButton.setSize(Vec2f(70, 50));
+	millButton.setBorderColor(colors.white);
+	millButton.setPadding(Padding(3, 3, 3, 3));
+	millButton.setCallback(buildingButtonClicked);
+	millButton.setBuildingType(&mill);
 }
 

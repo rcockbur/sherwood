@@ -16,6 +16,10 @@ int tics = 0;
 int seconds = 0;
 float actualFPS = (float)targetFPS;
 Entity* selectedEntity(nullptr);
+BuildingType* placementBuildingType(nullptr);
+Vec2f mouseScreenPos(0, 0);
+Vec2f mouseWorldPos(-1, -1);
+Vec2i mouseTile(-1, -1);
 
 sf::Clock deltaClock;
 sf::Clock gameClock;
@@ -27,7 +31,6 @@ UI ui;
 sf::View mapView(sf::FloatRect(Vec2f(), ui.viewportPanel.getSize()));
 //sf::RenderWindow renderWindow(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Sherwood", sf::Style::Fullscreen);
 sf::RenderWindow renderWindow(sf::VideoMode((int)ui.hud.getSize().x, (int)ui.hud.getSize().y), "Sherwood");
-const Vec2f GRID_SIZE((float)map.tileCount.x * TILE_SIZE, ((float)map.tileCount.y * TILE_SIZE));
 Graphics graphics;
 EntityManager em;
 aStar astar;
@@ -35,6 +38,7 @@ aStar astar;
 UnitType person = UnitType("Person");
 DoodadType rock = DoodadType("Rock");
 BuildingType house = BuildingType("House");
+BuildingType mill = BuildingType("Mill");
 DepositType berryBush = DepositType("Berry Bush");
 DepositType tree = DepositType("Tree");
 DepositType goldMine = DepositType("Gold Mine");
@@ -60,6 +64,9 @@ void initEntityTypes() {
 	house.resources[food] = 50;
 	house.resources[wood] = 100;
 	house.size = 16;
+
+	mill.color = colors.orange;
+	mill.size = 20;
 
 	berryBush.color = colors.red;
 	berryBush.resourceType = food;
