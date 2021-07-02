@@ -14,11 +14,11 @@
 
 Graphics::Graphics() 
 {
-	viewportShape.setSize(Vec2f(VIEWPORT_SIZE[0], VIEWPORT_SIZE[1]));
-	viewportShape.setPosition(Vec2f(VIEWPORT_OFFSET[0], VIEWPORT_OFFSET[1]));
-	viewportShape.setOutlineColor(colors.red);
-	viewportShape.setOutlineThickness(1);
-	viewportShape.setFillColor(colors.transparent);
+	//viewportShape.setSize(ui.viewportPanel.getSize());
+	//viewportShape.setPosition(ui.viewportPanel.getInnerPosition());
+	//viewportShape.setOutlineColor(colors.red);
+	//viewportShape.setOutlineThickness(1);
+	//viewportShape.setFillColor(colors.transparent);
 
 	verticalLine.setSize(Vec2f(LINE_WIDTH, GRID_SIZE.y + LINE_WIDTH));
 	verticalLine.setFillColor(colors.lightGrey);
@@ -39,18 +39,18 @@ Graphics::Graphics()
 
 	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2);
 
-	if (!arial.loadFromFile("resources/sansation.ttf"))
-		throw std::logic_error("font cannot be found");
-	initText(fpsText, Vec2f(WINDOW_PADDING_LEFT, WINDOW_PADDING_TOP));
-	initText(selectionText, Vec2f(RIGHT_PANEL_OFFSET[0], RIGHT_PANEL_OFFSET[1]));
+	//if (!arial.loadFromFile("resources/sansation.ttf"))
+	//	throw std::logic_error("font cannot be found");
+	//initText(fpsText, ui.targetFpsPanel.getInnerPosition());
+	//initText(selectionText, ui.selectionPanel.getInnerPosition());
 }
 
-void Graphics::initText(sf::Text& text, const Vec2f& position) {
-	text.setFont(arial);
-	text.setCharacterSize(14);
-	text.setFillColor(sf::Color::White);
-	text.setPosition(position);
-}
+//void Graphics::initText(sf::Text& text, const Vec2f& position) {
+//	text.setFont(arial);
+//	text.setCharacterSize(14);
+//	text.setFillColor(sf::Color::White);
+//	text.setPosition(position);
+//}
 
 void Graphics::draw() {
 	renderWindow.clear();
@@ -69,8 +69,8 @@ void Graphics::drawWorld() {
 
 void Graphics::drawHUD() {
 	renderWindow.setView(renderWindow.getDefaultView());
-	drawViewportOutline();
-	drawText();
+	updateText();
+	renderWindow.draw(ui.hud);
 }
 
 void Graphics::drawTerrain() {
@@ -106,33 +106,17 @@ void Graphics::drawGrid() {
 	}
 }
 
-void Graphics::drawText() {
-	drawTopText();
-	drawTextSelection();
-}
+void Graphics::updateText() {
+	ui.targetFpsPanel.setString((oss() << "TargetFPS: " << targetFPS).str());
+	ui.actualFpsPanel.setString((oss() << "FPS: " << (int)actualFPS).str());
+	ui.unitCountPanel.setString((oss() << "Units: " << em.unitMap.size()).str());
+	ui.timePanel.setString((oss() << "Time: " << seconds).str());
 
-void Graphics::drawTopText() {
-	std::ostringstream s;
-	s << "Target FPS: " << targetFPS;
-	s << "   Actual FPS: " << (int)actualFPS;
-	s << "   Units: " << em.unitMap.size();
-	s << "   Seconds: " << seconds;
-	fpsText.setString(s.str());
-	renderWindow.draw(fpsText);
-}
-
-void Graphics::drawTextSelection() {
 	if (selectedEntity != nullptr) {
-		std::ostringstream s;
-		selectedEntity->getSelectionText(s);
-		
-		selectionText.setString(s.str());
-		renderWindow.draw(selectionText);
+		oss entityStringStream;
+		selectedEntity->getSelectionText(entityStringStream);
+		ui.selectionPanel.setString(entityStringStream.str());
 	}
-}
-
-void Graphics::drawViewportOutline() {
-	renderWindow.draw(viewportShape);
 }
 
 void Graphics::drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, 

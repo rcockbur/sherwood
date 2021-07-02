@@ -5,6 +5,7 @@
 #include "input.h"
 #include "pathfinding.h"
 #include <string>
+#include "ui.h"
 
 class UnitType;
 
@@ -16,7 +17,6 @@ extern int tics;
 extern int seconds;
 extern int targetFPS;
 extern float actualFPS;
-
 
 extern Entity* selectedEntity;
 extern sf::Clock deltaClock;
@@ -31,8 +31,8 @@ extern const Vec2f GRID_SIZE;
 extern Graphics graphics;
 extern EntityManager em;
 extern Input input;
+extern UI ui;
 extern aStar astar;
-
 
 extern UnitType person;
 extern DoodadType rock;

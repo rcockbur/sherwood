@@ -9,8 +9,10 @@
 #include "actions.h"
 
 Input::Input() :
-	VIEWPORT_RECT(VIEWPORT_OFFSET[0], VIEWPORT_OFFSET[1], VIEWPORT_SIZE[0], VIEWPORT_SIZE[1])
-{}
+	VIEWPORT_RECT(ui.viewportPanel.getInnerPosition(), ui.viewportPanel.getSize())
+{
+	ui.viewportPanel.setCallback(handleWorldClick);
+}
 
 void Input::handleInput()
 {
@@ -28,10 +30,10 @@ void Input::handleInput()
 		case sf::Event::MouseButtonPressed:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				handleScreenClick(screen_pos, false);
+				handleScreenClick(screen_pos, true);
 				break;
 			case(sf::Mouse::Right):
-				handleScreenClick(screen_pos, true);
+				handleScreenClick(screen_pos, false);
 				break;
 			default:
 				break;
@@ -53,24 +55,22 @@ void Input::handleKeysDown() {
 	mapView.move(cameraMove);
 }
 
-void Input::handleScreenClick(const Vec2f& screenPos, bool isRightClick) {
-	//std::cout << "ScreenPosition:" << screenPos.x << "," << screenPos.y << "\n";
-	if (VIEWPORT_RECT.contains(screenPos)) {
-		Vec2f worldPos = screenToWorld(screenPos);
-		if(worldPos.x >= 0 && worldPos.x < GRID_SIZE.x && worldPos.y >= 0 && worldPos.y < GRID_SIZE.y) 
-			handleWorldClick(worldPos, isRightClick);
-	}
-	else {
-		//std::cout << "Out of bounds\n";
-	}
+void Input::handleScreenClick(const Vec2f& screenPos, bool isLeftClick) {
+	ui.hud.handleClick(screenPos, isLeftClick);
 }
 
-void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
+void handleWorldClick(const Vec2f screenPos, const bool isLeftClick) {
 	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
+	Vec2f worldPosition = screenToWorld(screenPos);
 	Vec2i clickedTile = worldToTile(worldPosition);
 	//std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	Entity* clickedEntity = em.getEntityAtWorldPos(worldPosition);
-	if (isRightClick) {
+	if (isLeftClick) {
+		if (clickedEntity != nullptr) {
+			em.selectEntity(clickedEntity);
+		}
+	}
+	else {
 		Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
 		if (selectedUnit != nullptr) {
 			Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
@@ -86,11 +86,6 @@ void Input::handleWorldClick(const Vec2f& worldPosition, bool isRightClick) {
 			else if (selectedEntity->tile != clickedTile) {
 				unitMoveToTile(*selectedUnit, clickedTile);
 			}
-		}
-	}
-	else {
-		if (clickedEntity != nullptr) {
-			em.selectEntity(clickedEntity);
 		}
 	}
 }

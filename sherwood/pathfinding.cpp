@@ -129,7 +129,7 @@ bool aStar::search(const Vec2i& s, const Vec2i& e) {
 }
 std::list<Vec2i> aStar::path() {
     if (showPathfinding) {
-        Sleep(200);
+        Sleep(100);
         renderWindow.setFramerateLimit(1000);
     }
     std::list<Vec2i> path;
@@ -141,12 +141,12 @@ std::list<Vec2i> aStar::path() {
             parent = (*i).parent;
             if (showPathfinding) {
                 graphics.drawSearchDebug(open, closed, start, end, &path);
-                Sleep(10); //after each path node
+                Sleep(5); //after each path node
             }
         }
     }
     if (showPathfinding) {
-        Sleep(200);
+        Sleep(100);
         renderWindow.setFramerateLimit(targetFPS);
     }
     if (map.isPathable(path.back()) == false) {

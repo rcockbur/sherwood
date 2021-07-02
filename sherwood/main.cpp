@@ -33,6 +33,7 @@ int main()
 		input.handleInput();
 		em.updateEntities();
 		graphics.draw();
+		//renderWindow.draw(ui);
 		if (hasPrinted) std::cout << "---------------------" << std::endl;
 		hasPrinted = false;
 		++tics;
