@@ -2,9 +2,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <string>
-
-class Entity;
 
 template<typename T>
 sf::Vector2<T> DivideVec2(const sf::Vector2<T>& left, const sf::Vector2<T>& right) {

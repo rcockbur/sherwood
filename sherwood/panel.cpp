@@ -99,6 +99,14 @@ void Panel::setPadding(const Padding _padding) {
 	text.setPosition(getInnerPosition());
 }
 
+void Panel::setMargin(const Padding _margin) {
+	margin = _margin;
+	for (auto child : children) {
+		child->updatePositionRelativeToParent();
+	}
+	text.setPosition(getInnerPosition());
+}
+
 
 void Panel::moveRightOfPanel(const Panel& other) {
 	if (parent == nullptr) throw std::logic_error("panel has no parent");

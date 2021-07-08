@@ -102,7 +102,6 @@ void initWindow() {
 	renderWindow.setFramerateLimit(targetFPS);
 	Vec2f viewportOffsetRatio(DivideVec2<float>(ui.viewportPanel.getPosition(), ui.hud.getSize()));
 	Vec2f viewportSizeRatio(DivideVec2<float>(ui.viewportPanel.getSize(), ui.hud.getSize()));
-	//Vec2f viewportSizeRatio(ui.viewportPanel.getSize().x / ui.hud.getSize().x, ui.viewportPanel.getSize().y / ui.hud.getSize().y);
 	mapView.setViewport(sf::FloatRect(viewportOffsetRatio.x, viewportOffsetRatio.y, viewportSizeRatio.x, viewportSizeRatio.y));
 	mapView.move(Vec2f(-10, -10));
 }

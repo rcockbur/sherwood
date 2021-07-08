@@ -1,7 +1,4 @@
 #pragma once
-#include "constants.h"
-#include "types.h"
-#include <vector>
 #include "panel.h"
 
 class UI {

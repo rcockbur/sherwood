@@ -3,6 +3,8 @@
 #include "lookup.h"
 #include "types.h"
 
+class Ability;
+
 class Job {
 public:
 	Unit& unit;

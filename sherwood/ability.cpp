@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "pathfinding.h"
 
-Move::Move(Unit& unit, const Vec2i dest)
+Move::Move(Unit& unit, Vec2i dest)
 	: unit(unit), dest(dest), hasStarted(false)
 {}
 
@@ -45,7 +45,7 @@ void Move::followPath() {
 	}
 }
 
-Harvest::Harvest(Unit& unit, const Lookup depositLookup) :
+Harvest::Harvest(Unit& unit, Lookup depositLookup) :
 	Move(unit, depositLookup.tile),
 	depositLookup(depositLookup),
 	hasStartedHarvesting(false)
@@ -108,7 +108,7 @@ ActivityStatus Harvest::execute() {
 
 }
 
-ReturnResources::ReturnResources(Unit& unit, const Lookup buildingLookup) :
+ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup) :
 	Move(unit, buildingLookup.tile)
 {}
 

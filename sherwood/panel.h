@@ -1,8 +1,8 @@
 #pragma once
 #include "types.h"
-#include <vector>
 #include <list>
-#include "entity_type.h"
+
+class BuildingType;
 
 class Padding {
 public:
@@ -32,6 +32,7 @@ private:
 	Vec2f size;
 	Vec2f offset;
 	Padding padding;
+	Padding margin;
 	std::list<Panel*> children;
 	sf::Text text;
 	sf::RectangleShape border;
@@ -43,6 +44,7 @@ private:
 	void setPosition(const Vec2f pos);
 	
 	void setPadding(const Padding padding);
+	void setMargin(const Padding margin);
 	void setParent(Panel& parent);
 	void moveBelowPanel(const Panel& other);
 	void moveRightOfPanel(const Panel& other);

@@ -2,7 +2,6 @@
 #include "types.h"
 #include "node.h"
 #include <list>
-#include "panel.h"
 
 class Map;
 class Window;

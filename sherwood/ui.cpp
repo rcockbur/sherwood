@@ -48,21 +48,24 @@ UI::UI()
 
 	rightPanel.setName("rightPanel");
 	rightPanel.setParent(hud);
-	rightPanel.setPadding(Padding(5, 1, 0, 0));
+	
 	rightPanel.moveRightOfPanel(viewportPanel);
 	rightPanel.moveBelowPanel(topPanel);
 	rightPanel.setSize(Vec2f(-1, viewportPanel.size.y));
 
 	selectionPanel.setName("selectionPanel");
 	selectionPanel.setParent(rightPanel);
+	selectionPanel.setPadding(Padding(5, 3, 0, 0));
 	selectionPanel.setSize((Vec2f(-1, 200)));
+	//selectionPanel.setPadding(Padding())
 	selectionPanel.setBorderColor(colors.yellow);
 
 	buttonGridPanel.setName("buttonGridPanel");
 	buttonGridPanel.setParent(rightPanel);
+	buttonGridPanel.setPadding(Padding(0, 3, 0, 0));
 	buttonGridPanel.moveBelowPanel(selectionPanel);
 	buttonGridPanel.setSize(Vec2f(-1, -1));
-	buttonGridPanel.setBorderColor(colors.purple);
+	//buttonGridPanel.setBorderColor(colors.purple);
 
 	houseButton.setName("houseButton");
 	houseButton.setParent(buttonGridPanel);

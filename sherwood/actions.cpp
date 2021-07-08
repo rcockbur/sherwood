@@ -5,7 +5,7 @@
 #include "utility.h"
 #include "entity_type.h"
 
-void handleWorldClick(const Panel& panel, const bool isLeftClick) {
+void handleWorldClick(const Panel& panel, bool isLeftClick) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
 	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
@@ -29,10 +29,6 @@ void handleWorldClick(const Panel& panel, const bool isLeftClick) {
 			Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
 			if (clickedDeposit != nullptr)
 				unitHarvestDeposit(*selectedUnit, *clickedDeposit);
-			else if (clickedBuilding != nullptr) {
-				if (*clickedBuilding == selectedUnit->homeLookup && selectedUnit->carryAmmount > 0)
-					unitReturnResources(*selectedUnit);
-			}
 			else if (selectedEntity->tile != clickedTile) {
 				unitMoveToTile(*selectedUnit, clickedTile);
 			}
@@ -40,17 +36,7 @@ void handleWorldClick(const Panel& panel, const bool isLeftClick) {
 	}
 }
 
-//void houseButtonClicked(const bool isLeftClick) {
-//	std::cout << "house button\n";
-//	placementBuildingType = &house;
-//}
-//
-//void millButtonClicked(const bool isLeftClick) {
-//	std::cout << "mill button\n";
-//	placementBuildingType = &mill;
-//}
-
-void buildingButtonClicked(const Panel& panel, const bool isLeftClick) {
+void buildingButtonClicked(const Panel& panel, bool isLeftClick) {
 	placementBuildingType = panel.getBuildingType();
 }
 
@@ -79,5 +65,3 @@ void unitHarvestDeposit(Unit& unit, Deposit& deposit) {
 			unit.setJob(harvester);
 	}
 }
-
-void unitReturnResources(Unit& unit) {}

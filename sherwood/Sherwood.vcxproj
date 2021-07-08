@@ -171,7 +171,9 @@
     <ClCompile Include="types.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="utility.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
+    </ClCompile>
     <ClCompile Include="map.cpp" />
   </ItemGroup>
   <ItemGroup>

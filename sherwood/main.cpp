@@ -1,7 +1,6 @@
 #include "globals.h"
-#include "ability.h"
 #include "entity.h"
-#include "color.h"
+#include "input.h"
 
 int main()
 {
@@ -10,9 +9,9 @@ int main()
 
 	new Doodad(rock, Vec2i(4, 0));
 
-	Building* myHome = new Building(house, Vec2i(0, 3));
+	Building* myHome = new Building(house, Vec2i(7, 9));
 
-	new Building(mill, Vec2i(12, 4));
+	new Building(mill, Vec2i(8, 9));
 
 	(new Unit(person, Vec2i(0, 0)))->setHome(*myHome);
 	(new Unit(person, Vec2i(1, 0)))->setHome(*myHome);
@@ -28,7 +27,7 @@ int main()
 
 	new Deposit(goldMine, Vec2i(30, 20));
 
-	new Deposit(stoneMine, Vec2i(24, 25));
+	new Deposit(stoneMine, Vec2i(24, 24));
 
 	float lastFPSUpdate = gameClock.getElapsedTime().asSeconds();
 	while (renderWindow.isOpen()) {

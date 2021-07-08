@@ -1,20 +1,9 @@
 #pragma once
 #include "types.h"
-#include <list>
 #include <unordered_map>
 #include <set>
 #include "entity.h"
 #include "lookup.h"
-
-class UnitType;
-class BuildingType;
-class DoodadType;
-class DepositType;
-class Map;
-class Unit;
-class Doodad;
-class Building;
-class Deposit;
 
 class EntityManager {
 public:
@@ -23,8 +12,7 @@ public:
 	void selectEntity(Entity*);
 	Entity* getEntityAtWorldPos(const Vec2f& worldPosition) const;
 	Entity* getEntityFromTile(const Vec2i& tile) const;
-	template <typename T>
-	T lookupFixedEntity(const Lookup) const;
+	template <typename T> T lookupFixedEntity(const Lookup) const;
 	Unit* getUnitByID(const int id) const;
 	std::set<Entity*> entities;
 	std::unordered_map<int, Unit*> unitMap;

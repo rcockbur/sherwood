@@ -2,7 +2,6 @@
 #include "entity_manager.h"
 #include "graphics.h"
 #include "map.h"
-#include "input.h"
 #include "pathfinding.h"
 #include <string>
 #include "ui.h"
@@ -18,6 +17,15 @@ extern int seconds;
 extern int targetFPS;
 extern float actualFPS;
 
+extern sf::View mapView;
+extern sf::RenderWindow renderWindow;
+
+extern Map map;
+extern Graphics graphics;
+extern EntityManager em;
+extern UI ui;
+extern aStar astar;
+
 extern Entity* selectedEntity;
 extern BuildingType* placementBuildingType;
 extern Vec2f mouseScreenPos;
@@ -27,22 +35,10 @@ extern sf::Clock deltaClock;
 extern sf::Clock gameClock;
 extern sf::Time dt;
 
-extern Map map;
-extern sf::View mapView;
-extern sf::RenderWindow renderWindow;
-
-extern Graphics graphics;
-extern EntityManager em;
-extern UI ui;
-extern aStar astar;
-
 extern UnitType person;
-
 extern DoodadType rock;
-
 extern BuildingType house;
 extern BuildingType mill;
-
 extern DepositType berryBush;
 extern DepositType tree;
 extern DepositType goldMine;

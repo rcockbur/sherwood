@@ -1,10 +1,9 @@
 #pragma once
 #include "types.h"
 #include <list>
-#include "entity.h"
-#include "resources.h"
 #include "lookup.h"
 
+class Unit;
 
 class Ability {
 public:
@@ -14,28 +13,29 @@ public:
 
 class Move : public Ability {
 public:
+	Move(Unit& unit, Vec2i dest);
+	ActivityStatus start();
+	ActivityStatus execute();
+protected:
 	Unit& unit;
 	const Vec2i dest;
 	std::list<Vec2i> path;
 	bool hasStarted;
-	Move(Unit& unit, const Vec2i dest);
-	ActivityStatus start();
-	ActivityStatus execute();
-protected:
 	void followPath();
 };
 
 class Harvest : public Move {
 public:
-	const Lookup depositLookup;
-	bool hasStartedHarvesting;
-	Harvest(Unit& unit, const Lookup depositLookup);
+	Harvest(Unit& unit, Lookup depositLookup);
 	ActivityStatus start();
 	ActivityStatus execute();
+private:
+	const Lookup depositLookup;
+	bool hasStartedHarvesting;
 };
 
 class ReturnResources : public Move {
 public :
-	ReturnResources(Unit& unit, const Lookup buildingLookup);
+	ReturnResources(Unit& unit, Lookup buildingLookup);
 	ActivityStatus execute();
 };

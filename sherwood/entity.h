@@ -1,18 +1,15 @@
 #pragma once
-#include "types.h"
 #include <sstream>
 #include <deque>
 #include "resources.h"
 #include "lookup.h"
 
-class Ability;
 class EntityType;
 class DoodadType;
 class FixedEntityType;
 class UnitType;
 class BuildingType;
 class DepositType;
-class DoodadType;
 class Building;
 class Job;
 
