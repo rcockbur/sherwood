@@ -10,3 +10,12 @@ std::ostream& operator<< (std::ostream& out, const Vec2f& vec) {
 	out << "(" << vec.x << "," << vec.y << ")";
 	return out;
 }
+
+bool CompareTuple::operator()(const Tuple& lhs, const Tuple& rhs) const {
+	return (std::get<0>(lhs) > std::get<0>(rhs) ||
+		std::get<0>(lhs) == std::get<0>(rhs) && std::get<1>(lhs) < std::get<1>(rhs));
+}
+
+bool CompareVec2i::operator()(const Vec2i& lhs, const Vec2i& rhs) const {
+	return (lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y));
+}

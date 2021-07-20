@@ -13,3 +13,7 @@ Vec2i worldToTile(const Vec2f pos) {
 Vec2f screenToWorld(const Vec2f screenPos) {
 	return renderWindow.mapPixelToCoords(Vec2i((int)(screenPos.x + 0.5f), (int)(screenPos.y + 0.5f)), mapView);
 }
+
+Vec2f getTopLeft(const Vec2f center, const float size) {
+	return center - Vec2f(size / 2, size / 2);
+}

@@ -12,14 +12,14 @@ FixedEntityType::FixedEntityType(std::string&& _name) :
 	EntityType(std::move(_name))
 {}
 
-sf::Shape* FixedEntityType::getShape(const Vec2f graphicalPosition) const {
+Shape* FixedEntityType::getShape(const Vec2f graphicalPosition) const {
 	shape.setSize(Vec2f(size, size));
 	shape.setFillColor(color);
 	shape.setPosition(graphicalPosition);
 	return &shape;
 }
 
-sf::Shape* FixedEntityType::getOutlineShape(const Vec2f graphicalPosition) const {
+Shape* FixedEntityType::getOutlineShape(const Vec2f graphicalPosition) const {
 	outlineShape.setSize(Vec2f(size, size));
 	outlineShape.setPosition(graphicalPosition);
 	return &outlineShape;
@@ -47,14 +47,14 @@ UnitType::UnitType(std::string&& _name) :
 	gatherPeriod(0)
 {}
 
-sf::Shape* UnitType::getShape(const Vec2f graphicalPosition) const {
+Shape* UnitType::getShape(const Vec2f graphicalPosition) const {
 	shape.setRadius(size / 2);
 	shape.setFillColor(color);
 	shape.setPosition(graphicalPosition);
 	return &shape;
 }
 
-sf::Shape* UnitType::getOutlineShape(const Vec2f graphicalPosition) const {
+Shape* UnitType::getOutlineShape(const Vec2f graphicalPosition) const {
 	outlineShape.setRadius(size / 2);
 	outlineShape.setPosition(graphicalPosition);
 	return &outlineShape;

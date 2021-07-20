@@ -21,6 +21,24 @@ int main()
 	new Deposit(berryBush, Vec2i(4, 12));
 	new Deposit(berryBush, Vec2i(20, 21));
 
+	new Deposit(fish, Vec2i(5, 8));
+	new Deposit(fish, Vec2i(15, 4));
+	new Deposit(fish, Vec2i(13, 7));
+	new Deposit(fish, Vec2i(10, 11));
+	new Deposit(fish, Vec2i(1, 17));
+	new Deposit(fish, Vec2i(6, 28));
+	new Deposit(fish, Vec2i(15, 28));
+	new Deposit(fish, Vec2i(26, 24));
+	new Deposit(fish, Vec2i(34, 21));
+	new Deposit(fish, Vec2i(35, 16));
+	new Deposit(fish, Vec2i(34, 5));
+	new Deposit(fish, Vec2i(30, 5));
+	new Deposit(fish, Vec2i(21, 9));
+	new Deposit(fish, Vec2i(34, 1));
+	new Deposit(fish, Vec2i(24, 0));
+	new Deposit(fish, Vec2i(11, 1));
+	new Deposit(fish, Vec2i(1, 7));
+
 	new Deposit(tree, Vec2i(8, 0));
 	new Deposit(tree, Vec2i(9, 0));
 	new Deposit(tree, Vec2i(9, 1));

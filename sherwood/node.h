@@ -13,3 +13,13 @@ public:
     int tieRating;
 
 };
+
+class node2 {
+public:
+    bool operator == (const node2& o);
+    bool operator == (const Vec2i& o);
+    bool operator < (const node2& o);
+    Vec2i tile, parent;
+    int g;
+    int tieRating;
+};

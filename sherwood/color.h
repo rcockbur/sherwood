@@ -10,12 +10,14 @@ struct Colors {
 	const Color lightGreen = Color(70, 255, 70);
 	const Color blue =		Color(0, 17, 255);
 	const Color lightBlue = Color(50, 129, 255);
+	const Color darkBlue =	Color(0, 0, 150);
 	const Color black =		Color::Black;
 	const Color purple =	Color(204, 0, 255);
 	const Color teal =		Color(0, 212, 255);
 	const Color orange =	Color(255, 159, 0);
 	const Color white =		Color::White;
-	const Color yellow =	Color(255, 255, 12);
+	const Color lightYellow = Color(255, 255, 150);
+	const Color yellow =	Color(200, 200, 0);
 	const Color darkGrey =	Color(90, 90, 90);
 	const Color lightGrey = Color(150, 150, 150);
 	const Color transparent = Color::Transparent;

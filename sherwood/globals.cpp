@@ -34,20 +34,23 @@ sf::RenderWindow renderWindow(sf::VideoMode((int)ui.hud.getSize().x, (int)ui.hud
 Graphics graphics;
 EntityManager em;
 aStar astar;
+NewAStar newAstar;
+breadthFirst breadthfirst;
 
 UnitType person = UnitType("Person");
 DoodadType rock = DoodadType("Rock");
 BuildingType house = BuildingType("House");
 BuildingType mill = BuildingType("Mill");
 DepositType berryBush = DepositType("Berry Bush");
+DepositType fish = DepositType("Fish");
 DepositType tree = DepositType("Tree");
 DepositType goldMine = DepositType("Gold Mine");
 DepositType stoneMine = DepositType("Stone Mine");
 
-sf::RectangleShape FixedEntityType::shape = sf::RectangleShape();
-sf::RectangleShape FixedEntityType::outlineShape = sf::RectangleShape();
-sf::CircleShape UnitType::shape = sf::CircleShape();
-sf::CircleShape UnitType::outlineShape = sf::CircleShape();
+RectangleShape FixedEntityType::shape = RectangleShape();
+RectangleShape FixedEntityType::outlineShape = RectangleShape();
+CircleShape UnitType::shape = CircleShape();
+CircleShape UnitType::outlineShape = CircleShape();
 
 void initEntityTypes() {
 	person.color = colors.lightBlue;
@@ -66,12 +69,17 @@ void initEntityTypes() {
 	house.size = 16;
 
 	mill.color = colors.orange;
-	mill.size = 20;
+	mill.size = 16;
 
 	berryBush.color = colors.red;
 	berryBush.resourceType = food;
 	berryBush.amount = 100;
 	berryBush.size = 14;
+
+	fish.color = colors.blue;
+	fish.resourceType = food;
+	fish.amount = 100;
+	fish.size = 10;
 
 	tree.color = colors.brown;
 	tree.resourceType = wood;
@@ -89,11 +97,11 @@ void initEntityTypes() {
 	stoneMine.size = 12;
 
 	FixedEntityType::outlineShape.setFillColor(colors.transparent);
-	FixedEntityType::outlineShape.setOutlineColor(colors.yellow);
+	FixedEntityType::outlineShape.setOutlineColor(colors.lightYellow);
 	FixedEntityType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
 
 	UnitType::outlineShape.setFillColor(colors.transparent);
-	UnitType::outlineShape.setOutlineColor(colors.yellow);
+	UnitType::outlineShape.setOutlineColor(colors.lightYellow);
 	UnitType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
 }
 

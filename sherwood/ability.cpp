@@ -10,8 +10,10 @@ Move::Move(Unit& unit, Vec2i dest)
 
 ActivityStatus Move::start() {
 	hasStarted = true;
-	if (astar.search(unit.tile, dest)) {
-		path = astar.path();
+	//if (astar.searchForTile(unit.tile, dest)) {
+	//	path = astar.path();
+	if (newAstar.searchForTile(unit.tile, dest)) {
+			path = newAstar.path();
 		return ActivityStatus::success;
 	}
 	else {
@@ -37,7 +39,7 @@ ActivityStatus Move::execute() {
 void Move::followPath() {
 	if (path.size() > 0) {
 		if (tics >= unit.canMoveAt) {
-			unit.canMoveAt = tics + unit.type.movePeriod;
+			unit.canMoveAt = tics + unit.unitType().movePeriod;
 			bool hasReachedTile = unit.moveTowards(path.front());
 			if (hasReachedTile)
 				path.pop_front();
@@ -54,8 +56,8 @@ Harvest::Harvest(Unit& unit, Lookup depositLookup) :
 
 ActivityStatus Harvest::start() {
 	hasStarted = true;
-	if (astar.search(unit.tile, dest)) {
-		path = astar.path();
+	if (newAstar.searchForTile(unit.tile, dest)) {
+		path = newAstar.path();
 		return ActivityStatus::success;
 	}
 	else {
@@ -82,17 +84,17 @@ ActivityStatus Harvest::execute() {
 			}
 			if (hasStartedHarvesting == false) {
 				hasStartedHarvesting = true;
-				if (unit.carryType != deposit->type.resourceType) {
-					unit.carryType = deposit->type.resourceType;
+				if (unit.carryType != deposit->depositType().resourceType) {
+					unit.carryType = deposit->depositType().resourceType;
 					unit.carryAmmount = 0;
 				}
 			}
-			if (unit.carryAmmount >= unit.type.carryCapacity) {
+			if (unit.carryAmmount >= unit.unitType().carryCapacity) {
 				return ActivityStatus::success; //done gathering
 			}
 			++unit.carryAmmount;
 			--deposit->amount;
-			unit.canGatherAt = tics + unit.type.gatherPeriod;
+			unit.canGatherAt = tics + unit.unitType().gatherPeriod;
 			if (deposit->amount == 0) {
 				delete deposit;
 				return ActivityStatus::success; //deposit has expired
@@ -109,8 +111,30 @@ ActivityStatus Harvest::execute() {
 }
 
 ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup) :
-	Move(unit, buildingLookup.tile)
+	Move(unit, buildingLookup.tile),
+	pathProvidedByFloodfill(false)
 {}
+
+ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i> _path) :
+	Move(unit, buildingLookup.tile),
+	pathProvidedByFloodfill(true)
+{
+	path = _path;
+}
+
+ActivityStatus ReturnResources::start() {
+	hasStarted = true;
+	if (pathProvidedByFloodfill) {
+		return ActivityStatus::success;
+	}
+	else if (newAstar.searchForTile(unit.tile, dest)) {
+		path = newAstar.path();
+		return ActivityStatus::success;
+	}
+	else {
+		return ActivityStatus::failure;
+	}
+}
 
 ActivityStatus ReturnResources::execute() {
 	if (hasStarted == false) {
@@ -120,9 +144,13 @@ ActivityStatus ReturnResources::execute() {
 	}
 	if (path.empty()) {
 		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
-		home->resources[unit.carryType] += unit.carryAmmount;
-		unit.carryAmmount = 0;
-		return ActivityStatus::success;
+		if (home) {
+			home->resources[unit.carryType] += unit.carryAmmount;
+			unit.carryAmmount = 0;
+			return ActivityStatus::success;
+		}
+		else 
+			return ActivityStatus::failure;
 	}
 	else {
 		followPath();

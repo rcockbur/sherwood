@@ -10,8 +10,9 @@ public:
 	EntityManager();
 	void updateEntities();
 	void selectEntity(Entity*);
+	void deselectEntity(Entity*);
 	Entity* getEntityAtWorldPos(const Vec2f& worldPosition) const;
-	Entity* getEntityFromTile(const Vec2i& tile) const;
+	FixedEntity* getEntityFromTile(const Vec2i& tile) const;
 	template <typename T> T lookupFixedEntity(const Lookup) const;
 	Unit* getUnitByID(const int id) const;
 	std::set<Entity*> entities;

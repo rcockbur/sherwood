@@ -2,6 +2,7 @@
 #include "ability.h"
 #include "entity_type.h"
 #include "globals.h"
+#include "pathfinding.h"
 
 Job::Job(Unit& _unit) :
 	unit(_unit),
@@ -67,11 +68,18 @@ void Harvester::checkForAnotherAbility() {
 		}
 	}
 	else {
-		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
-		if (home != nullptr) {
-			ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
+		Building* house = breadthfirst.searchForHouse(unit.tile);
+		if (house) {
+			Lookup houseLookup = Lookup(*house);
+			std::list<Vec2i> path = breadthfirst.path();
+			ReturnResources* returnResources = new ReturnResources(unit, houseLookup, path);
 			setAbility(returnResources);
 		}
+		//Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
+		/*if (home != nullptr) {
+			ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
+			setAbility(returnResources);
+		}*/
 	}
 }
 

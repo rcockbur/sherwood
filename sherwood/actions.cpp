@@ -9,7 +9,7 @@ void handleWorldClick(const Panel& panel, bool isLeftClick) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
 	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
-	//std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
+	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	Entity* clickedEntity = em.getEntityAtWorldPos(worldPos);
 	if (isLeftClick) {
 		if (placementBuildingType != nullptr) {

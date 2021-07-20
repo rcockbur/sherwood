@@ -18,13 +18,18 @@ void EntityManager::updateEntities() {
 		it.second->update();
 }
 
+
 void EntityManager::selectEntity(Entity* entity) {
 	if (selectedEntity != nullptr)
 		selectedEntity->isSelected = false;
 	
 	selectedEntity = entity;
 	selectedEntity->isSelected = true;
-	std::cout << "Entity " << entity->id << " is selected" << "\n";
+}
+
+void EntityManager::deselectEntity(Entity* entity) {
+	selectedEntity->isSelected = false;
+	selectedEntity = nullptr;
 }
 
 Entity* EntityManager::getEntityAtWorldPos(const Vec2f& worldPosition) const {
@@ -37,7 +42,7 @@ Entity* EntityManager::getEntityAtWorldPos(const Vec2f& worldPosition) const {
 }
 
 //gets the entity at the tile
-Entity* EntityManager::getEntityFromTile(const Vec2i& tile) const {
+FixedEntity* EntityManager::getEntityFromTile(const Vec2i& tile) const {
 	return staticEntityGrid[tile.x][tile.y];
 }
 

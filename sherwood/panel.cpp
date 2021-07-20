@@ -32,12 +32,13 @@ BuildingType* Panel::getBuildingType() const {
 
 Panel::Panel() :
 	parent(nullptr),
+	buildingType(nullptr),
 	drawBorder(false),
 	callback(nullptr)
 {
 	text.setFont(ui.font);
 	text.setCharacterSize(14);
-	text.setFillColor(sf::Color::White);
+	text.setFillColor(colors.white);
 
 	border.setOutlineThickness(-1);
 	border.setFillColor(colors.transparent);

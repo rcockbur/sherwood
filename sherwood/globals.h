@@ -25,6 +25,8 @@ extern Graphics graphics;
 extern EntityManager em;
 extern UI ui;
 extern aStar astar;
+extern NewAStar newAstar;
+extern breadthFirst breadthfirst;
 
 extern Entity* selectedEntity;
 extern BuildingType* placementBuildingType;
@@ -40,6 +42,7 @@ extern DoodadType rock;
 extern BuildingType house;
 extern BuildingType mill;
 extern DepositType berryBush;
+extern DepositType fish;
 extern DepositType tree;
 extern DepositType goldMine;
 extern DepositType stoneMine;

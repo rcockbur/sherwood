@@ -62,17 +62,17 @@ void handleKeysDown() {
 
 void handleKeyPress(sf::Keyboard::Key code) {
 	switch (code) {
-	case(sf::Keyboard::Escape):
-		renderWindow.close();
-		break;
 	case(sf::Keyboard::Q):
 		renderWindow.close();
 		break;
 	case(sf::Keyboard::Delete):
-		if (selectedEntity != nullptr) {
+		if (selectedEntity != nullptr)
 			delete selectedEntity;
-			break;
-		}
+		break;
+	case(sf::Keyboard::Escape):
+		if (selectedEntity != nullptr)
+			em.deselectEntity(selectedEntity);
+		break;
 	case(sf::Keyboard::G):
 		showGrid = !showGrid;
 		break;

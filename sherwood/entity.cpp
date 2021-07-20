@@ -15,8 +15,8 @@ Entity::Entity(const EntityType& type, const Vec2i _tile) :
 	type(type),
 	id(id_index),
 	tile(_tile),
-	position(tileToWorld(tile)),
-	bounds(calculateBounds(position)),
+	pos(tileToWorld(tile)),
+	bounds(calculateBounds(pos)),
 	color(type.color),
 	isSelected(false)
 {
@@ -35,11 +35,14 @@ Entity::~Entity() {
 void Entity::getSelectionText(std::ostringstream& s) {
 	std::string classString(typeid(*this).name());
 	classString.erase(0, 6); 
-	s << "Class: " << classString << "\n";
+	//s << "Class: " << classString << "\n";
 	s << "Type: " << type.name << "\n";
 	s << "ID: " << id << "\n";
 	s << "Tile: " << tile << "\n";
-	//s << "Pos: " << position << "\n";
+}
+
+const EntityType& Entity::entityType() {
+	return type;
 }
 
 Rect Entity::calculateBounds(const Vec2f& pos) {
@@ -51,8 +54,7 @@ bool Entity::operator==(const Lookup& lookup) {
 }
 
 FixedEntity::FixedEntity(const FixedEntityType& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
-	type(_type)
+	Entity(_type, _tile)
 {
 	em.validateStaticEntityGridAvailable(tile);
 	em.staticEntityGrid[tile.x][tile.y] = this;
@@ -70,29 +72,34 @@ void FixedEntity::getSelectionText(std::ostringstream& s) {
 }
 
 Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
-	FixedEntity(_type, _tile),
-	type(_type)
+	FixedEntity(_type, _tile)
 {}
 
 Doodad::~Doodad() {}
 
+const DoodadType& Doodad::doodadType() {
+	return static_cast<const DoodadType&>(type);
+}
+
 Deposit::Deposit(const DepositType& _type, const Vec2i _tile) :
 	FixedEntity(_type, _tile),
-	type(_type),
-	amount(type.amount)
+	amount(_type.amount)
 {}
 
 Deposit::~Deposit() {}
 
 void Deposit::getSelectionText(std::ostringstream& s) {
 	FixedEntity::getSelectionText(s);
-	s << std::to_string(amount) << " " << resourceNames[type.resourceType] << "\n";
+	s << std::to_string(amount) << " " << resourceNames[depositType().resourceType] << "\n";
+}
+
+const DepositType& Deposit::depositType() {
+	return static_cast<const DepositType&>(type);
 }
 
 Building::Building(const BuildingType& _type, const Vec2i _tile) :
 	FixedEntity(_type, _tile),
-	type(_type),
-	resources(type.resources)
+	resources(_type.resources)
 {}
 
 void Building::getSelectionText(std::ostringstream& s) {
@@ -107,10 +114,14 @@ void Building::getSelectionText(std::ostringstream& s) {
 	}
 }
 
-//////////////////// UNIT ///////////////////
+const BuildingType& Building::buildingType() {
+	return static_cast<const BuildingType&>(type);
+}
+
+
+
 Unit::Unit(const UnitType& _type, const Vec2i _tile) :
 	Entity(_type, _tile),
-	type(_type),
 	canMoveAt(0),
 	canGatherAt(0),
 	carryAmmount(0),
@@ -123,7 +134,9 @@ Unit::~Unit() {
 	for (Job* job : jobQueue) {
 		delete job;
 	}
+	std::cout << em.unitMap.size() << std::endl;
 	em.unitMap.erase(id);
+	std::cout << em.unitMap.size() << std::endl;
 }
 
 void Unit::update()
@@ -149,6 +162,10 @@ void Unit::getSelectionText(std::ostringstream& s) {
 		s << "-\n";
 }
 
+const UnitType& Unit::unitType() {
+	return static_cast<const UnitType&>(type);
+}
+
 void Unit::addJob(Job* job) {
 	jobQueue.push_back(job);
 }
@@ -169,20 +186,20 @@ void Unit::setHome(Building& home) {
 
 bool Unit::moveTowards(const Vec2i targetTile) {
 	Vec2f targetPos = tileToWorld(targetTile);
-	Vec2f diff = targetPos - position;
+	Vec2f diff = targetPos - pos;
 	float dist = (float)sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 	bool reachedTarget = false;
-	if (dist > type.moveDistance) {
-		(diff /= dist) *= type.moveDistance;
-		position += diff;
+	if (dist > unitType().moveDistance) {
+		(diff /= dist) *= unitType().moveDistance;
+		pos += diff;
 		
 	}
 	else {
-		position = targetPos;
+		pos = targetPos;
 		reachedTarget = true;
 	}
-	bounds = calculateBounds(position);
-	tile = worldToTile(position);
+	bounds = calculateBounds(pos);
+	tile = worldToTile(pos);
 	return reachedTarget;
 }
 

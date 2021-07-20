@@ -2,6 +2,7 @@
 #include "types.h"
 #include "node.h"
 #include <list>
+#include <set>
 
 class Map;
 class Window;
@@ -12,12 +13,16 @@ public:
 	void draw();
 	void drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
 		const Vec2i& e, std::list<Vec2i> * path);
+	void drawSearchDebug2(const std::list<node2>& open, const std::list<node2>& closed, const Vec2i& s,
+		const Vec2i& e, std::list<Vec2i>* path);
+	void drawNewAstar(const std::vector<Tuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
+		const Vec2i& s, const Vec2i& e, const Vec2i* current, std::list<Vec2i>* path);
 private:
-	const sf::Color gridColor;
-	sf::RectangleShape verticalLine;
-	sf::RectangleShape horizontalLine;
-	sf::CircleShape pathDebugShape;
-	std::vector<sf::RectangleShape> terrainShapes;
+	const Color gridColor;
+	RectangleShape verticalLine;
+	RectangleShape horizontalLine;
+	CircleShape pathDebugShape;
+	std::vector<RectangleShape> terrainShapes;
 
 	void drawWorld();
 	void drawTerrain();
@@ -28,7 +33,12 @@ private:
 	void updateText();
 
 	void drawSearchNodes(const std::list<node>& nodes, const Color& color);
+	void drawSearchNodes2(const std::list<node2>& nodes, const Color& color);
 	void drawSearchPath(const std::list<Vec2i>& path, const Color& color);
-	void drawSearchTile(const Vec2i& node, const Color& color);
+	void drawSearchTile(const Vec2i node, const Color& color);
+	void drawDebugTile(const Vec2i tile);
+
+	void drawOpen(const std::vector<Tuple>& open, const Color& color);
+	void drawClosed(const std::set<Vec2i, CompareVec2i>& closed, const Color& color);
 };
 

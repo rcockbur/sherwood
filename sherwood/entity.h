@@ -17,25 +17,26 @@ class Entity {
 public:
 	static int id_index;
 	const int id;
-	const EntityType& type;
 	Vec2i tile;
-	Vec2f position;
+	Vec2f pos;
+protected:
+	const EntityType& type;
+public:
 	Rect bounds;
-	sf::Color color;
+	Color color;
 	bool isSelected;
 
 	Entity(const EntityType& type, const Vec2i tile);
-	~Entity();
+	virtual ~Entity();
 	bool operator==(const Lookup& lookup);
 	virtual void getSelectionText(std::ostringstream&);
+	const EntityType& entityType();
 protected:
 	Rect calculateBounds(const Vec2f& pos);
 };
 
 class FixedEntity : public Entity {
 public:
-	const FixedEntityType& type;
-
 	FixedEntity(const FixedEntityType&, const Vec2i tile);
 	~FixedEntity();
 	virtual void getSelectionText(std::ostringstream&);
@@ -43,35 +44,33 @@ public:
 
 class Doodad : public FixedEntity {
 public:
-	const DoodadType& type;
-
 	Doodad(const DoodadType&, const Vec2i tile);
 	~Doodad();
+	const DoodadType& doodadType();
 };
 
 class Deposit : public FixedEntity {
 public:
-	const DepositType& type;
 	int amount;
 
 	Deposit(const DepositType& type, const Vec2i tile);
 	~Deposit();
 	void getSelectionText(std::ostringstream&);
+	const DepositType& depositType();
 };
 
 class Building : public FixedEntity {
 public:
-	const BuildingType& type;
 	Resources resources;
 
 	Building(const BuildingType& type, const Vec2i tile);
 	void getSelectionText(std::ostringstream&);
+	const BuildingType& buildingType();
 };
 
 
 class Unit : public Entity {
 public:
-	const UnitType& type;
 	std::deque<Job*> jobQueue;
 	int canMoveAt;
 	int canGatherAt;
@@ -88,6 +87,7 @@ public:
 	void destroyJobs();
 	void setHome(Building& home);
 	bool moveTowards(const Vec2i targetTile);
+	const UnitType& unitType();
 };
 
 

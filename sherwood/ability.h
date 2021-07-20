@@ -37,5 +37,9 @@ private:
 class ReturnResources : public Move {
 public :
 	ReturnResources(Unit& unit, Lookup buildingLookup);
+	ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i> path);
+	ActivityStatus start();
 	ActivityStatus execute();
+private:
+	bool pathProvidedByFloodfill;
 };

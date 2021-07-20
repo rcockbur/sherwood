@@ -35,7 +35,7 @@ private:
 	Padding margin;
 	std::list<Panel*> children;
 	sf::Text text;
-	sf::RectangleShape border;
+	RectangleShape border;
 	bool drawBorder;
 	Panel();
 	void draw(sf::RenderTarget& target, sf::RenderStates) const;
