@@ -24,9 +24,9 @@ extern Map map;
 extern Graphics graphics;
 extern EntityManager em;
 extern UI ui;
-extern aStar astar;
-extern NewAStar newAstar;
-extern breadthFirst breadthfirst;
+extern AStar aStar;
+//extern BreadthFirst breadthFirst;
+extern NewBreadthFirst newBreadthFirst;
 
 extern Entity* selectedEntity;
 extern BuildingType* placementBuildingType;

@@ -21,7 +21,8 @@ typedef sf::Rect<float> Rect;
 typedef sf::Shape Shape;
 typedef sf::CircleShape CircleShape;
 typedef sf::RectangleShape RectangleShape;
-typedef std::tuple<int, int, Vec2i> Tuple;
+typedef std::tuple<int, int, Vec2i> AStarOpenTuple;
+typedef std::tuple<int, Vec2i> BreadthFirstOpenTuple;
 
 enum ResourceType { food, wood, gold, stone };
 enum TerrainType { water, grass };
@@ -31,14 +32,17 @@ enum class CompleteStatus { complete, incomplete };
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);
 
-struct CompareTuple {
-	bool operator()(const Tuple& lhs, const Tuple& rhs) const;
+struct CompareAStarTuple {
+	bool operator()(const AStarOpenTuple& lhs, const AStarOpenTuple& rhs) const;
+};
+
+struct CompareBreadthFirstTuple {
+	bool operator()(const BreadthFirstOpenTuple& lhs, const BreadthFirstOpenTuple& rhs) const;
 };
 
 struct CompareVec2i {
 	bool operator()(const Vec2i& lhs, const Vec2i& rhs) const;
 };
 
-typedef std::priority_queue<Tuple, std::vector<Tuple>, CompareTuple> PriorityQueue;
 typedef std::map<Vec2i, int, CompareVec2i> TileIntMap;
 typedef std::map<Vec2i, Vec2i, CompareVec2i> TileTileMap;

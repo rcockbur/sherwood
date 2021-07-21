@@ -42,4 +42,5 @@ public :
 	ActivityStatus execute();
 private:
 	bool pathProvidedByFloodfill;
+	const Lookup houseLookup;
 };

@@ -11,12 +11,13 @@ class Graphics {
 public:
 	Graphics();
 	void draw();
-	void drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, const Vec2i& s, 
-		const Vec2i& e, std::list<Vec2i> * path);
-	void drawSearchDebug2(const std::list<node2>& open, const std::list<node2>& closed, const Vec2i& s,
-		const Vec2i& e, std::list<Vec2i>* path);
-	void drawNewAstar(const std::vector<Tuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
+	void drawAStar(const std::vector<AStarOpenTuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
 		const Vec2i& s, const Vec2i& e, const Vec2i* current, std::list<Vec2i>* path);
+	void drawBreadthFirst(const std::list<node2>& open, const std::list<node2>& closed, const Vec2i& s,
+		const Vec2i& e, std::list<Vec2i>* path);
+	void drawBreadthFirstNew(const std::vector<BreadthFirstOpenTuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
+		const Vec2i& s, const Vec2i* e, const Vec2i* current, std::list<Vec2i>* path);
+
 private:
 	const Color gridColor;
 	RectangleShape verticalLine;
@@ -38,7 +39,8 @@ private:
 	void drawSearchTile(const Vec2i node, const Color& color);
 	void drawDebugTile(const Vec2i tile);
 
-	void drawOpen(const std::vector<Tuple>& open, const Color& color);
+	void drawAStarOpen(const std::vector<AStarOpenTuple>& open, const Color& color);
+	void drawBreadthFirstOpen(const std::vector<BreadthFirstOpenTuple>& open, const Color& color);
 	void drawClosed(const std::set<Vec2i, CompareVec2i>& closed, const Color& color);
 };
 

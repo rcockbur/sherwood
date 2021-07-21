@@ -33,9 +33,9 @@ sf::View mapView(sf::FloatRect(Vec2f(), ui.viewportPanel.getSize()));
 sf::RenderWindow renderWindow(sf::VideoMode((int)ui.hud.getSize().x, (int)ui.hud.getSize().y), "Sherwood");
 Graphics graphics;
 EntityManager em;
-aStar astar;
-NewAStar newAstar;
-breadthFirst breadthfirst;
+AStar aStar;
+//BreadthFirst breadthFirst;
+NewBreadthFirst newBreadthFirst;
 
 UnitType person = UnitType("Person");
 DoodadType rock = DoodadType("Rock");

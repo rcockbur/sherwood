@@ -11,61 +11,38 @@ class Building;
 
 
 
-class aStar {
+class AStar {
 public:
     Vec2i start;
     Vec2i end;
-    std::list<node> open;
-    int tilesChecked;
-    std::list<node> closed;
-	aStar();
-    bool searchForTile(const Vec2i& s, const Vec2i& e);
-    std::list<Vec2i> path();
-    void clear();
-private:
-    bool orthoginalNeighborIsPathable(const Vec2i);
-    int heuristic(const Vec2i& p);
-    bool checkNeighbor(Vec2i& p, int cost);
-    void fillOpen(node& n);
-};
-
-class NewAStar {
-public:
-    
-    Vec2i start;
-    Vec2i end;
-    //PriorityQueue open;
-    std::vector<Tuple> open;
+    std::vector<AStarOpenTuple> open;
     std::set<Vec2i, CompareVec2i> closed;
     TileIntMap costSoFar;
     TileTileMap cameFrom;
     int tilesChecked;
-    //std::list<node> closed;
-    NewAStar();
+    AStar();
     bool searchForTile(const Vec2i& s, const Vec2i& e);
     std::list<Vec2i> path();
-    void clear();
+    
 private:
+    void clear();
     bool orthoginalNeighborIsPathable(const Vec2i);
     int heuristic(const Vec2i& p);
-    //bool checkNeighbor(Vec2i& p, int cost);
-    void fillOpen(node& n);
 };
 
-class breadthFirst {
+class NewBreadthFirst {
 public:
     Vec2i start;
     Vec2i end;
-    std::list<node2> open;
-    int tilesChecked;
-    std::list<node2> closed;
-    breadthFirst();
+    std::vector<BreadthFirstOpenTuple> open;
+    std::set<Vec2i, CompareVec2i> closed;
+    TileIntMap costSoFar;
+    TileTileMap cameFrom;
+    NewBreadthFirst();
     Building* searchForHouse(const Vec2i& s);
     std::list<Vec2i> path();
     void clear();
 private:
     bool orthoginalNeighborIsPathable(const Vec2i);
     int heuristic(const Vec2i& p);
-    bool checkNeighbor(Vec2i& p, int cost);
-    void fillOpen(node2& n);
 };

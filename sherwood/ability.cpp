@@ -10,10 +10,8 @@ Move::Move(Unit& unit, Vec2i dest)
 
 ActivityStatus Move::start() {
 	hasStarted = true;
-	//if (astar.searchForTile(unit.tile, dest)) {
-	//	path = astar.path();
-	if (newAstar.searchForTile(unit.tile, dest)) {
-			path = newAstar.path();
+	if (aStar.searchForTile(unit.tile, dest)) {
+			path = aStar.path();
 		return ActivityStatus::success;
 	}
 	else {
@@ -56,8 +54,8 @@ Harvest::Harvest(Unit& unit, Lookup depositLookup) :
 
 ActivityStatus Harvest::start() {
 	hasStarted = true;
-	if (newAstar.searchForTile(unit.tile, dest)) {
-		path = newAstar.path();
+	if (aStar.searchForTile(unit.tile, dest)) {
+		path = aStar.path();
 		return ActivityStatus::success;
 	}
 	else {
@@ -117,7 +115,8 @@ ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup) :
 
 ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i> _path) :
 	Move(unit, buildingLookup.tile),
-	pathProvidedByFloodfill(true)
+	pathProvidedByFloodfill(true),
+	houseLookup(buildingLookup)
 {
 	path = _path;
 }
@@ -127,8 +126,8 @@ ActivityStatus ReturnResources::start() {
 	if (pathProvidedByFloodfill) {
 		return ActivityStatus::success;
 	}
-	else if (newAstar.searchForTile(unit.tile, dest)) {
-		path = newAstar.path();
+	else if (aStar.searchForTile(unit.tile, dest)) {
+		path = aStar.path();
 		return ActivityStatus::success;
 	}
 	else {
@@ -143,7 +142,8 @@ ActivityStatus ReturnResources::execute() {
 			return ActivityStatus::failure;
 	}
 	if (path.empty()) {
-		Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
+		Building* home = em.lookupFixedEntity<Building*>(houseLookup);
+		//if(em.getEntityAtWorldPos)
 		if (home) {
 			home->resources[unit.carryType] += unit.carryAmmount;
 			unit.carryAmmount = 0;

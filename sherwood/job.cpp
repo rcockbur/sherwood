@@ -68,10 +68,10 @@ void Harvester::checkForAnotherAbility() {
 		}
 	}
 	else {
-		Building* house = breadthfirst.searchForHouse(unit.tile);
+		Building* house = newBreadthFirst.searchForHouse(unit.tile);
 		if (house) {
 			Lookup houseLookup = Lookup(*house);
-			std::list<Vec2i> path = breadthfirst.path();
+			std::list<Vec2i> path = newBreadthFirst.path();
 			ReturnResources* returnResources = new ReturnResources(unit, houseLookup, path);
 			setAbility(returnResources);
 		}

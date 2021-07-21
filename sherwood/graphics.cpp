@@ -113,25 +113,26 @@ void Graphics::updateText() {
 	}
 }
 
-void Graphics::drawSearchDebug(const std::list<node>& open, const std::list<node>& closed, 
-	const Vec2i& start, const Vec2i& end, std::list<Vec2i> * path) {
-
+void Graphics::drawAStar(const std::vector<AStarOpenTuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
+	const Vec2i& s, const Vec2i& e, const Vec2i* current, std::list<Vec2i>* path) {
 	renderWindow.clear();
 	drawWorld();
+
 	
-	drawSearchNodes(closed, colors.white);
-	drawSearchNodes(open, colors.red);
+	drawClosed(closed, colors.white);
+	drawAStarOpen(open, colors.red);
 	if (path != nullptr)
 		drawSearchPath(*path, colors.teal);
 
-	drawSearchTile(start, colors.white);
-	drawSearchTile(end, colors.yellow);
-
+	drawSearchTile(s, colors.white);
+	drawSearchTile(e, colors.yellow);
+	if (current)
+		drawSearchTile(*current, colors.orange);
 	drawHUD();
 	renderWindow.display();
 }
 
-void Graphics::drawSearchDebug2(const std::list<node2>& open, const std::list<node2>& closed,
+void Graphics::drawBreadthFirst(const std::list<node2>& open, const std::list<node2>& closed,
 	const Vec2i& start, const Vec2i& end, std::list<Vec2i>* path) {
 
 	renderWindow.clear();
@@ -146,6 +147,26 @@ void Graphics::drawSearchDebug2(const std::list<node2>& open, const std::list<no
 	if (end.x != -1)
 		drawSearchTile(end, colors.yellow);
 
+	drawHUD();
+	renderWindow.display();
+}
+
+void Graphics::drawBreadthFirstNew(const std::vector<BreadthFirstOpenTuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
+	const Vec2i& s, const Vec2i* e, const Vec2i* current, std::list<Vec2i>* path) {
+	renderWindow.clear();
+	drawWorld();
+
+
+	drawClosed(closed, colors.white);
+	drawBreadthFirstOpen(open, colors.red);
+	if (path != nullptr)
+		drawSearchPath(*path, colors.teal);
+
+	drawSearchTile(s, colors.white);
+	if (e)
+		drawSearchTile(*e, colors.yellow);
+	if (current)
+		drawSearchTile(*current, colors.orange);
 	drawHUD();
 	renderWindow.display();
 }
@@ -181,31 +202,22 @@ void Graphics::drawDebugTile(const Vec2i tile) {
 	renderWindow.draw(pathDebugShape);
 }
 
-void Graphics::drawNewAstar(const std::vector<Tuple>& open, const std::set<Vec2i, CompareVec2i>& closed,
-	const Vec2i& s, const Vec2i& e, const Vec2i* current, std::list<Vec2i>* path) {
-	renderWindow.clear();
-	drawWorld();
 
-	
-	drawClosed(closed, colors.white);
-	drawOpen(open, colors.red);
-	if (path != nullptr)
-		drawSearchPath(*path, colors.teal);
 
-	drawSearchTile(s, colors.white);
-	drawSearchTile(e, colors.yellow);
-	if (current)
-		drawSearchTile(*current, colors.orange);
-	drawHUD();
-	renderWindow.display();
-}
-
-void Graphics::drawOpen(const std::vector<Tuple>& open, const Color& color) {
+void Graphics::drawAStarOpen(const std::vector<AStarOpenTuple>& open, const Color& color) {
 	pathDebugShape.setFillColor(color);
 	for (auto i = open.begin(); i != open.end(); i++) {
 		drawDebugTile(std::get<2>(*i));
 	}
 }
+
+void Graphics::drawBreadthFirstOpen(const std::vector<BreadthFirstOpenTuple>& open, const Color& color) {
+	pathDebugShape.setFillColor(color);
+	for (auto i = open.begin(); i != open.end(); i++) {
+		drawDebugTile(std::get<1>(*i));
+	}
+}
+
 void Graphics::drawClosed(const std::set<Vec2i, CompareVec2i>& closed, const Color& color) {
 	pathDebugShape.setFillColor(color);
 	for (auto i = closed.begin(); i != closed.end(); i++) {
