@@ -21,7 +21,7 @@ int main()
 	new Deposit(berryBush, Vec2i(4, 12));
 	new Deposit(berryBush, Vec2i(20, 21));
 
-	new Deposit(fish, Vec2i(5, 8));
+	new Deposit(fish, { 5, 8 });
 	new Deposit(fish, Vec2i(15, 4));
 	new Deposit(fish, Vec2i(13, 7));
 	new Deposit(fish, Vec2i(10, 11));

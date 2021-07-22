@@ -66,7 +66,6 @@ ActivityStatus Harvest::execute() {
 				delete deposit;
 				return ActivityStatus::success; //deposit has expired
 			}
-			
 		}
 		return ActivityStatus::inProgress; //still gathering
 	}
@@ -74,15 +73,12 @@ ActivityStatus Harvest::execute() {
 		followPath();
 		return ActivityStatus::inProgress; //still moving
 	}
-
 }
 
 ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path) :
 	Move(unit, buildingLookup.tile, std::move(path)),
 	houseLookup(buildingLookup)
 {}
-
-
 
 ActivityStatus ReturnResources::execute() {
 	if (path.empty()) {

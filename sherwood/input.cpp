@@ -70,7 +70,10 @@ void handleKeyPress(sf::Keyboard::Key code) {
 			delete selectedEntity;
 		break;
 	case(sf::Keyboard::Escape):
-		if (selectedEntity != nullptr)
+		if (placementBuildingType) {
+			placementBuildingType = nullptr;
+		}
+		else if (selectedEntity)
 			em.deselectEntity(selectedEntity);
 		break;
 	case(sf::Keyboard::G):

@@ -13,7 +13,7 @@ public:
 class Move : public Ability {
 public:
 	Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path);
-	ActivityStatus execute();
+	ActivityStatus execute() override;
 protected:
 	Unit& unit;
 	const Vec2i dest;
@@ -24,7 +24,7 @@ protected:
 class Harvest : public Move {
 public:
 	Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path);
-	ActivityStatus execute();
+	ActivityStatus execute() override;
 private:
 	const Lookup depositLookup;
 	bool hasStartedHarvesting;
@@ -33,7 +33,7 @@ private:
 class ReturnResources : public Move {
 public :
 	ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path);
-	ActivityStatus execute();
+	ActivityStatus execute() override;
 private:
 	const Lookup houseLookup;
 };

@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "lookup.h"
 #include "types.h"
+#include <memory>
 
 class Ability;
 
@@ -11,9 +12,10 @@ public:
 	Job(Unit& unit);
 	~Job();
 	bool hasStarted;
-	Ability* ability;
-	void setAbility(Ability* ability);
-	void destroyAbility();
+	//Ability* ability;
+	std::unique_ptr<Ability> ability;
+	//void setAbility(std::unique_ptr<Ability>&& ability);
+	//void destroyAbility();
 	CompleteStatus execute();
 	ActivityStatus start();
 	virtual void checkForAnotherAbility() = 0;

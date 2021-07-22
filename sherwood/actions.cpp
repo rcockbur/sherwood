@@ -15,7 +15,9 @@ void handleWorldClick(const Panel& panel, bool isLeftClick) {
 		if (placementBuildingType != nullptr) {
 			if (mouseTile != Vec2i(-1, -1)) {
 				new Building(*placementBuildingType, mouseTile);
-				placementBuildingType = nullptr;
+				if (shiftIsDown == false) {
+					placementBuildingType = nullptr;
+				}
 			}
 		}
 
@@ -23,14 +25,19 @@ void handleWorldClick(const Panel& panel, bool isLeftClick) {
 			em.selectEntity(clickedEntity);
 	}
 	else {
-		Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
-		if (selectedUnit != nullptr) {
-			Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
-			Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
-			if (clickedDeposit != nullptr)
-				unitHarvestDeposit(*selectedUnit, *clickedDeposit);
-			else if (selectedEntity->tile != clickedTile) {
-				unitMoveToTile(*selectedUnit, clickedTile);
+		if (placementBuildingType) {
+			placementBuildingType = nullptr;
+		}
+		else {
+			Unit* selectedUnit = dynamic_cast<Unit*>(selectedEntity);
+			if (selectedUnit != nullptr) {
+				Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
+				Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
+				if (clickedDeposit != nullptr)
+					unitHarvestDeposit(*selectedUnit, *clickedDeposit);
+				else if (selectedEntity->tile != clickedTile) {
+					unitMoveToTile(*selectedUnit, clickedTile);
+				}
 			}
 		}
 	}
