@@ -40,6 +40,7 @@ public:
 	FixedEntity(const FixedEntityType&, const Vec2i tile);
 	~FixedEntity();
 	virtual void getSelectionText(std::ostringstream&);
+	const FixedEntityType& fixedEntityType();
 };
 
 class Doodad : public FixedEntity {

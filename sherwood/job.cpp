@@ -6,35 +6,44 @@
 
 Job::Job(Unit& _unit) :
 	unit(_unit),
-	hasStarted(false)
+	hasStarted(false),
+	ability(nullptr)
 {}
 
 Job::~Job() {
-	if (ability != nullptr) delete ability;
+	if (ability != nullptr) {
+		delete ability;
+	}
 }
 
 void Job::setAbility(Ability* _ability) {
-	if (ability != nullptr) delete ability;
+	if (ability != nullptr) {
+		delete ability;
+	}
 	ability = _ability;
 }
 
 void Job::destroyAbility() {
-	if (ability != nullptr) delete ability;
+	if (ability != nullptr) {
+		delete ability;
+	}
 	ability = nullptr;
 }
 
 ActivityStatus Job::start() {
+	hasStarted = true;
 	checkForAnotherAbility();
 	if (ability == nullptr)
 		return ActivityStatus::failure;
-	hasStarted = true;
-	return ability->start();
+	return ActivityStatus::success;
 }
 
 CompleteStatus Job::execute() {
 	if (hasStarted == false)
-		if(start() == ActivityStatus::failure)
+		if(start() == ActivityStatus::failure) {
+			destroyAbility();
 			return CompleteStatus::complete;
+		}
 
 	ActivityStatus abilityStatus = ability->execute();
 	switch (abilityStatus) {
@@ -46,7 +55,12 @@ CompleteStatus Job::execute() {
 		else
 			return CompleteStatus::incomplete;
 	case(ActivityStatus::failure):
-		return CompleteStatus::complete;
+		destroyAbility();
+		checkForAnotherAbility();
+		if (ability == nullptr)
+			return CompleteStatus::complete;
+		else
+			return CompleteStatus::incomplete;
 	default:
 		return CompleteStatus::incomplete;
 	}
@@ -63,23 +77,21 @@ void Harvester::checkForAnotherAbility() {
 		Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
 		if (deposit != nullptr) {
 			forcedHarvest = false;
-			Harvest* harvest = new Harvest(unit, depositLookup);
-			setAbility(harvest);
+			if (aStar.searchForTile(unit.tile, deposit->tile)) {
+				std::list<Vec2i>path = aStar.path();
+				Harvest* harvest = new Harvest(unit, depositLookup, std::move(path));
+				setAbility(harvest);
+			}
 		}
 	}
 	else {
-		Building* house = newBreadthFirst.searchForHouse(unit.tile);
-		if (house) {
-			Lookup houseLookup = Lookup(*house);
+		FixedEntity* targetHouse = newBreadthFirst.searchForFixedEntityType(unit.tile, house);
+		if (targetHouse) {
+			Lookup houseLookup = Lookup(*targetHouse);
 			std::list<Vec2i> path = newBreadthFirst.path();
-			ReturnResources* returnResources = new ReturnResources(unit, houseLookup, path);
+			ReturnResources* returnResources = new ReturnResources(unit, houseLookup, std::move(path));
 			setAbility(returnResources);
 		}
-		//Building* home = em.lookupFixedEntity<Building*>(unit.homeLookup);
-		/*if (home != nullptr) {
-			ReturnResources* returnResources = new ReturnResources(unit, unit.homeLookup);
-			setAbility(returnResources);
-		}*/
 	}
 }
 
@@ -89,9 +101,12 @@ Mover::Mover(Unit& _unit, const Vec2i targetTile) :
 {}
 
 void Mover::checkForAnotherAbility() {
-	if (hasStarted == false) {
-		hasStarted = true;
-		Move* move = new Move(unit, targetTile);
-		setAbility(move);
+	if (unit.tile != targetTile) {
+		if (aStar.searchForTile(unit.tile, targetTile)) {
+			std::list<Vec2i> path = aStar.path();
+			Move* move = new Move(unit, targetTile, std::move(path));
+			setAbility(move);
+		}
+		
 	}
 }

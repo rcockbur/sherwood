@@ -7,27 +7,23 @@ class Unit;
 
 class Ability {
 public:
-	virtual ActivityStatus start() = 0;
 	virtual ActivityStatus execute() = 0;
 };
 
 class Move : public Ability {
 public:
-	Move(Unit& unit, Vec2i dest);
-	ActivityStatus start();
+	Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path);
 	ActivityStatus execute();
 protected:
 	Unit& unit;
 	const Vec2i dest;
 	std::list<Vec2i> path;
-	bool hasStarted;
 	void followPath();
 };
 
 class Harvest : public Move {
 public:
-	Harvest(Unit& unit, Lookup depositLookup);
-	ActivityStatus start();
+	Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path);
 	ActivityStatus execute();
 private:
 	const Lookup depositLookup;
@@ -36,11 +32,8 @@ private:
 
 class ReturnResources : public Move {
 public :
-	ReturnResources(Unit& unit, Lookup buildingLookup);
-	ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i> path);
-	ActivityStatus start();
+	ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path);
 	ActivityStatus execute();
 private:
-	bool pathProvidedByFloodfill;
 	const Lookup houseLookup;
 };

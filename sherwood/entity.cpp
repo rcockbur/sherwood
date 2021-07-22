@@ -71,6 +71,10 @@ void FixedEntity::getSelectionText(std::ostringstream& s) {
 	Entity::getSelectionText(s);
 }
 
+const FixedEntityType& FixedEntity::fixedEntityType() {
+	return static_cast<const FixedEntityType&>(type);
+}
+
 Doodad::Doodad(const DoodadType& _type, const Vec2i _tile) :
 	FixedEntity(_type, _tile)
 {}

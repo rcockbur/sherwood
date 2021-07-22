@@ -170,7 +170,7 @@ int NewBreadthFirst::heuristic(const Vec2i& p) {
     return 14 * diagonals + 10 * orthoginals;
 }
 
-Building* NewBreadthFirst::searchForHouse(const Vec2i& s) {
+FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const FixedEntityType& fet) {
    if (showPathfinding) renderWindow.setFramerateLimit(1000);
     auto begin = std::chrono::high_resolution_clock::now();
     clear();
@@ -186,12 +186,9 @@ Building* NewBreadthFirst::searchForHouse(const Vec2i& s) {
         open.pop_back();
         closed.insert(best);
         FixedEntity* fixedEntity = em.getEntityFromTile(best);
-        if (fixedEntity != nullptr) {
-            Building* building = dynamic_cast<Building*> (fixedEntity);
-            if (building != nullptr && &building->buildingType() == &house) {
-                end = best;
-                return building;
-            }
+        if (fixedEntity != nullptr && &fixedEntity->fixedEntityType() == &fet) {
+            end = best;
+            return fixedEntity;
         }
         if (map.isPathable(best)) {
             Vec2i neighbor;

@@ -7,7 +7,8 @@
 #include <vector>
 #include <set>
 
-class Building;
+class FixedEntity;
+class FixedEntityType;
 
 
 
@@ -39,7 +40,7 @@ public:
     TileIntMap costSoFar;
     TileTileMap cameFrom;
     NewBreadthFirst();
-    Building* searchForHouse(const Vec2i& s);
+    FixedEntity* searchForFixedEntityType(const Vec2i& s, const FixedEntityType& fet);
     std::list<Vec2i> path();
     void clear();
 private:

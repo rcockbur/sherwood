@@ -4,27 +4,13 @@
 #include "globals.h"
 #include "pathfinding.h"
 
-Move::Move(Unit& unit, Vec2i dest)
-	: unit(unit), dest(dest), hasStarted(false)
+Move::Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path) : 
+	unit(unit), 
+	dest(dest), 
+	path(path)
 {}
 
-ActivityStatus Move::start() {
-	hasStarted = true;
-	if (aStar.searchForTile(unit.tile, dest)) {
-			path = aStar.path();
-		return ActivityStatus::success;
-	}
-	else {
-		return ActivityStatus::failure;
-	}
-}
-
 ActivityStatus Move::execute() {
-	if (hasStarted == false) {
-		ActivityStatus startStatus = start();
-		if (startStatus == ActivityStatus::failure)
-			return ActivityStatus::failure;
-	}
 	if (path.empty()) {
 		return ActivityStatus::success;
 	}
@@ -45,30 +31,13 @@ void Move::followPath() {
 	}
 }
 
-Harvest::Harvest(Unit& unit, Lookup depositLookup) :
-	Move(unit, depositLookup.tile),
+Harvest::Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path) :
+	Move(unit, depositLookup.tile, std::move(path)),
 	depositLookup(depositLookup),
 	hasStartedHarvesting(false)
-	
 {}
 
-ActivityStatus Harvest::start() {
-	hasStarted = true;
-	if (aStar.searchForTile(unit.tile, dest)) {
-		path = aStar.path();
-		return ActivityStatus::success;
-	}
-	else {
-		return ActivityStatus::failure;
-	}
-}
-
 ActivityStatus Harvest::execute() {
-	if (hasStarted == false) {
-		ActivityStatus startStatus = start();
-		if (startStatus == ActivityStatus::failure)
-			return ActivityStatus::failure;
-	}
 	if (path.empty()) {
 		if (tics >= unit.canGatherAt) {
 			Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
@@ -108,42 +77,16 @@ ActivityStatus Harvest::execute() {
 
 }
 
-ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup) :
-	Move(unit, buildingLookup.tile),
-	pathProvidedByFloodfill(false)
+ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path) :
+	Move(unit, buildingLookup.tile, std::move(path)),
+	houseLookup(buildingLookup)
 {}
 
-ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i> _path) :
-	Move(unit, buildingLookup.tile),
-	pathProvidedByFloodfill(true),
-	houseLookup(buildingLookup)
-{
-	path = _path;
-}
 
-ActivityStatus ReturnResources::start() {
-	hasStarted = true;
-	if (pathProvidedByFloodfill) {
-		return ActivityStatus::success;
-	}
-	else if (aStar.searchForTile(unit.tile, dest)) {
-		path = aStar.path();
-		return ActivityStatus::success;
-	}
-	else {
-		return ActivityStatus::failure;
-	}
-}
 
 ActivityStatus ReturnResources::execute() {
-	if (hasStarted == false) {
-		ActivityStatus startStatus = start();
-		if (startStatus == ActivityStatus::failure)
-			return ActivityStatus::failure;
-	}
 	if (path.empty()) {
 		Building* home = em.lookupFixedEntity<Building*>(houseLookup);
-		//if(em.getEntityAtWorldPos)
 		if (home) {
 			home->resources[unit.carryType] += unit.carryAmmount;
 			unit.carryAmmount = 0;
