@@ -10,12 +10,8 @@ class Job {
 public:
 	Unit& unit;
 	Job(Unit& unit);
-	~Job();
 	bool hasStarted;
-	//Ability* ability;
 	std::unique_ptr<Ability> ability;
-	//void setAbility(std::unique_ptr<Ability>&& ability);
-	//void destroyAbility();
 	CompleteStatus execute();
 	ActivityStatus start();
 	virtual void checkForAnotherAbility() = 0;
