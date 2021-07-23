@@ -6,7 +6,7 @@
 #include <string>
 #include "ui.h"
 
-class UnitType;
+class UnitStyle;
 
 extern bool showGrid;
 extern bool showPathfinding;
@@ -26,10 +26,10 @@ extern EntityManager em;
 extern UI ui;
 extern AStar aStar;
 //extern BreadthFirst breadthFirst;
-extern NewBreadthFirst newBreadthFirst;
+extern BreadthFirst breadthFirst;
 
 extern Entity* selectedEntity;
-extern BuildingType* placementBuildingType;
+extern BuildingStyle* placementBuildingType;
 extern Vec2f mouseScreenPos;
 extern Vec2f mouseWorldPos;
 extern Vec2i mouseTile;
@@ -37,15 +37,15 @@ extern sf::Clock deltaClock;
 extern sf::Clock gameClock;
 extern sf::Time dt;
 
-extern UnitType person;
-extern DoodadType rock;
-extern BuildingType house;
-extern BuildingType mill;
-extern DepositType berryBush;
-extern DepositType fish;
-extern DepositType tree;
-extern DepositType goldMine;
-extern DepositType stoneMine;
+extern UnitStyle person;
+extern DoodadStyle rock;
+extern BuildingStyle house;
+extern BuildingStyle mill;
+extern DepositStyle berryBush;
+extern DepositStyle fish;
+extern DepositStyle tree;
+extern DepositStyle goldMine;
+extern DepositStyle stoneMine;
 
 void initEntityTypes();
 void initWindow();

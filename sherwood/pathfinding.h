@@ -1,49 +1,44 @@
 #pragma once
 #include "types.h"
 #include <list>
-#include "node.h"
 #include <map>
-#include <queue>
 #include <vector>
 #include <set>
 
-class FixedEntity;
-class FixedEntityType;
+class Fixed;
+class FixedStyle;
 
-
-
-class AStar {
+class Pathfinder {
 public:
     Vec2i start;
     Vec2i end;
-    std::vector<AStarOpenTuple> open;
     std::set<Vec2i, CompareVec2i> closed;
+protected:
+    std::set<int> pathableTypes;
     TileIntMap costSoFar;
     TileTileMap cameFrom;
+    bool tileIsPathable(const Vec2i _tile) const;
+    bool orthoginalNeighborIsPathable(const Vec2i);
+    bool validDiagonal(const Vec2i& source, const Vec2i& direction) const;
+};
+
+class AStar : public Pathfinder {
+public:
+    std::vector<AStarOpenTuple> open;
     int tilesChecked;
     AStar();
-    bool searchForTile(const Vec2i& s, const Vec2i& e);
+    bool search(const Vec2i& s, const Vec2i& e, std::set<int> pathableTypes);
     std::list<Vec2i> path();
-    
 private:
     void clear();
-    bool orthoginalNeighborIsPathable(const Vec2i);
     int heuristic(const Vec2i& p);
 };
 
-class NewBreadthFirst {
+class BreadthFirst : public Pathfinder {
 public:
-    Vec2i start;
-    Vec2i end;
     std::vector<BreadthFirstOpenTuple> open;
-    std::set<Vec2i, CompareVec2i> closed;
-    TileIntMap costSoFar;
-    TileTileMap cameFrom;
-    NewBreadthFirst();
-    FixedEntity* searchForFixedEntityType(const Vec2i& s, const FixedEntityType& fet);
+    Fixed* search(const Vec2i& s, const FixedStyle& fet, std::set<int> pathableTypes);
     std::list<Vec2i> path();
     void clear();
 private:
-    bool orthoginalNeighborIsPathable(const Vec2i);
-    int heuristic(const Vec2i& p);
 };

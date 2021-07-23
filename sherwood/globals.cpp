@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "color.h"
 #include "pathfinding.h"
-#include "entity_type.h"
+#include "entity_style.h"
 #include "types.h"
 
 
@@ -16,7 +16,7 @@ int tics = 0;
 int seconds = 0;
 float actualFPS = (float)targetFPS;
 Entity* selectedEntity(nullptr);
-BuildingType* placementBuildingType(nullptr);
+BuildingStyle* placementBuildingType(nullptr);
 Vec2f mouseScreenPos(0, 0);
 Vec2f mouseWorldPos(-1, -1);
 Vec2i mouseTile(-1, -1);
@@ -34,23 +34,22 @@ sf::RenderWindow renderWindow(sf::VideoMode((int)ui.hud.getSize().x, (int)ui.hud
 Graphics graphics;
 EntityManager em;
 AStar aStar;
-//BreadthFirst breadthFirst;
-NewBreadthFirst newBreadthFirst;
+BreadthFirst breadthFirst;
 
-UnitType person = UnitType("Person");
-DoodadType rock = DoodadType("Rock");
-BuildingType house = BuildingType("House");
-BuildingType mill = BuildingType("Mill");
-DepositType berryBush = DepositType("Berry Bush");
-DepositType fish = DepositType("Fish");
-DepositType tree = DepositType("Tree");
-DepositType goldMine = DepositType("Gold Mine");
-DepositType stoneMine = DepositType("Stone Mine");
+UnitStyle person = UnitStyle("Person");
+DoodadStyle rock = DoodadStyle("Rock");
+BuildingStyle house = BuildingStyle("House");
+BuildingStyle mill = BuildingStyle("Mill");
+DepositStyle berryBush = DepositStyle("Berry Bush");
+DepositStyle fish = DepositStyle("Fish");
+DepositStyle tree = DepositStyle("Tree");
+DepositStyle goldMine = DepositStyle("Gold Mine");
+DepositStyle stoneMine = DepositStyle("Stone Mine");
 
-RectangleShape FixedEntityType::shape = RectangleShape();
-RectangleShape FixedEntityType::outlineShape = RectangleShape();
-CircleShape UnitType::shape = CircleShape();
-CircleShape UnitType::outlineShape = CircleShape();
+RectangleShape FixedStyle::shape = RectangleShape();
+RectangleShape FixedStyle::outlineShape = RectangleShape();
+CircleShape UnitStyle::shape = CircleShape();
+CircleShape UnitStyle::outlineShape = CircleShape();
 
 void initEntityTypes() {
 	person.color = colors.lightBlue;
@@ -59,50 +58,59 @@ void initEntityTypes() {
 	person.carryCapacity = 10;
 	person.gatherPeriod = 8;
 	person.size = 12;
+	person.pathableTypes.insert(1);
 
 	rock.color = colors.darkGrey;
 	rock.size = 12;
+	rock.pathableTypes.insert(1);
 
 	house.color = colors.black;
 	house.resources[food] = 50;
 	house.resources[wood] = 100;
 	house.size = 16;
+	house.pathableTypes.insert(1);
 
 	mill.color = colors.orange;
 	mill.size = 16;
+	mill.pathableTypes.insert(1);
 
 	berryBush.color = colors.red;
 	berryBush.resourceType = food;
 	berryBush.amount = 100;
 	berryBush.size = 14;
+	berryBush.pathableTypes.insert(1);
 
 	fish.color = colors.blue;
 	fish.resourceType = food;
 	fish.amount = 100;
 	fish.size = 10;
+	fish.pathableTypes.insert(0);
 
 	tree.color = colors.brown;
 	tree.resourceType = wood;
 	tree.amount = 100;
 	tree.size = 12;
+	tree.pathableTypes.insert(1);
 
 	goldMine.color = colors.yellow;
 	goldMine.resourceType = gold;
 	goldMine.amount = 1000;
 	goldMine.size = 12;
+	goldMine.pathableTypes.insert(1);
 
 	stoneMine.color = colors.darkGrey;
 	stoneMine.resourceType = stone;
 	stoneMine.amount = 1000;
 	stoneMine.size = 12;
+	stoneMine.pathableTypes.insert(1);
 
-	FixedEntityType::outlineShape.setFillColor(colors.transparent);
-	FixedEntityType::outlineShape.setOutlineColor(colors.lightYellow);
-	FixedEntityType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
+	FixedStyle::outlineShape.setFillColor(colors.transparent);
+	FixedStyle::outlineShape.setOutlineColor(colors.lightYellow);
+	FixedStyle::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
 
-	UnitType::outlineShape.setFillColor(colors.transparent);
-	UnitType::outlineShape.setOutlineColor(colors.lightYellow);
-	UnitType::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
+	UnitStyle::outlineShape.setFillColor(colors.transparent);
+	UnitStyle::outlineShape.setOutlineColor(colors.lightYellow);
+	UnitStyle::outlineShape.setOutlineThickness(-OUTLINE_WIDTH);
 }
 
 void initWindow() {

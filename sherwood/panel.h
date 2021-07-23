@@ -2,7 +2,7 @@
 #include "types.h"
 #include <list>
 
-class BuildingType;
+class BuildingStyle;
 
 class Padding {
 public:
@@ -17,14 +17,14 @@ public:
 	Vec2f getPosition() const;
 	Vec2f getInnerPosition() const;
 	Vec2f getSize() const;
-	BuildingType* getBuildingType() const;
+	BuildingStyle* getBuildingType() const;
 	void setString(const std::string& string);
-	void setBuildingType(BuildingType* BuildingType);
+	void setBuildingType(BuildingStyle* BuildingType);
 	void setCallback(void (*callback)(const Panel&, const bool));
 	void handleClick(const bool isLeftClick);
 	bool containsScreenPos(const Vec2f pos);
 private:
-	BuildingType* buildingType;
+	BuildingStyle* buildingType;
 	std::string name;
 	void (*callback)(const Panel&, const bool);
 	Panel* parent;

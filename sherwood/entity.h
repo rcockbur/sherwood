@@ -4,12 +4,12 @@
 #include "resources.h"
 #include "lookup.h"
 
-class EntityType;
-class DoodadType;
-class FixedEntityType;
-class UnitType;
-class BuildingType;
-class DepositType;
+class EntityStyle;
+class DoodadStyle;
+class FixedStyle;
+class UnitStyle;
+class BuildingStyle;
+class DepositStyle;
 class Building;
 class Job;
 
@@ -20,53 +20,57 @@ public:
 	Vec2i tile;
 	Vec2f pos;
 protected:
-	const EntityType& type;
+	const EntityStyle& style;
 public:
 	Rect bounds;
 	Color color;
 	bool isSelected;
 
-	Entity(const EntityType& type, const Vec2i tile);
+	Entity(const EntityStyle& style, const Vec2i tile);
 	virtual ~Entity();
-	bool operator==(const Lookup& lookup);
-	virtual void getSelectionText(std::ostringstream&);
-	const EntityType& entityType();
+	bool operator==(const Lookup& lookup) const;
+	bool tileIsPathable(const Vec2i tile) const;
+	void validatePathable(const Vec2i tile) const;
+	void select();
+	void deselect();
+	virtual void getSelectionText(std::ostringstream&) const;
+	const EntityStyle& entityType() const;
 protected:
-	Rect calculateBounds(const Vec2f& pos);
+	Rect calculateBounds(const Vec2f& pos) const;
 };
 
-class FixedEntity : public Entity {
+class Fixed : public Entity {
 public:
-	FixedEntity(const FixedEntityType&, const Vec2i tile);
-	~FixedEntity();
-	virtual void getSelectionText(std::ostringstream&);
-	const FixedEntityType& fixedEntityType();
+	Fixed(const FixedStyle&, const Vec2i tile);
+	~Fixed();
+	virtual void getSelectionText(std::ostringstream&) const;
+	const FixedStyle& fixedEntityType() const;
 };
 
-class Doodad : public FixedEntity {
+class Doodad : public Fixed {
 public:
-	Doodad(const DoodadType&, const Vec2i tile);
+	Doodad(const DoodadStyle&, const Vec2i tile);
 	~Doodad();
-	const DoodadType& doodadType();
+	const DoodadStyle& doodadType() const;
 };
 
-class Deposit : public FixedEntity {
+class Deposit : public Fixed {
 public:
 	int amount;
 
-	Deposit(const DepositType& type, const Vec2i tile);
+	Deposit(const DepositStyle& style, const Vec2i tile);
 	~Deposit();
-	void getSelectionText(std::ostringstream&);
-	const DepositType& depositType();
+	void getSelectionText(std::ostringstream&) const;
+	const DepositStyle& depositType() const;
 };
 
-class Building : public FixedEntity {
+class Building : public Fixed {
 public:
 	Resources resources;
 
-	Building(const BuildingType& type, const Vec2i tile);
-	void getSelectionText(std::ostringstream&);
-	const BuildingType& buildingType();
+	Building(const BuildingStyle& style, const Vec2i tile);
+	void getSelectionText(std::ostringstream&) const;
+	const BuildingStyle& buildingType() const;
 };
 
 
@@ -79,16 +83,16 @@ public:
 	int carryType;
 	int carryAmmount;
 
-	Unit(const UnitType& type, const Vec2i tile);
+	Unit(const UnitStyle& style, const Vec2i tile);
 	~Unit();
 	void update();
-	void getSelectionText(std::ostringstream&);
+	void getSelectionText(std::ostringstream&) const;
 	void addJob(Job* job);
 	void setJob(Job* job);
 	void destroyJobs();
 	void setHome(Building& home);
 	bool moveTowards(const Vec2i targetTile);
-	const UnitType& unitType();
+	const UnitStyle& unitType() const;
 };
 
 

@@ -3,14 +3,23 @@
 #include "pathfinding.h"
 #include "job.h"
 #include "utility.h"
-#include "entity_type.h"
+#include "entity_style.h"
+
+Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
+	for (auto& entity : em.entities) {
+		if (entity->bounds.contains(worldPosition)) {
+			return entity;
+		}
+	}
+	return nullptr;
+}
 
 void handleWorldClick(const Panel& panel, bool isLeftClick) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
 	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
-	Entity* clickedEntity = em.getEntityAtWorldPos(worldPos);
+	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 	if (isLeftClick) {
 		if (placementBuildingType != nullptr) {
 			if (mouseTile != Vec2i(-1, -1)) {
@@ -22,7 +31,7 @@ void handleWorldClick(const Panel& panel, bool isLeftClick) {
 		}
 
 		else if (clickedEntity != nullptr)
-			em.selectEntity(clickedEntity);
+			clickedEntity->select();
 	}
 	else {
 		if (placementBuildingType) {
@@ -48,7 +57,7 @@ void buildingButtonClicked(const Panel& panel, bool isLeftClick) {
 }
 
 void unitMoveToTile(Unit& unit, Vec2i targetTile) {
-	if (map.isPathable(targetTile) == true) {
+	if(unit.tileIsPathable(targetTile)) {
 		Mover* mover = new Mover(unit, targetTile);
 		if (shiftIsDown) {
 			unit.addJob(mover);

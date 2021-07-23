@@ -1,48 +1,50 @@
 #pragma once
 #include "types.h"
 #include "resources.h"
+#include <set>
 
-class EntityType {
+class EntityStyle {
 public:
 	std::string name;
 	Color color;	
 	float size;
-	EntityType(std::string&&);
+	std::set<int> pathableTypes;
+	EntityStyle(std::string&&);
 	virtual Shape* getShape(const Vec2f graphicalPosition) const = 0;
 	virtual Shape* getOutlineShape(const Vec2f graphicalPosition) const = 0;
 };
 
-class FixedEntityType : public EntityType {
+class FixedStyle : public EntityStyle {
 public:
 	static RectangleShape shape;
 	static RectangleShape outlineShape;
 
-	FixedEntityType(std::string&& _name);
+	FixedStyle(std::string&& _name);
 	Shape* getShape(const Vec2f graphicalPosition) const;
 	Shape* getOutlineShape(const Vec2f graphicalPosition) const;
 };
 
-class DoodadType: public FixedEntityType {
+class DoodadStyle: public FixedStyle {
 public:
-	DoodadType(std::string&& _name);
+	DoodadStyle(std::string&& _name);
 };
 
-class DepositType : public FixedEntityType {
+class DepositStyle : public FixedStyle {
 public:
 	int resourceType;
 	int amount;
 
-	DepositType(std::string&& _name);
+	DepositStyle(std::string&& _name);
 };
 
-class BuildingType : public FixedEntityType {
+class BuildingStyle : public FixedStyle {
 public:
 	Resources resources;
 
-	BuildingType(std::string&& _name);
+	BuildingStyle(std::string&& _name);
 };
 
-class UnitType : public EntityType {
+class UnitStyle : public EntityStyle {
 public:
 	static CircleShape shape;
 	static CircleShape outlineShape;
@@ -52,7 +54,7 @@ public:
 	int carryCapacity;
 	int gatherPeriod;
 
-	UnitType(std::string&& _name);
+	UnitStyle(std::string&& _name);
 	Shape* getShape(const Vec2f graphicalPosition) const;
 	Shape* getOutlineShape(const Vec2f graphicalPosition) const;
 };

@@ -1,8 +1,7 @@
 #include "ability.h"
 #include "entity.h"
-#include "entity_type.h"
+#include "entity_style.h"
 #include "globals.h"
-#include "pathfinding.h"
 
 Move::Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path) : 
 	unit(unit), 
@@ -40,7 +39,7 @@ Harvest::Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path) :
 ActivityStatus Harvest::execute() {
 	if (path.empty()) {
 		if (tics >= unit.canGatherAt) {
-			Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
+			Deposit* deposit = map.lookupFixed<Deposit>(depositLookup);
 			if (deposit == nullptr) {
 				if (hasStartedHarvesting) {
 					return ActivityStatus::success; //deposit destroyed while gathering
@@ -82,7 +81,7 @@ ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Ve
 
 ActivityStatus ReturnResources::execute() {
 	if (path.empty()) {
-		Building* home = em.lookupFixedEntity<Building*>(houseLookup);
+		Building* home = map.lookupFixed<Building>(houseLookup);
 		if (home) {
 			home->resources[unit.carryType] += unit.carryAmmount;
 			unit.carryAmmount = 0;

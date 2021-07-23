@@ -1,6 +1,6 @@
 #include "job.h"
 #include "ability.h"
-#include "entity_type.h"
+#include "entity_style.h"
 #include "globals.h"
 #include "pathfinding.h"
 
@@ -47,20 +47,20 @@ Harvester::Harvester(Unit& _unit, const Lookup depositLookup) :
 
 void Harvester::checkForAnotherAbility() {
 	if (forcedHarvest == true || unit.carryAmmount == 0) {
-		Deposit* deposit = em.lookupFixedEntity<Deposit*>(depositLookup);
+		Deposit* deposit = map.lookupFixed<Deposit>(depositLookup);
 		if (deposit != nullptr) {
 			forcedHarvest = false;
-			if (aStar.searchForTile(unit.tile, deposit->tile)) {
+			if (aStar.search(unit.tile, deposit->tile, unit.unitType().pathableTypes)) {
 				std::list<Vec2i>path = aStar.path();
 				ability.reset(new Harvest(unit, depositLookup, std::move(path)));
 			}
 		}
 	}
 	else {
-		FixedEntity* targetHouse = newBreadthFirst.searchForFixedEntityType(unit.tile, house);
+		Fixed* targetHouse = breadthFirst.search(unit.tile, house, unit.unitType().pathableTypes);
 		if (targetHouse) {
 			Lookup houseLookup = Lookup(*targetHouse);
-			std::list<Vec2i> path = newBreadthFirst.path();
+			std::list<Vec2i> path = breadthFirst.path();
 			ability.reset(new ReturnResources(unit, houseLookup, std::move(path)));
 		}
 	}
@@ -73,7 +73,7 @@ Mover::Mover(Unit& _unit, const Vec2i targetTile) :
 
 void Mover::checkForAnotherAbility() {
 	if (unit.tile != targetTile) {
-		if (aStar.searchForTile(unit.tile, targetTile)) {
+		if (aStar.search(unit.tile, targetTile, unit.unitType().pathableTypes)) {
 			std::list<Vec2i> path = aStar.path();
 			ability.reset(new Move(unit, targetTile, std::move(path)));
 		}

@@ -160,10 +160,9 @@
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_manager.cpp" />
-    <ClCompile Include="entity_type.cpp" />
+    <ClCompile Include="entity_style.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="job.cpp" />
-    <ClCompile Include="node.cpp" />
     <ClCompile Include="panel.cpp" />
     <ClCompile Include="pathfinding.cpp" />
     <ClCompile Include="resources.cpp" />
@@ -185,9 +184,8 @@
     <ClInclude Include="graphics.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
-    <ClInclude Include="entity_type.h" />
+    <ClInclude Include="entity_style.h" />
     <ClInclude Include="job.h" />
-    <ClInclude Include="node.h" />
     <ClInclude Include="panel.h" />
     <ClInclude Include="pathfinding.h" />
     <ClInclude Include="resources.h" />

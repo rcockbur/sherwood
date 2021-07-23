@@ -1,42 +1,39 @@
 #include "pathfinding.h"
 #include "globals.h"
 #include "graphics.h"
-#include "color.h"
 #include <Windows.h>
-#include <cmath>
-#include <algorithm>
 #include <chrono>
 
-Vec2i neighbours[8] = {
-    Vec2i(-1, -1),
-    Vec2i(1, -1),
-    Vec2i(-1, 1),
-    Vec2i(1, 1),
-    Vec2i(0, -1),
-    Vec2i(-1, 0),
-    Vec2i(0, 1),
-    Vec2i(1, 0)
+Vec2i neighbours[8] = { 
+    Vec2i(-1, -1), Vec2i(1, -1), Vec2i(-1, 1), Vec2i(1, 1),
+    Vec2i(0, -1), Vec2i(-1, 0), Vec2i(0, 1), Vec2i(1, 0)
 };
 
-bool validDiagonal(const Vec2i& source, const Vec2i& direction) {
-    Vec2i tile1(source.x, source.y + direction.y);
-    Vec2i tile2(source.x + direction.x, source.y);
-    return map.isPathable(tile1) && map.isPathable(tile2);
-}
-
-AStar::AStar() {
-    tilesChecked = 0;
-}
-
-bool AStar::orthoginalNeighborIsPathable(const Vec2i tile) {
+bool Pathfinder::orthoginalNeighborIsPathable(const Vec2i tile) {
     Vec2i neighbourTile;
     for (int x = 4; x < 8; x++) {
         neighbourTile = tile + neighbours[x];
-        if (map.isWithinBounds(neighbourTile) && map.isPathable(neighbourTile))
+        if (map.isWithinBounds(neighbourTile) && tileIsPathable(neighbourTile))
             return true;
     }
     return false;
 }
+
+bool Pathfinder::tileIsPathable(const Vec2i _tile) const {
+    return (pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != pathableTypes.end() &&
+        map.getFixedFromTile(_tile) == nullptr);
+}
+
+bool Pathfinder::validDiagonal(const Vec2i& source, const Vec2i& direction) const {
+    Vec2i tile1(source.x, source.y + direction.y);
+    Vec2i tile2(source.x + direction.x, source.y);
+    return tileIsPathable(tile1) && tileIsPathable(tile2);
+}
+
+
+AStar::AStar() :
+    tilesChecked(0)
+{}
 
 int AStar::heuristic(const Vec2i& p) {
     int deltaX = std::abs(end.x - p.x);
@@ -46,11 +43,12 @@ int AStar::heuristic(const Vec2i& p) {
     return 14 * diagonals + 10 * orthoginals;
 }
 
-bool AStar::searchForTile(const Vec2i& s, const Vec2i& e) {
+bool AStar::search(const Vec2i& s, const Vec2i& e, std::set<int> _pathableTypes) {
     if (showPathfinding) renderWindow.setFramerateLimit(1000);
     auto begin = std::chrono::high_resolution_clock::now();
     bool pathFound = false;
-    if (map.isPathable(e) || orthoginalNeighborIsPathable(e)) {
+    pathableTypes = _pathableTypes;
+    if (tileIsPathable(e) || orthoginalNeighborIsPathable(e)) {
         clear();
         end = e;
         start = s;
@@ -70,7 +68,7 @@ bool AStar::searchForTile(const Vec2i& s, const Vec2i& e) {
                 pathFound = true;
                 break;
             }
-            if (map.isPathable(best)) {
+            if (tileIsPathable(best)) {
                 Vec2i neighbor;
                 for (int x = 0; x < 8; x++) {
                     neighbor = best + neighbours[x];
@@ -101,7 +99,7 @@ bool AStar::searchForTile(const Vec2i& s, const Vec2i& e) {
                 }
             }
             if (showPathfinding) {
-                graphics.drawAStar(open, closed, start, end, &best, nullptr);
+                graphics.drawAStar(&best, nullptr);
                 //Sleep(20); //after each path node
             }      
         }
@@ -124,18 +122,17 @@ std::list<Vec2i> AStar::path() {
         path.push_front(current);
         current = cameFrom[current];
         if (showPathfinding) {
-            graphics.drawAStar(open, closed, start, end, &current, &path);
-            Sleep(5); //after each path node
+            graphics.drawAStar(&current, &path);
+            Sleep(10); //after each path node
         }
     }
     if (showPathfinding) {
         Sleep(100);
         renderWindow.setFramerateLimit(targetFPS);
     }
-    if (map.isPathable(path.back()) == false) {
+    if (tileIsPathable(path.back()) == false) {
         path.pop_back();
     }
-
     return path;
 }
 
@@ -146,32 +143,9 @@ void AStar::clear() {
     cameFrom.clear();
 }
 
-
-
-
-NewBreadthFirst::NewBreadthFirst() {
-}
-
-bool NewBreadthFirst::orthoginalNeighborIsPathable(const Vec2i tile) {
-    Vec2i neighbourTile;
-    for (int x = 4; x < 8; x++) {
-        neighbourTile = tile + neighbours[x];
-        if (map.isWithinBounds(neighbourTile) && map.isPathable(neighbourTile))
-            return true;
-    }
-    return false;
-}
-
-int NewBreadthFirst::heuristic(const Vec2i& p) {
-    int deltaX = std::abs(end.x - p.x);
-    int deltaY = std::abs(end.y - p.y);
-    int diagonals = std::min(deltaX, deltaY);
-    int orthoginals = std::abs(deltaX - deltaY);
-    return 14 * diagonals + 10 * orthoginals;
-}
-
-FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const FixedEntityType& fet) {
+Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int> _pathableTypes) {
    if (showPathfinding) renderWindow.setFramerateLimit(1000);
+   pathableTypes = _pathableTypes;
     auto begin = std::chrono::high_resolution_clock::now();
     clear();
     start = s;
@@ -185,12 +159,12 @@ FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const Fix
         std::pop_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
         open.pop_back();
         closed.insert(best);
-        FixedEntity* fixedEntity = em.getEntityFromTile(best);
+        Fixed* fixedEntity = map.getFixedFromTile(best);
         if (fixedEntity != nullptr && &fixedEntity->fixedEntityType() == &fet) {
             end = best;
             return fixedEntity;
         }
-        if (map.isPathable(best)) {
+        if (tileIsPathable(best)) {
             Vec2i neighbor;
             for (int x = 0; x < 8; x++) {
                 neighbor = best + neighbours[x];
@@ -205,12 +179,11 @@ FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const Fix
                                 std::vector<BreadthFirstOpenTuple>::iterator i;
                                 i = std::find_if(open.begin(), open.end(), [&](BreadthFirstOpenTuple t) { return std::get<1>(t) == neighbor; });
                                 if (i == open.end()) {
-                                    //open.push_back(BreadthFirstOpenTuple(newCost + heuristic(neighbor), neighbor));
                                     open.push_back(BreadthFirstOpenTuple(newCost, neighbor));
                                     std::push_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
                                 }
                                 else {
-                                    std::get<0>(*i) = newCost + heuristic(neighbor);
+                                    std::get<0>(*i) = newCost;
                                 }
                             }
                         }
@@ -219,7 +192,7 @@ FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const Fix
             }
         }
         if (showPathfinding) {
-            graphics.drawBreadthFirstNew(open, closed, start, nullptr, &best, nullptr);
+            graphics.drawBreadthFirst(nullptr, &best, nullptr);
             //Sleep(20); //after each path node
         }
     }
@@ -230,7 +203,7 @@ FixedEntity* NewBreadthFirst::searchForFixedEntityType(const Vec2i& s, const Fix
     return nullptr;
 }
 
-std::list<Vec2i> NewBreadthFirst::path() {
+std::list<Vec2i> BreadthFirst::path() {
     if (showPathfinding) {
         Sleep(100);
         renderWindow.setFramerateLimit(1000);
@@ -241,22 +214,22 @@ std::list<Vec2i> NewBreadthFirst::path() {
         path.push_front(current);
         current = cameFrom[current];
         if (showPathfinding) {
-            graphics.drawBreadthFirstNew(open, closed, start, &end, &current, &path);
-            Sleep(5); //after each path node
+            graphics.drawBreadthFirst(&end, &current, &path);
+            Sleep(10); //after each path node
         }
     }
     if (showPathfinding) {
         Sleep(100);
         renderWindow.setFramerateLimit(targetFPS);
     }
-    if (map.isPathable(path.back()) == false) {
+    if (tileIsPathable(path.back()) == false) {
         path.pop_back();
     }
 
     return path;
 }
 
-void NewBreadthFirst::clear() {
+void BreadthFirst::clear() {
     open.clear();
     closed.clear();
     costSoFar.clear();

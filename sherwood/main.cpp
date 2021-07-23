@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "entity.h"
 #include "input.h"
+#include "entity_manager.h"
 
 int main()
 {

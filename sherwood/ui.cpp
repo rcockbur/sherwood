@@ -17,8 +17,6 @@ UI::UI()
 	topPanel.setParent(hud);
 	topPanel.setPadding(Padding(5, 1, 0, 0));
 	topPanel.setSize(Vec2f(-1, 20));
-	//topPanel.setBorderColor(colors.red);
-	//topPanel.border.setOutlineColor(colors.red);
 
 	targetFpsPanel.setName("targetFpsPanel");
 	targetFpsPanel.setParent(topPanel);
@@ -57,15 +55,12 @@ UI::UI()
 	selectionPanel.setParent(rightPanel);
 	selectionPanel.setPadding(Padding(5, 3, 0, 0));
 	selectionPanel.setSize((Vec2f(-1, 200)));
-	//selectionPanel.setPadding(Padding())
-	//selectionPanel.setBorderColor(colors.yellow);
 
 	buttonGridPanel.setName("buttonGridPanel");
 	buttonGridPanel.setParent(rightPanel);
 	buttonGridPanel.setPadding(Padding(0, 0, 0, 0));
 	buttonGridPanel.moveBelowPanel(selectionPanel);
 	buttonGridPanel.setSize(Vec2f(-1, -1));
-	//buttonGridPanel.setBorderColor(colors.purple);
 
 	houseButton.setName("houseButton");
 	houseButton.setParent(buttonGridPanel);

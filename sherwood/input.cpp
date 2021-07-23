@@ -74,7 +74,7 @@ void handleKeyPress(sf::Keyboard::Key code) {
 			placementBuildingType = nullptr;
 		}
 		else if (selectedEntity)
-			em.deselectEntity(selectedEntity);
+			selectedEntity->deselect();
 		break;
 	case(sf::Keyboard::G):
 		showGrid = !showGrid;

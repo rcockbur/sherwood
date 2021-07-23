@@ -12,6 +12,7 @@ public:
 	Job(Unit& unit);
 	bool hasStarted;
 	std::unique_ptr<Ability> ability;
+
 	CompleteStatus execute();
 	ActivityStatus start();
 	virtual void checkForAnotherAbility() = 0;
@@ -23,7 +24,7 @@ public:
 	bool forcedHarvest;
 
 	Harvester(Unit&, const Lookup depositLookup);
-	void checkForAnotherAbility();
+	void checkForAnotherAbility() override;
 };
 
 class Mover : public Job {
@@ -31,5 +32,5 @@ public:
 	const Vec2i targetTile;
 
 	Mover(Unit&, const Vec2i targetTile);
-	void checkForAnotherAbility();
+	void checkForAnotherAbility() override;
 };
