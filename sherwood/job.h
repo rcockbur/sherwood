@@ -20,10 +20,10 @@ public:
 
 class Harvester : public Job {
 public:
-	const Lookup depositLookup;
+	Lookup depositLookup;
 	bool forcedHarvest;
-
-	Harvester(Unit&, const Lookup depositLookup);
+	const FixedStyle& depositFixedStyle;
+	Harvester(Unit&, Deposit& deposit);
 	void checkForAnotherAbility() override;
 };
 

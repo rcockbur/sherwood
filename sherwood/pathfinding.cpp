@@ -107,7 +107,7 @@ bool AStar::search(const Vec2i& s, const Vec2i& e, std::set<int> _pathableTypes)
     if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-    printf("Time measured: %.3f seconds.\n", elapsed.count() * 1e-9);
+    printf("Time measured: %.3f milliseconds - AStar\n", elapsed.count() * 1e-6);
     return pathFound;
 }
 
@@ -153,7 +153,7 @@ Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int>
     std::push_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
     cameFrom[start] = start;
     costSoFar[start] = 0;
-
+    Fixed* result = nullptr;
     while (!open.empty()) {
         Vec2i best = std::get<1>(open.front());
         std::pop_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
@@ -162,7 +162,8 @@ Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int>
         Fixed* fixedEntity = map.getFixedFromTile(best);
         if (fixedEntity != nullptr && &fixedEntity->fixedEntityType() == &fet) {
             end = best;
-            return fixedEntity;
+            result = fixedEntity;
+            break;
         }
         if (tileIsPathable(best)) {
             Vec2i neighbor;
@@ -199,8 +200,8 @@ Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int>
     if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-    printf("Time measured: %.3f seconds.\n", elapsed.count() * 1e-9);
-    return nullptr;
+    printf("Time measured: %.3f milliseconds - Breadthfirst\n", elapsed.count() * 1e-6);
+    return result;
 }
 
 std::list<Vec2i> BreadthFirst::path() {

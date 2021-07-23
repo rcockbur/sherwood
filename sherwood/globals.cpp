@@ -55,8 +55,8 @@ void initEntityTypes() {
 	person.color = colors.lightBlue;
 	person.movePeriod = 1;
 	person.moveDistance = 4.0f;
-	person.carryCapacity = 10;
-	person.gatherPeriod = 8;
+	person.carryCapacity = 5;
+	person.gatherPeriod = 4;
 	person.size = 12;
 	person.pathableTypes.insert(1);
 

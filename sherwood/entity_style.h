@@ -5,9 +5,11 @@
 
 class EntityStyle {
 public:
+	static int id_index;
 	std::string name;
 	Color color;	
 	float size;
+	const int id;
 	std::set<int> pathableTypes;
 	EntityStyle(std::string&&);
 	virtual Shape* getShape(const Vec2f graphicalPosition) const = 0;

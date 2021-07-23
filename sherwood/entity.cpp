@@ -14,14 +14,14 @@ int Entity::id_index = 0;
 //Entity
 Entity::Entity(const EntityStyle& style, const Vec2i _tile) :
 	style(style),
-	id(id_index),
+	id(++id_index),
 	tile(_tile),
 	pos(tileToWorld(tile)),
 	bounds(calculateBounds(pos)),
 	color(style.color),
 	isSelected(false)
 {
-	++id_index;
+	//++id_index;
 	map.validateWithinBounds(tile);
 	validatePathable(tile);
 	em.entities.insert({ this });

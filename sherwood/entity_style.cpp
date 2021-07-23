@@ -3,11 +3,15 @@
 #include "graphics.h"
 #include "globals.h"
 
+int EntityStyle::id_index = 0;
+
 //Entity
 EntityStyle::EntityStyle(std::string&& _name) : 
 	name(std::move(_name)),
-	size(TILE_SIZE)
-{}
+	size(TILE_SIZE),
+	id(++id_index)
+{
+}
 
 //Fixed
 FixedStyle::FixedStyle(std::string&& _name) :
