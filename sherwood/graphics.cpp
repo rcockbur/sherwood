@@ -10,6 +10,7 @@
 #include "entity_manager.h"
 #include "utility.h"
 #include "pathfinding.h"
+#include <algorithm>
 
 
 Graphics::Graphics()
@@ -19,6 +20,10 @@ Graphics::Graphics()
 
 	horizontalLine.setSize(Vec2f(map.size.x + LINE_WIDTH, LINE_WIDTH));
 	horizontalLine.setFillColor(colors.lightGrey);
+
+	selectionShape.setFillColor(colors.transparent);
+	selectionShape.setOutlineColor(colors.green);
+	selectionShape.setOutlineThickness(-1);
 
 	RectangleShape grassRect;
 	RectangleShape waterRect;
@@ -47,6 +52,8 @@ void Graphics::drawWorld() {
 	if (showGrid)
 		drawGrid();
 	drawEntities();
+	if (selectionRectActive)
+		drawSelectionRect();
 }
 
 void Graphics::drawTerrain() {
@@ -76,10 +83,15 @@ void Graphics::drawEntities() {
 		Shape* shape = entity->entityType().getShape(graphicalPos);
 		renderWindow.draw(*shape);
 	}
-	if (selectedEntity != nullptr) {
-		Vec2f graphicalPos = getTopLeft(selectedEntity->pos, selectedEntity->entityType().size);
-		Shape* outlineShape = selectedEntity->entityType().getOutlineShape(graphicalPos);
-		renderWindow.draw(*outlineShape);
+	//if (selectedEntity != nullptr) {
+	//	Vec2f graphicalPos = getTopLeft(selectedEntity->pos, selectedEntity->entityType().size);
+	//	Shape* outlineShape = selectedEntity->entityType().getOutlineShape(graphicalPos);
+	//	renderWindow.draw(*outlineShape);
+	//}
+	for (auto entity : selectedEntities) {
+			Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityType().size);
+			Shape* outlineShape = entity->entityType().getOutlineShape(graphicalPos);
+			renderWindow.draw(*outlineShape);
 	}
 	if (placementBuildingType != nullptr) {
 		if (mouseWorldPos != Vec2f(-1, -1)) {
@@ -89,6 +101,16 @@ void Graphics::drawEntities() {
 			renderWindow.draw(*placementShape);
 		}
 	}
+}
+
+void Graphics::drawSelectionRect() {
+	float rectLeft = std::min(selectionStartPos.x, mouseWorldPos.x);
+	float rectRight = std::max(selectionStartPos.x, mouseWorldPos.x);
+	float rectTop = std::min(selectionStartPos.y, mouseWorldPos.y);
+	float rectBot = std::max(selectionStartPos.y, mouseWorldPos.y);
+	selectionShape.setPosition(Vec2f(rectLeft, rectTop));
+	selectionShape.setSize(Vec2f(rectRight - rectLeft, rectBot - rectTop));
+	renderWindow.draw(selectionShape);
 }
 
 void Graphics::drawHUD() {
@@ -103,9 +125,16 @@ void Graphics::updateText() {
 	ui.unitCountPanel.setString((oss() << "Units: " << em.unitMap.size()).str());
 	ui.timePanel.setString((oss() << "Time: " << seconds).str());
 
-	if (selectedEntity != nullptr) {
+	//if (selectedEntity != nullptr) {
+	//	oss entityStringStream;
+	//	selectedEntity->getSelectionText(entityStringStream);
+	//	ui.selectionPanel.setString(entityStringStream.str());
+	//}
+	if (selectedEntities.size() > 0)
+	{
 		oss entityStringStream;
-		selectedEntity->getSelectionText(entityStringStream);
+		auto it = selectedEntities.begin();
+		(*it)->getSelectionText(entityStringStream);
 		ui.selectionPanel.setString(entityStringStream.str());
 	}
 	else {

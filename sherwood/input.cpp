@@ -11,38 +11,61 @@
 void handleInput()
 {
 	handleKeysDown();
+	handleMousePosition();
 	sf::Event event;
 	while (renderWindow.pollEvent(event)) {
-		mouseScreenPos = Vec2f((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
-		if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
-			mouseWorldPos = screenToWorld(mouseScreenPos);
-			mouseTile = worldToTile(mouseWorldPos);
-			if (map.containsWorldPos(mouseWorldPos) == false) {
-				mouseWorldPos = Vec2f(-1, -1);
-				mouseTile = Vec2i(-1, -1);
-			}
-		}
-		else {
-			mouseWorldPos = Vec2f(-1, -1);
-			mouseTile = Vec2i(-1, -1);
-		}
+		
 		switch (event.type) {
 		case sf::Event::Closed:
 			renderWindow.close();
 			break;
 		case sf::Event::KeyPressed:
 			handleKeyPress(event.key.code);
+			break;
 		case sf::Event::MouseButtonPressed:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				ui.hud.handleClick(true);
+				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
+					handleWorldClick(true, true);
+				}
+				else {
+					ui.hud.handleClick(true, true);
+				}
 				break;
 			case(sf::Mouse::Right):
-				ui.hud.handleClick(false);
+				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
+					handleWorldClick(false, true);
+				}
+				else {
+					ui.hud.handleClick(false, true);
+				}
 				break;
 			default:
 				break;
 			}
+			break;
+		case sf::Event::MouseButtonReleased:
+			switch (event.mouseButton.button) {
+			case(sf::Mouse::Left):
+				if (ui.viewportPanel.containsScreenPos(mouseScreenPos) || selectionRectActive) {
+					handleWorldClick(true, false);
+				}
+				else {
+					ui.hud.handleClick(true, false);
+				}
+				break;
+			case(sf::Mouse::Right):
+				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
+					handleWorldClick(false, false);
+				}
+				else {
+					ui.hud.handleClick(false, false);
+				}
+				break;
+			default:
+				break;
+			}
+			break;
 		default:
 			break;
 		}
@@ -60,21 +83,33 @@ void handleKeysDown() {
 	mapView.move(cameraMove);
 }
 
+void handleMousePosition() {
+	mouseScreenPos = Vec2f((float)sf::Mouse::getPosition(renderWindow).x, (float)sf::Mouse::getPosition(renderWindow).y);
+	mouseWorldPos = screenToWorld(mouseScreenPos);
+	mouseTile = worldToTile(mouseWorldPos);
+}
+
 void handleKeyPress(sf::Keyboard::Key code) {
 	switch (code) {
 	case(sf::Keyboard::Q):
 		renderWindow.close();
 		break;
 	case(sf::Keyboard::Delete):
-		if (selectedEntity != nullptr)
-			delete selectedEntity;
+		/*if (selectedEntity != nullptr)
+			delete selectedEntity;*/
+		for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
+			delete* it++;
+		}
 		break;
 	case(sf::Keyboard::Escape):
 		if (placementBuildingType) {
 			placementBuildingType = nullptr;
 		}
-		else if (selectedEntity)
-			selectedEntity->deselect();
+		else /*if (selectedEntity)
+			selectedEntity->deselect();*/
+			for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
+				(*it++)->deselect();
+			}
 		break;
 	case(sf::Keyboard::G):
 		showGrid = !showGrid;

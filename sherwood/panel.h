@@ -20,13 +20,13 @@ public:
 	BuildingStyle* getBuildingType() const;
 	void setString(const std::string& string);
 	void setBuildingType(BuildingStyle* BuildingType);
-	void setCallback(void (*callback)(const Panel&, const bool));
-	void handleClick(const bool isLeftClick);
+	void setCallback(void (*callback)(const Panel&, bool left, bool down));
+	void handleClick(bool left, bool down);
 	bool containsScreenPos(const Vec2f pos);
 private:
 	BuildingStyle* buildingType;
 	std::string name;
-	void (*callback)(const Panel&, const bool);
+	void (*callback)(const Panel&, bool, bool);
 	Panel* parent;
 	Vec2f pos;
 	Vec2f size;

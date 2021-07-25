@@ -133,17 +133,17 @@ void Panel::setBorderColor(const Color& color) {
 	border.setOutlineColor(color);
 }
 
-void Panel::handleClick(const bool isLeftClick) {
+void Panel::handleClick(bool left, bool down) {
 	if (callback != nullptr) {
-		callback(*this, isLeftClick);
+		callback(*this, left, down);
 	}
 	for (auto child : children) {
 		if (child->containsScreenPos(mouseScreenPos)) 
-			child->handleClick(isLeftClick);
+			child->handleClick(left, down);
 	}
 }
 
-void Panel::setCallback(void (*_callback)(const Panel&, const bool)) {
+void Panel::setCallback(void (*_callback)(const Panel&, bool, bool)) {
 	callback = _callback;
 }
 

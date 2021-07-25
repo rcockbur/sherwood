@@ -14,6 +14,7 @@ private:
 	const Color gridColor;
 	RectangleShape verticalLine;
 	RectangleShape horizontalLine;
+	RectangleShape selectionShape;
 	CircleShape pathDebugShape;
 	std::vector<RectangleShape> terrainShapes;
 
@@ -21,6 +22,7 @@ private:
 	void drawTerrain();
 	void drawGrid();
 	void drawEntities();
+	void drawSelectionRect();
 	void drawHUD();
 	void updateText();
 

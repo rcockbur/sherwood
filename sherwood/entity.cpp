@@ -29,7 +29,8 @@ Entity::Entity(const EntityStyle& style, const Vec2i _tile) :
 
 Entity::~Entity() {
 	if (isSelected) {
-		selectedEntity = nullptr;
+		//selectedEntity = nullptr;
+		selectedEntities.erase(this);
 	}
 	em.entities.erase(this);
 }
@@ -44,7 +45,8 @@ void Entity::getSelectionText(std::ostringstream& s) const {
 }
 
 bool Entity::tileIsPathable(const Vec2i _tile) const {
-	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end());
+	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
+		&& map.getFixedFromTile(_tile) == nullptr);
 }
 
 void Entity::validatePathable(const Vec2i _tile) const {
@@ -53,19 +55,22 @@ void Entity::validatePathable(const Vec2i _tile) const {
 }
 
 void Entity::select() {
-	if (selectedEntity)
-		selectedEntity->isSelected = false;
-	selectedEntity = this;
+	//if (selectedEntity)
+	//	selectedEntity->isSelected = false;
+	//selectedEntity = this;
+	selectedEntities.insert(this);
 	isSelected = true;
 }
 void Entity::deselect() {
-	if (selectedEntity == this) {
-		isSelected = false;
-		selectedEntity = nullptr;
-	}
-	else {
-		throw std::logic_error("entity was not selected");
-	}
+	//if (selectedEntity == this) {
+	//	isSelected = false;
+	//	selectedEntity = nullptr;
+	//}
+	//else {
+	//	throw std::logic_error("entity was not selected");
+	//}
+	selectedEntities.erase(this);
+	isSelected = false;
 }
 
 const EntityStyle& Entity::entityType() const {

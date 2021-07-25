@@ -15,11 +15,15 @@ int targetFPS = 30;
 int tics = 0;
 int seconds = 0;
 float actualFPS = (float)targetFPS;
-Entity* selectedEntity(nullptr);
+//Entity* selectedEntity(nullptr);
+std::set<Entity*> selectedEntities;
 BuildingStyle* placementBuildingType(nullptr);
 Vec2f mouseScreenPos(0, 0);
 Vec2f mouseWorldPos(-1, -1);
 Vec2i mouseTile(-1, -1);
+Vec2f selectionStartPos = Vec2f();
+//Vec2f selectionEndPos = Vec2f();
+bool selectionRectActive = false;
 
 sf::Clock deltaClock;
 sf::Clock gameClock;

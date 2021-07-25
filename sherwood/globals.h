@@ -5,6 +5,7 @@
 #include "pathfinding.h"
 #include <string>
 #include "ui.h"
+#include <set>
 
 class UnitStyle;
 
@@ -25,14 +26,18 @@ extern Graphics graphics;
 extern EntityManager em;
 extern UI ui;
 extern AStar aStar;
-//extern BreadthFirst breadthFirst;
 extern BreadthFirst breadthFirst;
 
-extern Entity* selectedEntity;
+//extern Entity* selectedEntity;
+extern std::set<Entity*> selectedEntities;
 extern BuildingStyle* placementBuildingType;
 extern Vec2f mouseScreenPos;
 extern Vec2f mouseWorldPos;
 extern Vec2i mouseTile;
+extern Vec2f selectionStartPos;
+//extern Vec2f selectionEndPos;
+extern bool selectionRectActive;
+
 extern sf::Clock deltaClock;
 extern sf::Clock gameClock;
 extern sf::Time dt;
