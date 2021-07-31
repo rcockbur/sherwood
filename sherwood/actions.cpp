@@ -38,18 +38,22 @@ void handleWorldClick(bool left, bool down) {
 		}
 		else {
 			std::cout << "up\n";
-			selectionRectActive = false;
-			float rectLeft = std::min(selectionStartPos.x, mouseWorldPos.x);
-			float rectRight = std::max(selectionStartPos.x, mouseWorldPos.x);
-			float rectTop = std::min(selectionStartPos.y, mouseWorldPos.y);
-			float rectBot = std::max(selectionStartPos.y, mouseWorldPos.y);
-			Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
-			selectedEntities.clear();
-			for (auto entity : em.entities) {
-				if (entity->bounds.intersects(rect)) {
-					entity->select();
+			if (selectionRectActive) {
+				selectionRectActive = false;
+				float rectLeft = std::min(selectionStartPos.x, mouseWorldPos.x);
+				float rectRight = std::max(selectionStartPos.x, mouseWorldPos.x);
+				float rectTop = std::min(selectionStartPos.y, mouseWorldPos.y);
+				float rectBot = std::max(selectionStartPos.y, mouseWorldPos.y);
+				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
+				selectedEntities.clear();
+				bool unitIsSelected = false;
+				for (auto entity : em.entities) {
+					if (entity->bounds.intersects(rect) || entity->bounds.contains(mouseWorldPos)) {
+						entity->select();
+					}
 				}
 			}
+			
 		}
 		
 	}
