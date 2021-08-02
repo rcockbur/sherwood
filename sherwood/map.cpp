@@ -14,10 +14,10 @@ Map::Map(std::string fileName) :
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
 	
 	terrainGrid.resize(tileCount.x);
-	fixedGrid.resize(tileCount.x);
+	entityGrid.resize(tileCount.x);
 	for (int x = 0; x < tileCount.x; x++) {
 		terrainGrid[x].resize(tileCount.y);
-		fixedGrid[x].resize(tileCount.y);
+		entityGrid[x].resize(tileCount.y);
 	}
 	loadMapData("data/map.txt");
 	
@@ -79,21 +79,23 @@ bool Map::containsWorldPos(const Vec2f pos) const {
 	return (pos.x >= 0 && pos.x < size.x&& pos.y >= 0 && pos.y < size.y);
 }
 
-Fixed* Map::getFixedFromTile(const Vec2i& tile) const {
-	return fixedGrid[tile.x][tile.y];
+Entity* Map::getEntityFromTile(const Vec2i& tile) const {
+	return entityGrid[tile.x][tile.y];
 }
 
-void Map::setEntityAtTile(Fixed& fixedEntity, const Vec2i tile) {
-	if (fixedGrid[tile.x][tile.y])
-		throw std::logic_error("staticEntityGrid slot already occupied");
-	fixedGrid[tile.x][tile.y] = &fixedEntity;
+void Map::setEntityAtTile(Entity& entity, const Vec2i tile) {
+	if (entityGrid[tile.x][tile.y])
+		throw std::logic_error("entityGrid slot already occupied");
+	entityGrid[tile.x][tile.y] = &entity;
 }
 
 void Map::removeEntityAtTile(const Vec2i tile) {
-	fixedGrid[tile.x][tile.y] = nullptr;
+	if (entityGrid[tile.x][tile.y] == nullptr)
+		throw std::logic_error("entityGrid slot already empty");
+	entityGrid[tile.x][tile.y] = nullptr;
 }
 
 void Map::validateStaticEntityGridAvailable(const Vec2i tile) {
-	if (fixedGrid[tile.x][tile.y])
-		throw std::logic_error("staticEntityGrid slot already occupied");
+	if (entityGrid[tile.x][tile.y])
+		throw std::logic_error("entityGrid slot already occupied");
 }

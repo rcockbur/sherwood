@@ -5,8 +5,8 @@
 #include <vector>
 #include <set>
 
-class Fixed;
-class FixedStyle;
+class Entity;
+class EntityStyle;
 
 class Pathfinder {
 public:
@@ -37,7 +37,7 @@ private:
 class BreadthFirst : public Pathfinder {
 public:
     std::vector<BreadthFirstOpenTuple> open;
-    Fixed* search(const Vec2i& s, const FixedStyle& fet, std::set<int> pathableTypes);
+    Entity* search(const Vec2i& s, const EntityStyle& fet, std::set<int> pathableTypes);
     std::list<Vec2i> path();
     void clear();
 private:

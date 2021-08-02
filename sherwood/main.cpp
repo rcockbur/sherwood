@@ -6,7 +6,7 @@
 int main()
 {
 	initWindow();
-	initEntityTypes();
+	initEntityStyles();
 
 	new Doodad(rock, Vec2i(4, 0));
 

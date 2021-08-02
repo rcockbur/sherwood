@@ -7,25 +7,38 @@ Move::Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path) :
 	unit(unit), 
 	dest(dest), 
 	path(path)
+	//atFinalTile(false)
 {}
 
-ActivityStatus Move::execute() {
+ActivityStatus Move::execute(bool isLastJob) {
+	ActivityStatus r;
 	if (path.empty()) {
-		return ActivityStatus::success;
+		r = ActivityStatus::success;
 	}
 	else {
 		followPath();
-		return ActivityStatus::inProgress;
+		r = ActivityStatus::inProgress;
 	}
+	/*if (atFinalTile == false && path.size() <= 1) {*/
+	//if (atFinalTile == false && unit.tile == path.back()) {
+	//	atFinalTile = true;
+	//	if (isLastJob) {
+	//		map.setEntityAtTile(unit, unit.tile);
+	//	}
+	//}
+	return r;
 }
 
 void Move::followPath() {
 	if (path.size() > 0) {
 		if (tics >= unit.canMoveAt) {
-			unit.canMoveAt = tics + unit.unitType().movePeriod;
-			bool hasReachedTile = unit.moveTowards(path.front());
-			if (hasReachedTile)
-				path.pop_front();
+			if (unit.tileIsPathable(path.front())) {
+				//bool blockImpass = blockImpassAtEnd && path.size() == 1;
+				unit.canMoveAt = tics + unit.unitStyle().movePeriod;
+				bool hasReachedTile = unit.moveTowards(path.front());
+				if (hasReachedTile)
+					path.pop_front();
+			}
 		}
 	}
 }
@@ -36,42 +49,58 @@ Harvest::Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path) :
 	hasStartedHarvesting(false)
 {}
 
-ActivityStatus Harvest::execute() {
+ActivityStatus Harvest::execute(bool isLastJob) {
+	ActivityStatus r;
 	if (path.empty()) {
 		if (tics >= unit.canGatherAt) {
-			Deposit* deposit = map.lookupFixed<Deposit>(depositLookup);
+			Deposit* deposit = map.lookupEntity<Deposit>(depositLookup);
 			if (deposit == nullptr) {
 				if (hasStartedHarvesting) {
-					return ActivityStatus::success; //deposit destroyed while gathering
+					r = ActivityStatus::success; //deposit destroyed while gathering
 				}
 				else {
-					return ActivityStatus::failure; //deposit destroyed before reached
+					r = ActivityStatus::failure; //deposit destroyed before reached
 				}
 			}
-			if (hasStartedHarvesting == false) {
-				hasStartedHarvesting = true;
-				if (unit.carryType != deposit->depositType().resourceType) {
-					unit.carryType = deposit->depositType().resourceType;
-					unit.carryAmmount = 0;
+			else {
+				if (hasStartedHarvesting == false) {
+					hasStartedHarvesting = true;
+					if (unit.carryType != deposit->depositStyle().resourceType) {
+						unit.carryType = deposit->depositStyle().resourceType;
+						unit.carryAmmount = 0;
+					}
 				}
-			}
-			if (unit.carryAmmount >= unit.unitType().carryCapacity) {
-				return ActivityStatus::success; //done gathering
-			}
-			++unit.carryAmmount;
-			--deposit->amount;
-			unit.canGatherAt = tics + unit.unitType().gatherPeriod;
-			if (deposit->amount == 0) {
-				delete deposit;
-				return ActivityStatus::success; //deposit has expired
+				if (unit.carryAmmount >= unit.unitStyle().carryCapacity) {
+					r = ActivityStatus::success; //done gathering
+				}
+				else {
+					++unit.carryAmmount;
+					--deposit->amount;
+					unit.canGatherAt = tics + unit.unitStyle().gatherPeriod;
+					if (deposit->amount == 0) {
+						delete deposit;
+						r = ActivityStatus::success; //deposit has expired
+					}
+					else {
+						r = ActivityStatus::inProgress; //still gathering
+					}
+				}
 			}
 		}
-		return ActivityStatus::inProgress; //still gathering
+		else {
+			r = ActivityStatus::inProgress; //waiting to gather
+		}
 	}
 	else {
 		followPath();
-		return ActivityStatus::inProgress; //still moving
+		r = ActivityStatus::inProgress; //still moving
 	}
+	/*if (atFinalTile == false && path.size() <= 1) {*/
+	//if (atFinalTile == false && unit.tile == path.back()) {
+	//	atFinalTile = true;
+	//	map.setEntityAtTile(unit, unit.tile);
+	//}
+	return r;
 }
 
 ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path) :
@@ -79,19 +108,28 @@ ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Ve
 	houseLookup(buildingLookup)
 {}
 
-ActivityStatus ReturnResources::execute() {
+ActivityStatus ReturnResources::execute(bool isLastJob) {
+	ActivityStatus r;
 	if (path.empty()) {
-		Building* home = map.lookupFixed<Building>(houseLookup);
+		Building* home = map.lookupEntity<Building>(houseLookup);
 		if (home) {
 			home->resources[unit.carryType] += unit.carryAmmount;
 			unit.carryAmmount = 0;
-			return ActivityStatus::success;
+			r = ActivityStatus::success;
 		}
 		else 
-			return ActivityStatus::failure;
+			r = ActivityStatus::failure;
 	}
 	else {
 		followPath();
-		return ActivityStatus::inProgress;
+		r = ActivityStatus::inProgress;
 	}
+	/*if (atFinalTile == false && path.size() <= 1) {*/
+	//if (atFinalTile == false && unit.tile == path.back()) {
+	//	atFinalTile = true;
+	//	if (isLastJob) {
+	//		map.setEntityAtTile(unit, unit.tile);
+	//	}
+	//}
+	return r;
 }

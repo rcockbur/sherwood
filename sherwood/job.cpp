@@ -15,17 +15,20 @@ ActivityStatus Job::start() {
 	checkForAnotherAbility();
 	if (ability == nullptr)
 		return ActivityStatus::failure;
+	//if (map.getEntityFromTile(unit.tile) == &unit) {
+	//	map.removeEntityAtTile(unit.tile);
+	//}
 	return ActivityStatus::success;
 }
 
-CompleteStatus Job::execute() {
+CompleteStatus Job::execute(bool isLastJob) {
 	if (hasStarted == false) {
 		if (start() == ActivityStatus::failure) {
 			ability.reset();
 			return CompleteStatus::complete;
 		}
 	}
-	ActivityStatus abilityStatus = ability->execute();
+	ActivityStatus abilityStatus = ability->execute(isLastJob);
 	switch (abilityStatus) {
 	case(ActivityStatus::inProgress):
 		return CompleteStatus::incomplete;
@@ -43,25 +46,25 @@ Harvester::Harvester(Unit& _unit, Deposit& deposit) :
 	Job(_unit),
 	depositLookup(deposit),
 	forcedHarvest(true),
-	depositFixedStyle(deposit.depositType())
+	depositEntityStyle(deposit.depositStyle())
 {}
 
 void Harvester::checkForAnotherAbility() {
 	if (forcedHarvest == true || unit.carryAmmount == 0) {
 		forcedHarvest = false;
-		Deposit* deposit = map.lookupFixed<Deposit>(depositLookup);
+		Deposit* deposit = map.lookupEntity<Deposit>(depositLookup);
 		if (deposit) {
-			if (aStar.search(unit.tile, deposit->tile, unit.unitType().pathableTypes)) {
+			if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
 				std::list<Vec2i>path = aStar.path();
 				ability.reset(new Harvest(unit, depositLookup, std::move(path)));
 			}
 		}
 		else {
-			Entity* entity = breadthFirst.search(depositLookup.tile, depositFixedStyle, unit.unitType().pathableTypes);
+			Entity* entity = breadthFirst.search(depositLookup.tile, depositEntityStyle, unit.unitStyle().pathableTypes);
 			if (entity) {
 				deposit = static_cast<Deposit*>(entity);
 				depositLookup = Lookup(*deposit);
-				if (aStar.search(unit.tile, deposit->tile, unit.unitType().pathableTypes)) {
+				if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
 					std::list<Vec2i>path = aStar.path();
 					ability.reset(new Harvest(unit, depositLookup, std::move(path)));
 				}
@@ -69,7 +72,7 @@ void Harvester::checkForAnotherAbility() {
 		}
 	}
 	else {
-		Fixed* targetHouse = breadthFirst.search(unit.tile, house, unit.unitType().pathableTypes);
+		Entity* targetHouse = breadthFirst.search(unit.tile, house, unit.unitStyle().pathableTypes);
 		if (targetHouse) {
 			Lookup houseLookup = Lookup(*targetHouse);
 			std::list<Vec2i> path = breadthFirst.path();
@@ -78,14 +81,16 @@ void Harvester::checkForAnotherAbility() {
 	}
 }
 
-Mover::Mover(Unit& _unit, const Vec2i targetTile) :
+Mover::Mover(Unit& _unit, const Vec2i _targetTile) :
 	Job(_unit),
-	targetTile(targetTile)
-{}
+	targetTile(_targetTile)
+{
+	int a = 2;
+}
 
 void Mover::checkForAnotherAbility() {
 	if (unit.tile != targetTile) {
-		if (aStar.search(unit.tile, targetTile, unit.unitType().pathableTypes)) {
+		if (aStar.search(unit.tile, targetTile, unit.unitStyle().pathableTypes)) {
 			std::list<Vec2i> path = aStar.path();
 			ability.reset(new Move(unit, targetTile, std::move(path)));
 		}

@@ -79,25 +79,20 @@ void Graphics::drawGrid() {
 
 void Graphics::drawEntities() {
 	for (auto& entity : em.entities) {
-		Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityType().size);
-		Shape* shape = entity->entityType().getShape(graphicalPos);
+		Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityStyle().size);
+		Shape* shape = entity->entityStyle().getShape(graphicalPos);
 		renderWindow.draw(*shape);
 	}
-	//if (selectedEntity != nullptr) {
-	//	Vec2f graphicalPos = getTopLeft(selectedEntity->pos, selectedEntity->entityType().size);
-	//	Shape* outlineShape = selectedEntity->entityType().getOutlineShape(graphicalPos);
-	//	renderWindow.draw(*outlineShape);
-	//}
 	for (auto entity : selectedEntities) {
-			Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityType().size);
-			Shape* outlineShape = entity->entityType().getOutlineShape(graphicalPos);
+			Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityStyle().size);
+			Shape* outlineShape = entity->entityStyle().getOutlineShape(graphicalPos);
 			renderWindow.draw(*outlineShape);
 	}
-	if (placementBuildingType != nullptr) {
+	if (placementBuildingStyle != nullptr) {
 		if (mouseWorldPos != Vec2f(-1, -1)) {
 			Vec2f snappedPos = tileToWorld(worldToTile(mouseWorldPos));
-			Vec2f graphicalPos = getTopLeft(snappedPos, placementBuildingType->size);
-			Shape* placementShape = placementBuildingType->getShape(graphicalPos);
+			Vec2f graphicalPos = getTopLeft(snappedPos, placementBuildingStyle->size);
+			Shape* placementShape = placementBuildingStyle->getShape(graphicalPos);
 			renderWindow.draw(*placementShape);
 		}
 	}
@@ -121,25 +116,19 @@ void Graphics::drawHUD() {
 
 void Graphics::updateText() {
 	ui.targetFpsPanel.setString((oss() << "TargetFPS: " << targetFPS).str());
-	ui.actualFpsPanel.setString((oss() << "FPS: " << (int)actualFPS).str());
+	ui.actualFpsPanel.setString((oss() << "FPS: " << (int)(actualFPS + 0.5)).str());
 	ui.unitCountPanel.setString((oss() << "Units: " << em.unitMap.size()).str());
 	ui.timePanel.setString((oss() << "Time: " << seconds).str());
 
-	//if (selectedEntity != nullptr) {
-	//	oss entityStringStream;
-	//	selectedEntity->getSelectionText(entityStringStream);
-	//	ui.selectionPanel.setString(entityStringStream.str());
-	//}
+	oss entityStringStream;
+	entityStringStream << "Entities Selected: " << selectedEntities.size() << std::endl << std::endl;
 	if (selectedEntities.size() > 0)
 	{
-		oss entityStringStream;
 		auto it = selectedEntities.begin();
 		(*it)->getSelectionText(entityStringStream);
 		ui.selectionPanel.setString(entityStringStream.str());
 	}
-	else {
-		ui.selectionPanel.setString("");
-	}
+	ui.selectionPanel.setString(entityStringStream.str());
 }
 
 void Graphics::drawAStar(const Vec2i* current, std::list<Vec2i>* path) {

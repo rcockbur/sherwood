@@ -21,7 +21,7 @@ bool Pathfinder::orthoginalNeighborIsPathable(const Vec2i tile) {
 
 bool Pathfinder::tileIsPathable(const Vec2i _tile) const {
     return (pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != pathableTypes.end() &&
-        map.getFixedFromTile(_tile) == nullptr);
+        map.getEntityFromTile(_tile) == nullptr);
 }
 
 bool Pathfinder::validDiagonal(const Vec2i& source, const Vec2i& direction) const {
@@ -143,7 +143,7 @@ void AStar::clear() {
     cameFrom.clear();
 }
 
-Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int> _pathableTypes) {
+Entity* BreadthFirst::search(const Vec2i& s, const EntityStyle& fet, std::set<int> _pathableTypes) {
    if (showPathfinding) renderWindow.setFramerateLimit(1000);
    pathableTypes = _pathableTypes;
     auto begin = std::chrono::high_resolution_clock::now();
@@ -153,16 +153,16 @@ Fixed* BreadthFirst::search(const Vec2i& s, const FixedStyle& fet, std::set<int>
     std::push_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
     cameFrom[start] = start;
     costSoFar[start] = 0;
-    Fixed* result = nullptr;
+    Entity* result = nullptr;
     while (!open.empty()) {
         Vec2i best = std::get<1>(open.front());
         std::pop_heap(open.begin(), open.end(), CompareBreadthFirstTuple());
         open.pop_back();
         closed.insert(best);
-        Fixed* fixedEntity = map.getFixedFromTile(best);
-        if (fixedEntity != nullptr && &fixedEntity->fixedEntityType() == &fet) {
+        Entity* entity = map.getEntityFromTile(best);
+        if (entity != nullptr && &entity->entityStyle() == &fet) {
             end = best;
-            result = fixedEntity;
+            result = entity;
             break;
         }
         if (tileIsPathable(best)) {

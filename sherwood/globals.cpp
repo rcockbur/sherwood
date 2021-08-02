@@ -17,7 +17,7 @@ int seconds = 0;
 float actualFPS = (float)targetFPS;
 //Entity* selectedEntity(nullptr);
 std::set<Entity*> selectedEntities;
-BuildingStyle* placementBuildingType(nullptr);
+BuildingStyle* placementBuildingStyle(nullptr);
 Vec2f mouseScreenPos(0, 0);
 Vec2f mouseWorldPos(-1, -1);
 Vec2i mouseTile(-1, -1);
@@ -55,7 +55,7 @@ RectangleShape FixedStyle::outlineShape = RectangleShape();
 CircleShape UnitStyle::shape = CircleShape();
 CircleShape UnitStyle::outlineShape = CircleShape();
 
-void initEntityTypes() {
+void initEntityStyles() {
 	person.color = colors.lightBlue;
 	person.movePeriod = 1;
 	person.moveDistance = 4.0f;

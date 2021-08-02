@@ -26,13 +26,13 @@ Vec2f Panel::getSize() const {
 	return size;
 }
 
-BuildingStyle* Panel::getBuildingType() const {
-	return buildingType;
+BuildingStyle* Panel::getBuildingStyle() const {
+	return buildingStyle;
 }
 
 Panel::Panel() :
 	parent(nullptr),
-	buildingType(nullptr),
+	buildingStyle(nullptr),
 	drawBorder(false),
 	callback(nullptr)
 {
@@ -83,8 +83,8 @@ void Panel::setPosition(const Vec2f _pos) {
 	text.setPosition(pos + padding.topLeft());
 }
 
-void Panel::setBuildingType(BuildingStyle* _buildingType){
-	buildingType = _buildingType;
+void Panel::setBuildingStyle(BuildingStyle* _buildingStyle){
+	buildingStyle = _buildingStyle;
 }
 
 void Panel::setString(const std::string& string) {
@@ -143,7 +143,7 @@ void Panel::handleClick(bool left, bool down) {
 	}
 }
 
-void Panel::setCallback(void (*_callback)(const Panel&, bool, bool)) {
+void Panel::setCallback(void (*_callback)(const Panel& panel, bool left, bool right)) {
 	callback = _callback;
 }
 

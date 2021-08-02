@@ -95,21 +95,19 @@ void handleKeyPress(sf::Keyboard::Key code) {
 		renderWindow.close();
 		break;
 	case(sf::Keyboard::Delete):
-		/*if (selectedEntity != nullptr)
-			delete selectedEntity;*/
 		for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
 			delete* it++;
 		}
 		break;
 	case(sf::Keyboard::Escape):
-		if (placementBuildingType) {
-			placementBuildingType = nullptr;
+		if (placementBuildingStyle) {
+			placementBuildingStyle = nullptr;
 		}
-		else /*if (selectedEntity)
-			selectedEntity->deselect();*/
+		else {
 			for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
 				(*it++)->deselect();
 			}
+		}
 		break;
 	case(sf::Keyboard::G):
 		showGrid = !showGrid;
@@ -129,7 +127,9 @@ void handleKeyPress(sf::Keyboard::Key code) {
 }
 
 void updateFPS(int fps) {
-	targetFPS = fps;
-	renderWindow.setFramerateLimit(targetFPS);
+	if (fps > 0) {
+		targetFPS = fps;
+		renderWindow.setFramerateLimit(targetFPS);
+	}
 }
 

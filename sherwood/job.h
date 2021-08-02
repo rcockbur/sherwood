@@ -13,7 +13,7 @@ public:
 	bool hasStarted;
 	std::unique_ptr<Ability> ability;
 
-	CompleteStatus execute();
+	CompleteStatus execute(bool isLastJob);
 	ActivityStatus start();
 	virtual void checkForAnotherAbility() = 0;
 };
@@ -22,7 +22,7 @@ class Harvester : public Job {
 public:
 	Lookup depositLookup;
 	bool forcedHarvest;
-	const FixedStyle& depositFixedStyle;
+	const FixedStyle& depositEntityStyle;
 	Harvester(Unit&, Deposit& deposit);
 	void checkForAnotherAbility() override;
 };

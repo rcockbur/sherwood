@@ -2,6 +2,7 @@
 #include "types.h"
 #include <list>
 
+
 class BuildingStyle;
 
 class Padding {
@@ -17,14 +18,14 @@ public:
 	Vec2f getPosition() const;
 	Vec2f getInnerPosition() const;
 	Vec2f getSize() const;
-	BuildingStyle* getBuildingType() const;
+	BuildingStyle* getBuildingStyle() const;
 	void setString(const std::string& string);
-	void setBuildingType(BuildingStyle* BuildingType);
-	void setCallback(void (*callback)(const Panel&, bool left, bool down));
+	void setBuildingStyle(BuildingStyle* BuildingType);
+	void setCallback(void (*callback)(const Panel& panel, bool left, bool down));
 	void handleClick(bool left, bool down);
 	bool containsScreenPos(const Vec2f pos);
 private:
-	BuildingStyle* buildingType;
+	BuildingStyle* buildingStyle;
 	std::string name;
 	void (*callback)(const Panel&, bool, bool);
 	Panel* parent;
@@ -42,7 +43,7 @@ private:
 	void setName(const std::string& name);
 	void setSize(const Vec2f size);
 	void setPosition(const Vec2f pos);
-	
+
 	void setPadding(const Padding padding);
 	void setMargin(const Padding margin);
 	void setParent(Panel& parent);
@@ -50,7 +51,7 @@ private:
 	void moveRightOfPanel(const Panel& other);
 	void updatePositionRelativeToParent();
 	void setBorderColor(const Color& color);
-	
+
 
 	friend class UI;
 };

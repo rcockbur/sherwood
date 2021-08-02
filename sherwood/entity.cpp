@@ -21,15 +21,14 @@ Entity::Entity(const EntityStyle& style, const Vec2i _tile) :
 	color(style.color),
 	isSelected(false)
 {
-	//++id_index;
 	map.validateWithinBounds(tile);
 	validatePathable(tile);
 	em.entities.insert({ this });
+	
 }
 
 Entity::~Entity() {
 	if (isSelected) {
-		//selectedEntity = nullptr;
 		selectedEntities.erase(this);
 	}
 	em.entities.erase(this);
@@ -38,7 +37,6 @@ Entity::~Entity() {
 void Entity::getSelectionText(std::ostringstream& s) const {
 	std::string classString(typeid(*this).name());
 	classString.erase(0, 6); 
-	//s << "Class: " << classString << "\n";
 	s << "Type: " << style.name << "\n";
 	s << "ID: " << id << "\n";
 	s << "Tile: " << tile << "\n";
@@ -46,7 +44,7 @@ void Entity::getSelectionText(std::ostringstream& s) const {
 
 bool Entity::tileIsPathable(const Vec2i _tile) const {
 	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
-		&& map.getFixedFromTile(_tile) == nullptr);
+		&& map.getEntityFromTile(_tile) == nullptr);
 }
 
 void Entity::validatePathable(const Vec2i _tile) const {
@@ -55,25 +53,15 @@ void Entity::validatePathable(const Vec2i _tile) const {
 }
 
 void Entity::select() {
-	//if (selectedEntity)
-	//	selectedEntity->isSelected = false;
-	//selectedEntity = this;
 	selectedEntities.insert(this);
 	isSelected = true;
 }
 void Entity::deselect() {
-	//if (selectedEntity == this) {
-	//	isSelected = false;
-	//	selectedEntity = nullptr;
-	//}
-	//else {
-	//	throw std::logic_error("entity was not selected");
-	//}
 	selectedEntities.erase(this);
 	isSelected = false;
 }
 
-const EntityStyle& Entity::entityType() const {
+const EntityStyle& Entity::entityStyle() const {
 	return style;
 }
 
@@ -86,8 +74,8 @@ bool Entity::operator==(const Lookup& lookup) const {
 }
 
 //Fixed
-Fixed::Fixed(const FixedStyle& _type, const Vec2i _tile) :
-	Entity(_type, _tile)
+Fixed::Fixed(const FixedStyle& _style, const Vec2i _tile) :
+	Entity(_style, _tile)
 {
 	map.setEntityAtTile(*this, _tile);
 }
@@ -100,42 +88,42 @@ void Fixed::getSelectionText(std::ostringstream& s) const {
 	Entity::getSelectionText(s);
 }
 
-const FixedStyle& Fixed::fixedEntityType() const {
+const FixedStyle& Fixed::fixedStyle() const {
 	return static_cast<const FixedStyle&>(style);
 }
 
 //Doodad
-Doodad::Doodad(const DoodadStyle& _type, const Vec2i _tile) :
-	Fixed(_type, _tile)
+Doodad::Doodad(const DoodadStyle& _style, const Vec2i _tile) :
+	Fixed(_style, _tile)
 {}
 
 Doodad::~Doodad() {}
 
-const DoodadStyle& Doodad::doodadType() const {
+const DoodadStyle& Doodad::doodadStyle() const {
 	return static_cast<const DoodadStyle&>(style);
 }
 
 //Deposit
-Deposit::Deposit(const DepositStyle& _type, const Vec2i _tile) :
-	Fixed(_type, _tile),
-	amount(_type.amount)
+Deposit::Deposit(const DepositStyle& _style, const Vec2i _tile) :
+	Fixed(_style, _tile),
+	amount(_style.amount)
 {}
 
 Deposit::~Deposit() {}
 
 void Deposit::getSelectionText(std::ostringstream& s) const {
 	Fixed::getSelectionText(s);
-	s << std::to_string(amount) << " " << resourceNames[depositType().resourceType] << "\n";
+	s << std::to_string(amount) << " " << resourceNames[depositStyle().resourceType] << "\n";
 }
 
-const DepositStyle& Deposit::depositType() const {
+const DepositStyle& Deposit::depositStyle() const {
 	return static_cast<const DepositStyle&>(style);
 }
 
 //Building
-Building::Building(const BuildingStyle& _type, const Vec2i _tile) :
-	Fixed(_type, _tile),
-	resources(_type.resources)
+Building::Building(const BuildingStyle& _style, const Vec2i _tile) :
+	Fixed(_style, _tile),
+	resources(_style.resources)
 {}
 
 void Building::getSelectionText(std::ostringstream& s) const {
@@ -150,13 +138,13 @@ void Building::getSelectionText(std::ostringstream& s) const {
 	}
 }
 
-const BuildingStyle& Building::buildingType() const {
+const BuildingStyle& Building::buildingStyle() const {
 	return static_cast<const BuildingStyle&>(style);
 }
 
 //Unit
-Unit::Unit(const UnitStyle& _type, const Vec2i _tile) :
-	Entity(_type, _tile),
+Unit::Unit(const UnitStyle& _style, const Vec2i _tile) :
+	Entity(_style, _tile),
 	canMoveAt(0),
 	canGatherAt(0),
 	carryAmmount(0),
@@ -178,7 +166,7 @@ void Unit::update()
 {
 	if (jobQueue.size() > 0) {
 		Job* job = jobQueue.front();
-		CompleteStatus jobStatus = job->execute();
+		CompleteStatus jobStatus = job->execute(jobQueue.size() == 1);
 		if (jobStatus == CompleteStatus::complete) {
 			delete job;
 			jobQueue.pop_front();
@@ -197,17 +185,22 @@ void Unit::getSelectionText(std::ostringstream& s) const {
 		s << "-\n";
 }
 
-const UnitStyle& Unit::unitType() const {
+const UnitStyle& Unit::unitStyle() const {
 	return static_cast<const UnitStyle&>(style);
 }
 
 void Unit::addJob(Job* job) {
+	//if (jobQueue.empty()) {
+	//	if (map.getEntityFromTile(tile) == this) {
+	//		map.removeEntityAtTile(tile);
+	//	}
+	//}
 	jobQueue.push_back(job);
 }
 
 void Unit::setJob(Job* job) {
 	destroyJobs();
-	jobQueue.push_back(job);
+	addJob(job);
 }
 
 void Unit::destroyJobs() {
@@ -224,8 +217,8 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 	Vec2f diff = targetPos - pos;
 	float dist = (float)sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 	bool reachedTarget = false;
-	if (dist > unitType().moveDistance) {
-		(diff /= dist) *= unitType().moveDistance;
+	if (dist > unitStyle().moveDistance) {
+		(diff /= dist) *= unitStyle().moveDistance;
 		pos += diff;
 		
 	}
@@ -234,7 +227,14 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 		reachedTarget = true;
 	}
 	bounds = calculateBounds(pos);
-	tile = worldToTile(pos);
+	if (targetTile != tile) {
+		/*if (blockImpass) {
+			map.setEntityAtTile(*this, targetTile);
+		}*/
+
+		tile = targetTile;
+	}
+	
 	return reachedTarget;
 }
 

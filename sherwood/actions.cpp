@@ -16,18 +16,18 @@ Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
 
 void handleWorldClick(bool left, bool down) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
-	//std::cout << "WorldPosition:" << worldPosition.x << "," << worldPosition.y << "\n";
+	std::cout << "WorldPosition:" << worldPos.x << "," << worldPos.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
 	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
 	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 	if (left) {
 		if (down) {
-			std::cout << "down\n";
-			if (placementBuildingType) {
+			//std::cout << "down\n";
+			if (placementBuildingStyle) {
 				if (mouseTile != Vec2i(-1, -1)) {
-					new Building(*placementBuildingType, mouseTile);
+					new Building(*placementBuildingStyle, mouseTile);
 					if (shiftIsDown == false) {
-						placementBuildingType = nullptr;
+						placementBuildingStyle = nullptr;
 					}
 				}
 			}
@@ -37,7 +37,7 @@ void handleWorldClick(bool left, bool down) {
 			}
 		}
 		else {
-			std::cout << "up\n";
+			//std::cout << "up\n";
 			if (selectionRectActive) {
 				selectionRectActive = false;
 				float rectLeft = std::min(selectionStartPos.x, mouseWorldPos.x);
@@ -46,12 +46,23 @@ void handleWorldClick(bool left, bool down) {
 				float rectBot = std::max(selectionStartPos.y, mouseWorldPos.y);
 				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
 				selectedEntities.clear();
-				bool unitIsSelected = false;
-				for (auto entity : em.entities) {
-					if (entity->bounds.intersects(rect) || entity->bounds.contains(mouseWorldPos)) {
-						entity->select();
+				if (rect.height > 0 && rect.width > 0) {
+					for (auto entity : em.entities) {
+						if (entity->bounds.intersects(rect)) {
+							entity->select();
+						}
 					}
 				}
+				else {
+					for (auto entity : em.entities) {
+						if (entity->bounds.contains(mouseWorldPos)) {
+							entity->select();
+							break;
+						}
+					}
+					
+				}
+				
 			}
 			
 		}
@@ -59,8 +70,8 @@ void handleWorldClick(bool left, bool down) {
 	}
 	else { //right
 		if (down) {
-			if (placementBuildingType) {
-				placementBuildingType = nullptr;
+			if (placementBuildingStyle) {
+				placementBuildingStyle = nullptr;
 			}
 			else {
 				for (auto entity : selectedEntities) {
@@ -82,7 +93,7 @@ void handleWorldClick(bool left, bool down) {
 
 void buildingButtonClicked(const Panel& panel, bool left, bool down) {
 	if (left && down)
-		placementBuildingType = panel.getBuildingType();
+		placementBuildingStyle = panel.getBuildingStyle();
 }
 
 void unitMoveToTile(Unit& unit, Vec2i targetTile) {

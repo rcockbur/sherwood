@@ -12,14 +12,14 @@ Lookup::Lookup(const int id, const Vec2i tile) :
 	tile(tile)
 {}
 
-Lookup::Lookup(const Fixed& fixedEntity) :
-	id(fixedEntity.id),
-	tile(fixedEntity.tile)
+Lookup::Lookup(const Entity& entity) :
+	id(entity.id),
+	tile(entity.tile)
 {}
 
-void Lookup::operator=(const Fixed& fixedEntity) {
-	id = fixedEntity.id;
-	tile = fixedEntity.tile;
+void Lookup::operator=(const Entity& entity) {
+	id = entity.id;
+	tile = entity.tile;
 }
 
 bool Lookup::operator==(const Entity& fixedEntity) {

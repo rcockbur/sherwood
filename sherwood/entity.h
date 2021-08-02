@@ -34,7 +34,7 @@ public:
 	void select();
 	void deselect();
 	virtual void getSelectionText(std::ostringstream&) const;
-	const EntityStyle& entityType() const;
+	const EntityStyle& entityStyle() const;
 protected:
 	Rect calculateBounds(const Vec2f& pos) const;
 };
@@ -44,14 +44,14 @@ public:
 	Fixed(const FixedStyle&, const Vec2i tile);
 	~Fixed();
 	virtual void getSelectionText(std::ostringstream&) const;
-	const FixedStyle& fixedEntityType() const;
+	const FixedStyle& fixedStyle() const;
 };
 
 class Doodad : public Fixed {
 public:
 	Doodad(const DoodadStyle&, const Vec2i tile);
 	~Doodad();
-	const DoodadStyle& doodadType() const;
+	const DoodadStyle& doodadStyle() const;
 };
 
 class Deposit : public Fixed {
@@ -61,7 +61,7 @@ public:
 	Deposit(const DepositStyle& style, const Vec2i tile);
 	~Deposit();
 	void getSelectionText(std::ostringstream&) const;
-	const DepositStyle& depositType() const;
+	const DepositStyle& depositStyle() const;
 };
 
 class Building : public Fixed {
@@ -70,7 +70,7 @@ public:
 
 	Building(const BuildingStyle& style, const Vec2i tile);
 	void getSelectionText(std::ostringstream&) const;
-	const BuildingStyle& buildingType() const;
+	const BuildingStyle& buildingStyle() const;
 };
 
 
@@ -92,7 +92,7 @@ public:
 	void destroyJobs();
 	void setHome(Building& home);
 	bool moveTowards(const Vec2i targetTile);
-	const UnitStyle& unitType() const;
+	const UnitStyle& unitStyle() const;
 };
 
 

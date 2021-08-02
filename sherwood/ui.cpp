@@ -69,7 +69,7 @@ UI::UI()
 	houseButton.setBorderColor(colors.white);
 	houseButton.setPadding(Padding(3, 3, 3, 3));
 	houseButton.setCallback(buildingButtonClicked);
-	houseButton.setBuildingType(&house);
+	houseButton.setBuildingStyle(&house);
 
 	millButton.setName("millButton");
 	millButton.setParent(buttonGridPanel);
@@ -79,6 +79,6 @@ UI::UI()
 	millButton.setBorderColor(colors.white);
 	millButton.setPadding(Padding(3, 3, 3, 3));
 	millButton.setCallback(buildingButtonClicked);
-	millButton.setBuildingType(&mill);
+	millButton.setBuildingStyle(&mill);
 }
 

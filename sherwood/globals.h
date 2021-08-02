@@ -30,7 +30,7 @@ extern BreadthFirst breadthFirst;
 
 //extern Entity* selectedEntity;
 extern std::set<Entity*> selectedEntities;
-extern BuildingStyle* placementBuildingType;
+extern BuildingStyle* placementBuildingStyle;
 extern Vec2f mouseScreenPos;
 extern Vec2f mouseWorldPos;
 extern Vec2i mouseTile;
@@ -52,5 +52,5 @@ extern DepositStyle tree;
 extern DepositStyle goldMine;
 extern DepositStyle stoneMine;
 
-void initEntityTypes();
+void initEntityStyles();
 void initWindow();
