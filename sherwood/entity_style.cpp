@@ -45,7 +45,8 @@ DepositStyle::DepositStyle(std::string&& _name) :
 
 //Building
 BuildingStyle::BuildingStyle(std::string&& _name) :
-	FixedStyle(std::move(_name))
+	FixedStyle(std::move(_name)),
+	maxResidents(0)
 {}
 
 //Unit

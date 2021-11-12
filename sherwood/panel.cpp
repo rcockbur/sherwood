@@ -26,7 +26,7 @@ Vec2f Panel::getSize() const {
 	return size;
 }
 
-BuildingStyle* Panel::getBuildingStyle() const {
+const BuildingStyle* Panel::getBuildingStyle() const {
 	return buildingStyle;
 }
 
@@ -83,7 +83,7 @@ void Panel::setPosition(const Vec2f _pos) {
 	text.setPosition(pos + padding.topLeft());
 }
 
-void Panel::setBuildingStyle(BuildingStyle* _buildingStyle){
+void Panel::setBuildingStyle(const BuildingStyle* _buildingStyle){
 	buildingStyle = _buildingStyle;
 }
 

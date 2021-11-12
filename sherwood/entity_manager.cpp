@@ -11,12 +11,12 @@ EntityManager::EntityManager() {
 }
 
 void EntityManager::updateEntities() {
-	for (auto& it : unitMap) 
+	for (auto& it : units) 
 		it.second->update();
 }
 
 Unit* EntityManager::getUnitByID(const int id) const {
-	auto it = em.unitMap.find(id);
-	return (it == em.unitMap.end()) ? nullptr : it->second;
+	auto it = em.units.find(id);
+	return (it == em.units.end()) ? nullptr : it->second;
 }
 

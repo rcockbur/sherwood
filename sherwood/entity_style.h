@@ -42,7 +42,7 @@ public:
 class BuildingStyle : public FixedStyle {
 public:
 	Resources resources;
-
+	int maxResidents;
 	BuildingStyle(std::string&& _name);
 };
 

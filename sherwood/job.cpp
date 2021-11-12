@@ -15,9 +15,6 @@ ActivityStatus Job::start() {
 	checkForAnotherAbility();
 	if (ability == nullptr)
 		return ActivityStatus::failure;
-	//if (map.getEntityFromTile(unit.tile) == &unit) {
-	//	map.removeEntityAtTile(unit.tile);
-	//}
 	return ActivityStatus::success;
 }
 
@@ -72,9 +69,9 @@ void Harvester::checkForAnotherAbility() {
 		}
 	}
 	else {
-		Entity* targetHouse = breadthFirst.search(unit.tile, house, unit.unitStyle().pathableTypes);
-		if (targetHouse) {
-			Lookup houseLookup = Lookup(*targetHouse);
+		Entity* dropoff = breadthFirst.search(unit.tile, MILL, unit.unitStyle().pathableTypes);
+		if (dropoff) {
+			Lookup houseLookup = Lookup(*dropoff);
 			std::list<Vec2i> path = breadthFirst.path();
 			ability.reset(new ReturnResources(unit, houseLookup, std::move(path)));
 		}
@@ -95,5 +92,19 @@ void Mover::checkForAnotherAbility() {
 			ability.reset(new Move(unit, targetTile, std::move(path)));
 		}
 		
+	}
+}
+
+Idler::Idler(Unit& _unit) :
+	Job(_unit),
+	idleSince(tics)
+{
+
+}
+
+void Idler::checkForAnotherAbility() {
+	if (tics - idleSince > 200) {
+		idleSince = tics;
+
 	}
 }

@@ -10,7 +10,8 @@ public:
 	EntityManager();
 	void updateEntities();
 	Unit* getUnitByID(const int id) const;
-	std::set<Entity*> entities;
-	std::unordered_map<int, Unit*> unitMap;
+	std::unordered_map<int, Entity*> entities;
+	std::unordered_map<int, Building*> houses;
+	std::unordered_map<int, Unit*> units;
 };
 

@@ -6,9 +6,9 @@
 #include "entity_style.h"
 
 Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
-	for (auto& entity : em.entities) {
-		if (entity->bounds.contains(worldPosition)) {
-			return entity;
+	for (auto& it : em.entities) {
+		if (it.second->bounds.contains(worldPosition)) {
+			return it.second;
 		}
 	}
 	return nullptr;
@@ -16,13 +16,20 @@ Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
 
 void handleWorldClick(bool left, bool down) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
-	std::cout << "WorldPosition:" << worldPos.x << "," << worldPos.y << "\n";
 	Vec2i clickedTile = worldToTile(worldPos);
-	std::cout << "Tile:" << clickedTile.x << "," << clickedTile.y << "\n";
+
+	bool debugMouseClicks = false;
+	if (debugMouseClicks) {
+		std::string buttonName = left ? "LMB" : "RMB";
+		std::string buttonState = down ? "Down" : "Up  ";
+		std::cout << buttonName << " " << buttonState << " - ";
+		std::cout << "Position: " << worldPos.x << "," << worldPos.y << " - ";
+		std::cout << "Tile: " << clickedTile.x << "," << clickedTile.y << "\n";
+	}
+	
 	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 	if (left) {
-		if (down) {
-			//std::cout << "down\n";
+		if (down) { //left down
 			if (placementBuildingStyle) {
 				if (mouseTile != Vec2i(-1, -1)) {
 					new Building(*placementBuildingStyle, mouseTile);
@@ -36,8 +43,7 @@ void handleWorldClick(bool left, bool down) {
 				selectionStartPos = worldPos;
 			}
 		}
-		else {
-			//std::cout << "up\n";
+		else { //left up
 			if (selectionRectActive) {
 				selectionRectActive = false;
 				float rectLeft = std::min(selectionStartPos.x, mouseWorldPos.x);
@@ -47,33 +53,30 @@ void handleWorldClick(bool left, bool down) {
 				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
 				selectedEntities.clear();
 				if (rect.height > 0 && rect.width > 0) {
-					for (auto entity : em.entities) {
-						if (entity->bounds.intersects(rect)) {
-							entity->select();
+					for (auto it : em.entities) {
+						if (it.second->bounds.intersects(rect)) {
+							it.second->select();
 						}
 					}
 				}
 				else {
-					for (auto entity : em.entities) {
-						if (entity->bounds.contains(mouseWorldPos)) {
-							entity->select();
+					for (auto it : em.entities) {
+						if (it.second->bounds.contains(mouseWorldPos)) {
+							it.second->select();
 							break;
 						}
 					}
 					
 				}
-				
 			}
-			
 		}
-		
 	}
-	else { //right
-		if (down) {
+	else {
+		if (down) { //right down
 			if (placementBuildingStyle) {
 				placementBuildingStyle = nullptr;
 			}
-			else {
+			else { //right up
 				for (auto entity : selectedEntities) {
 					Unit* selectedUnit = dynamic_cast<Unit*>(entity);
 					if (selectedUnit) {

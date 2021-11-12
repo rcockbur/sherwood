@@ -34,3 +34,11 @@ public:
 	Mover(Unit&, const Vec2i targetTile);
 	void checkForAnotherAbility() override;
 };
+
+class Idler : public Job {
+public:
+	Idler(Unit&);
+	void checkForAnotherAbility() override;
+private:
+	int idleSince;
+};

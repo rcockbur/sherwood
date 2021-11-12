@@ -1,6 +1,7 @@
 #pragma once
 #include <sstream>
 #include <deque>
+#include <unordered_map>
 #include "resources.h"
 #include "lookup.h"
 
@@ -12,6 +13,7 @@ class BuildingStyle;
 class DepositStyle;
 class Building;
 class Job;
+class Unit;
 
 class Entity {
 public:
@@ -33,6 +35,7 @@ public:
 	void validatePathable(const Vec2i tile) const;
 	void select();
 	void deselect();
+	const int getStyleID() const;
 	virtual void getSelectionText(std::ostringstream&) const;
 	const EntityStyle& entityStyle() const;
 protected:
@@ -67,10 +70,13 @@ public:
 class Building : public Fixed {
 public:
 	Resources resources;
-
+	std::unordered_map<int, Unit*> residents;
 	Building(const BuildingStyle& style, const Vec2i tile);
+	~Building();
+
 	void getSelectionText(std::ostringstream&) const;
 	const BuildingStyle& buildingStyle() const;
+
 };
 
 
@@ -79,7 +85,7 @@ public:
 	std::deque<Job*> jobQueue;
 	int canMoveAt;
 	int canGatherAt;
-	Lookup homeLookup;
+	Building* home;
 	int carryType;
 	int carryAmmount;
 

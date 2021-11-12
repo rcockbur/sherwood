@@ -17,3 +17,5 @@ Vec2f screenToWorld(const Vec2f screenPos) {
 Vec2f getTopLeft(const Vec2f center, const float size) {
 	return center - Vec2f(size / 2, size / 2);
 }
+
+//void addIDsToStringStream(std::ostringstream& s)

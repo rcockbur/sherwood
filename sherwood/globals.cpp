@@ -17,12 +17,11 @@ int seconds = 0;
 float actualFPS = (float)targetFPS;
 //Entity* selectedEntity(nullptr);
 std::set<Entity*> selectedEntities;
-BuildingStyle* placementBuildingStyle(nullptr);
+const BuildingStyle* placementBuildingStyle(nullptr);
 Vec2f mouseScreenPos(0, 0);
 Vec2f mouseWorldPos(-1, -1);
 Vec2i mouseTile(-1, -1);
 Vec2f selectionStartPos = Vec2f();
-//Vec2f selectionEndPos = Vec2f();
 bool selectionRectActive = false;
 
 sf::Clock deltaClock;
@@ -40,15 +39,15 @@ EntityManager em;
 AStar aStar;
 BreadthFirst breadthFirst;
 
-UnitStyle person = UnitStyle("Person");
-DoodadStyle rock = DoodadStyle("Rock");
-BuildingStyle house = BuildingStyle("House");
-BuildingStyle mill = BuildingStyle("Mill");
-DepositStyle berryBush = DepositStyle("Berry Bush");
-DepositStyle fish = DepositStyle("Fish");
-DepositStyle tree = DepositStyle("Tree");
-DepositStyle goldMine = DepositStyle("Gold Mine");
-DepositStyle stoneMine = DepositStyle("Stone Mine");
+const UnitStyle PERSON = UnitStyle("Person");
+const DoodadStyle ROCK = DoodadStyle("Rock");
+const BuildingStyle HOUSE = BuildingStyle("House");
+const BuildingStyle MILL = BuildingStyle("Mill");
+const DepositStyle BERRY_BUSH = DepositStyle("Berry Bush");
+const DepositStyle FISH = DepositStyle("Fish");
+const DepositStyle TREE = DepositStyle("Tree");
+const DepositStyle GOLD_MINE = DepositStyle("Gold Mine");
+const DepositStyle STONE_MINE = DepositStyle("Stone Mine");
 
 RectangleShape FixedStyle::shape = RectangleShape();
 RectangleShape FixedStyle::outlineShape = RectangleShape();
@@ -56,57 +55,58 @@ CircleShape UnitStyle::shape = CircleShape();
 CircleShape UnitStyle::outlineShape = CircleShape();
 
 void initEntityStyles() {
-	person.color = colors.lightBlue;
-	person.movePeriod = 1;
-	person.moveDistance = 4.0f;
-	person.carryCapacity = 5;
-	person.gatherPeriod = 4;
-	person.size = 12;
-	person.pathableTypes.insert(1);
+	const_cast<UnitStyle&>(PERSON).color = colors.lightBlue;
+	const_cast<UnitStyle&>(PERSON).movePeriod = 1;
+	const_cast<UnitStyle&>(PERSON).moveDistance = 4.0f;
+	const_cast<UnitStyle&>(PERSON).carryCapacity = 10;
+	const_cast<UnitStyle&>(PERSON).gatherPeriod = 2;
+	const_cast<UnitStyle&>(PERSON).size = 12;
+	const_cast<UnitStyle&>(PERSON).pathableTypes.insert(1);
 
-	rock.color = colors.darkGrey;
-	rock.size = 12;
-	rock.pathableTypes.insert(1);
+	const_cast<DoodadStyle&>(ROCK).color = colors.darkGrey;
+	const_cast<DoodadStyle&>(ROCK).size = 12;
+	const_cast<DoodadStyle&>(ROCK).pathableTypes.insert(1);
 
-	house.color = colors.black;
-	house.resources[food] = 50;
-	house.resources[wood] = 100;
-	house.size = 16;
-	house.pathableTypes.insert(1);
+	const_cast<BuildingStyle&>(HOUSE).color = colors.black;
+	const_cast<BuildingStyle&>(HOUSE).resources[food] = 50;
+	const_cast<BuildingStyle&>(HOUSE).resources[wood] = 100;
+	const_cast<BuildingStyle&>(HOUSE).size = 16;
+	const_cast<BuildingStyle&>(HOUSE).maxResidents = 10;
+	const_cast<BuildingStyle&>(HOUSE).pathableTypes.insert(1);
 
-	mill.color = colors.orange;
-	mill.size = 16;
-	mill.pathableTypes.insert(1);
+	const_cast<BuildingStyle&>(MILL).color = colors.orange;
+	const_cast<BuildingStyle&>(MILL).size = 16;
+	const_cast<BuildingStyle&>(MILL).pathableTypes.insert(1);
 
-	berryBush.color = colors.red;
-	berryBush.resourceType = food;
-	berryBush.amount = 100;
-	berryBush.size = 14;
-	berryBush.pathableTypes.insert(1);
+	const_cast<DepositStyle&>(BERRY_BUSH).color = colors.red;
+	const_cast<DepositStyle&>(BERRY_BUSH).resourceType = food;
+	const_cast<DepositStyle&>(BERRY_BUSH).amount = 200;
+	const_cast<DepositStyle&>(BERRY_BUSH).size = 14;
+	const_cast<DepositStyle&>(BERRY_BUSH).pathableTypes.insert(1);
 
-	fish.color = colors.blue;
-	fish.resourceType = food;
-	fish.amount = 100;
-	fish.size = 10;
-	fish.pathableTypes.insert(0);
+	const_cast<DepositStyle&>(FISH).color = colors.blue;
+	const_cast<DepositStyle&>(FISH).resourceType = food;
+	const_cast<DepositStyle&>(FISH).amount = 200;
+	const_cast<DepositStyle&>(FISH).size = 10;
+	const_cast<DepositStyle&>(FISH).pathableTypes.insert(0);
 
-	tree.color = colors.brown;
-	tree.resourceType = wood;
-	tree.amount = 100;
-	tree.size = 12;
-	tree.pathableTypes.insert(1);
+	const_cast<DepositStyle&>(TREE).color = colors.brown;
+	const_cast<DepositStyle&>(TREE).resourceType = wood;
+	const_cast<DepositStyle&>(TREE).amount = 200;
+	const_cast<DepositStyle&>(TREE).size = 12;
+	const_cast<DepositStyle&>(TREE).pathableTypes.insert(1);
 
-	goldMine.color = colors.yellow;
-	goldMine.resourceType = gold;
-	goldMine.amount = 1000;
-	goldMine.size = 12;
-	goldMine.pathableTypes.insert(1);
+	const_cast<DepositStyle&>(GOLD_MINE).color = colors.yellow;
+	const_cast<DepositStyle&>(GOLD_MINE).resourceType = gold;
+	const_cast<DepositStyle&>(GOLD_MINE).amount = 1000;
+	const_cast<DepositStyle&>(GOLD_MINE).size = 12;
+	const_cast<DepositStyle&>(GOLD_MINE).pathableTypes.insert(1);
 
-	stoneMine.color = colors.darkGrey;
-	stoneMine.resourceType = stone;
-	stoneMine.amount = 1000;
-	stoneMine.size = 12;
-	stoneMine.pathableTypes.insert(1);
+	const_cast<DepositStyle&>(STONE_MINE).color = colors.darkGrey;
+	const_cast<DepositStyle&>(STONE_MINE).resourceType = stone;
+	const_cast<DepositStyle&>(STONE_MINE).amount = 1000;
+	const_cast<DepositStyle&>(STONE_MINE).size = 12;
+	const_cast<DepositStyle&>(STONE_MINE).pathableTypes.insert(1);
 
 	FixedStyle::outlineShape.setFillColor(colors.transparent);
 	FixedStyle::outlineShape.setOutlineColor(colors.lightYellow);

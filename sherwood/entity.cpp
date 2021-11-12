@@ -23,7 +23,7 @@ Entity::Entity(const EntityStyle& style, const Vec2i _tile) :
 {
 	map.validateWithinBounds(tile);
 	validatePathable(tile);
-	em.entities.insert({ this });
+	em.entities.insert({ id, this });
 	
 }
 
@@ -31,7 +31,7 @@ Entity::~Entity() {
 	if (isSelected) {
 		selectedEntities.erase(this);
 	}
-	em.entities.erase(this);
+	em.entities.erase(id);
 }
 
 void Entity::getSelectionText(std::ostringstream& s) const {
@@ -50,6 +50,10 @@ bool Entity::tileIsPathable(const Vec2i _tile) const {
 void Entity::validatePathable(const Vec2i _tile) const {
 	if(style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) == style.pathableTypes.end())
 		throw std::logic_error("terrain is unpathable");
+}
+
+const int Entity::getStyleID() const {
+	return style.id;
 }
 
 void Entity::select() {
@@ -124,16 +128,47 @@ const DepositStyle& Deposit::depositStyle() const {
 Building::Building(const BuildingStyle& _style, const Vec2i _tile) :
 	Fixed(_style, _tile),
 	resources(_style.resources)
-{}
+{
+	if (&style == &HOUSE)
+		em.houses.insert({ id, this });
+}
+
+Building::~Building() {
+	if (&style == &HOUSE)
+		em.houses.erase(id);
+	for (auto& it : residents) {
+		it.second->home = nullptr;
+	}
+}
 
 void Building::getSelectionText(std::ostringstream& s) const {
 	Fixed::getSelectionText(s);
+	s << "Resources:\n";
 	if (resources.empty() == false) {
-		s << "Resources:\n";
 		for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
 			if (resources[resourceType] > 0) {
 				s << "    " << resources[resourceType] << " " << resourceNames[resourceType] << "\n";
 			}
+		}
+	}
+	else {
+		s << "    -\n";
+	}
+	if (getStyleID() == HOUSE.id) {
+		s << "Residents:\n";
+		if (residents.size() > 0) {
+			s << "    ";
+			bool isFirst = true;
+			for (auto& it : residents) {
+				if (isFirst == false)
+					s << ", ";
+				s << it.second->id;
+				isFirst = false;
+			}
+			s << "\n";
+		}
+		else {
+			s << "    -\n";
 		}
 	}
 }
@@ -150,16 +185,18 @@ Unit::Unit(const UnitStyle& _style, const Vec2i _tile) :
 	carryAmmount(0),
 	carryType(0)
 {
-	em.unitMap.insert({ id, this });
+	em.units.insert({ id, this });
 }
 
 Unit::~Unit() {
 	for (Job* job : jobQueue) {
 		delete job;
 	}
-	std::cout << em.unitMap.size() << std::endl;
-	em.unitMap.erase(id);
-	std::cout << em.unitMap.size() << std::endl;
+	if (home != nullptr)
+		(*home).residents.erase(id);
+	std::cout << em.units.size() << std::endl;
+	em.units.erase(id);
+	std::cout << em.units.size() << std::endl;
 }
 
 void Unit::update()
@@ -176,7 +213,7 @@ void Unit::update()
 
 void Unit::getSelectionText(std::ostringstream& s) const {
 	Entity::getSelectionText(s);
-	s << "Home: " << ((homeLookup.id >= 0) ? std::to_string(homeLookup.id) : "-") << "\n";
+	s << "Home: " << ((home != nullptr) ? std::to_string((*home).id) : "-") << "\n";
 	s << "JobQueue: " << jobQueue.size() << "\n";
 	s << "Carrying: ";
 	if (carryAmmount > 0)
@@ -190,11 +227,6 @@ const UnitStyle& Unit::unitStyle() const {
 }
 
 void Unit::addJob(Job* job) {
-	//if (jobQueue.empty()) {
-	//	if (map.getEntityFromTile(tile) == this) {
-	//		map.removeEntityAtTile(tile);
-	//	}
-	//}
 	jobQueue.push_back(job);
 }
 
@@ -208,8 +240,14 @@ void Unit::destroyJobs() {
 	jobQueue.clear();
 }
 
-void Unit::setHome(Building& home) {
-	homeLookup = home;
+void Unit::setHome(Building& _home) {
+	home = &_home;
+
+	if (_home.getStyleID() != HOUSE.id)
+		throw std::logic_error("only houses can have residents");
+	if (getStyleID() != PERSON.id)
+		throw std::logic_error("only people can be residents");
+	_home.residents.insert({ id, this });
 }
 
 bool Unit::moveTowards(const Vec2i targetTile) {

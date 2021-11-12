@@ -9,6 +9,7 @@ public:
 	Panel targetFpsPanel;
 	Panel actualFpsPanel;
 	Panel unitCountPanel;
+	Panel houseCountPanel;
 	Panel timePanel;
 
 	Panel viewportPanel;

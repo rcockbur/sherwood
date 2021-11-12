@@ -37,6 +37,11 @@ UI::UI()
 	unitCountPanel.moveRightOfPanel(timePanel);
 	unitCountPanel.setSize((Vec2f(100, -1)));
 
+	houseCountPanel.setName("houseCountPanel");
+	houseCountPanel.setParent(topPanel);
+	houseCountPanel.moveRightOfPanel(unitCountPanel);
+	houseCountPanel.setSize((Vec2f(100, -1)));
+
 	viewportPanel.setName("viewportPanel");
 	viewportPanel.setParent(hud);
 	viewportPanel.moveBelowPanel(topPanel);
@@ -69,7 +74,7 @@ UI::UI()
 	houseButton.setBorderColor(colors.white);
 	houseButton.setPadding(Padding(3, 3, 3, 3));
 	houseButton.setCallback(buildingButtonClicked);
-	houseButton.setBuildingStyle(&house);
+	houseButton.setBuildingStyle(&HOUSE);
 
 	millButton.setName("millButton");
 	millButton.setParent(buttonGridPanel);
@@ -79,6 +84,6 @@ UI::UI()
 	millButton.setBorderColor(colors.white);
 	millButton.setPadding(Padding(3, 3, 3, 3));
 	millButton.setCallback(buildingButtonClicked);
-	millButton.setBuildingStyle(&mill);
+	millButton.setBuildingStyle(&MILL);
 }
 

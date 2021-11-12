@@ -7,7 +7,6 @@ Move::Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path) :
 	unit(unit), 
 	dest(dest), 
 	path(path)
-	//atFinalTile(false)
 {}
 
 ActivityStatus Move::execute(bool isLastJob) {
@@ -19,13 +18,6 @@ ActivityStatus Move::execute(bool isLastJob) {
 		followPath();
 		r = ActivityStatus::inProgress;
 	}
-	/*if (atFinalTile == false && path.size() <= 1) {*/
-	//if (atFinalTile == false && unit.tile == path.back()) {
-	//	atFinalTile = true;
-	//	if (isLastJob) {
-	//		map.setEntityAtTile(unit, unit.tile);
-	//	}
-	//}
 	return r;
 }
 
@@ -33,7 +25,6 @@ void Move::followPath() {
 	if (path.size() > 0) {
 		if (tics >= unit.canMoveAt) {
 			if (unit.tileIsPathable(path.front())) {
-				//bool blockImpass = blockImpassAtEnd && path.size() == 1;
 				unit.canMoveAt = tics + unit.unitStyle().movePeriod;
 				bool hasReachedTile = unit.moveTowards(path.front());
 				if (hasReachedTile)
@@ -95,11 +86,6 @@ ActivityStatus Harvest::execute(bool isLastJob) {
 		followPath();
 		r = ActivityStatus::inProgress; //still moving
 	}
-	/*if (atFinalTile == false && path.size() <= 1) {*/
-	//if (atFinalTile == false && unit.tile == path.back()) {
-	//	atFinalTile = true;
-	//	map.setEntityAtTile(unit, unit.tile);
-	//}
 	return r;
 }
 
@@ -124,12 +110,5 @@ ActivityStatus ReturnResources::execute(bool isLastJob) {
 		followPath();
 		r = ActivityStatus::inProgress;
 	}
-	/*if (atFinalTile == false && path.size() <= 1) {*/
-	//if (atFinalTile == false && unit.tile == path.back()) {
-	//	atFinalTile = true;
-	//	if (isLastJob) {
-	//		map.setEntityAtTile(unit, unit.tile);
-	//	}
-	//}
 	return r;
 }

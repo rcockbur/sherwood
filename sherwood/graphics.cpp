@@ -78,9 +78,9 @@ void Graphics::drawGrid() {
 }
 
 void Graphics::drawEntities() {
-	for (auto& entity : em.entities) {
-		Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityStyle().size);
-		Shape* shape = entity->entityStyle().getShape(graphicalPos);
+	for (auto& it : em.entities) {
+		Vec2f graphicalPos = getTopLeft(it.second->pos, it.second->entityStyle().size);
+		Shape* shape = it.second->entityStyle().getShape(graphicalPos);
 		renderWindow.draw(*shape);
 	}
 	for (auto entity : selectedEntities) {
@@ -117,7 +117,8 @@ void Graphics::drawHUD() {
 void Graphics::updateText() {
 	ui.targetFpsPanel.setString((oss() << "TargetFPS: " << targetFPS).str());
 	ui.actualFpsPanel.setString((oss() << "FPS: " << (int)(actualFPS + 0.5)).str());
-	ui.unitCountPanel.setString((oss() << "Units: " << em.unitMap.size()).str());
+	ui.unitCountPanel.setString((oss() << "Units: " << em.units.size()).str());
+	ui.houseCountPanel.setString((oss() << "Houses: " << em.houses.size()).str());
 	ui.timePanel.setString((oss() << "Time: " << seconds).str());
 
 	oss entityStringStream;
