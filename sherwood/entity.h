@@ -1,7 +1,6 @@
 #pragma once
 #include <sstream>
 #include <deque>
-#include <unordered_map>
 #include "resources.h"
 #include "lookup.h"
 
@@ -44,48 +43,25 @@ protected:
 
 class Fixed : public Entity {
 public:
+	//deposit
+	int amount;
+
+	//building
+	Resources resources;
+	UnitGroup residents;
+
 	Fixed(const FixedStyle&, const Vec2i tile);
 	~Fixed();
 	virtual void getSelectionText(std::ostringstream&) const;
 	const FixedStyle& fixedStyle() const;
 };
 
-class Doodad : public Fixed {
-public:
-	Doodad(const DoodadStyle&, const Vec2i tile);
-	~Doodad();
-	const DoodadStyle& doodadStyle() const;
-};
-
-class Deposit : public Fixed {
-public:
-	int amount;
-
-	Deposit(const DepositStyle& style, const Vec2i tile);
-	~Deposit();
-	void getSelectionText(std::ostringstream&) const;
-	const DepositStyle& depositStyle() const;
-};
-
-class Building : public Fixed {
-public:
-	Resources resources;
-	std::unordered_map<int, Unit*> residents;
-	Building(const BuildingStyle& style, const Vec2i tile);
-	~Building();
-
-	void getSelectionText(std::ostringstream&) const;
-	const BuildingStyle& buildingStyle() const;
-
-};
-
-
 class Unit : public Entity {
 public:
 	std::deque<Job*> jobQueue;
 	int canMoveAt;
 	int canGatherAt;
-	Building* home;
+	Fixed* home;
 	int carryType;
 	int carryAmmount;
 
@@ -96,7 +72,7 @@ public:
 	void addJob(Job* job);
 	void setJob(Job* job);
 	void destroyJobs();
-	void setHome(Building& home);
+	void setHome(Fixed& home);
 	bool moveTowards(const Vec2i targetTile);
 	const UnitStyle& unitStyle() const;
 };

@@ -4,6 +4,11 @@
 #include <iostream>
 #include <tuple>
 #include <queue>
+#include <unordered_map>
+
+class Entity;
+class Unit;
+class Fixed;
 
 template<typename T>
 sf::Vector2<T> DivideVec2(const sf::Vector2<T>& left, const sf::Vector2<T>& right) {
@@ -23,6 +28,9 @@ typedef sf::CircleShape CircleShape;
 typedef sf::RectangleShape RectangleShape;
 typedef std::tuple<int, int, Vec2i> AStarOpenTuple;
 typedef std::tuple<int, Vec2i> BreadthFirstOpenTuple;
+typedef std::unordered_map<int, Entity*> EntityGroup;
+typedef std::unordered_map<int, Unit*> UnitGroup;
+typedef std::unordered_map<int, Fixed*> FixedGroup;
 
 enum ResourceType { food, wood, gold, stone };
 enum TerrainType { water, grass };

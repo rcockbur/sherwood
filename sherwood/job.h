@@ -23,7 +23,7 @@ public:
 	Lookup depositLookup;
 	bool forcedHarvest;
 	const FixedStyle& depositEntityStyle;
-	Harvester(Unit&, Deposit& deposit);
+	Harvester(Unit&, Fixed& deposit);
 	void checkForAnotherAbility() override;
 };
 

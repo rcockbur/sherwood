@@ -44,7 +44,7 @@ ActivityStatus Harvest::execute(bool isLastJob) {
 	ActivityStatus r;
 	if (path.empty()) {
 		if (tics >= unit.canGatherAt) {
-			Deposit* deposit = map.lookupEntity<Deposit>(depositLookup);
+			Fixed* deposit = map.lookupEntity<Fixed>(depositLookup);
 			if (deposit == nullptr) {
 				if (hasStartedHarvesting) {
 					r = ActivityStatus::success; //deposit destroyed while gathering
@@ -56,8 +56,8 @@ ActivityStatus Harvest::execute(bool isLastJob) {
 			else {
 				if (hasStartedHarvesting == false) {
 					hasStartedHarvesting = true;
-					if (unit.carryType != deposit->depositStyle().resourceType) {
-						unit.carryType = deposit->depositStyle().resourceType;
+					if (unit.carryType != deposit->fixedStyle().resourceType) {
+						unit.carryType = deposit->fixedStyle().resourceType;
 						unit.carryAmmount = 0;
 					}
 				}
@@ -97,7 +97,7 @@ ReturnResources::ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Ve
 ActivityStatus ReturnResources::execute(bool isLastJob) {
 	ActivityStatus r;
 	if (path.empty()) {
-		Building* home = map.lookupEntity<Building>(houseLookup);
+		Fixed* home = map.lookupEntity<Fixed>(houseLookup);
 		if (home) {
 			home->resources[unit.carryType] += unit.carryAmmount;
 			unit.carryAmmount = 0;

@@ -39,17 +39,17 @@ CompleteStatus Job::execute(bool isLastJob) {
 	}
 }
 
-Harvester::Harvester(Unit& _unit, Deposit& deposit) :
+Harvester::Harvester(Unit& _unit, Fixed& deposit) :
 	Job(_unit),
 	depositLookup(deposit),
 	forcedHarvest(true),
-	depositEntityStyle(deposit.depositStyle())
+	depositEntityStyle(deposit.fixedStyle())
 {}
 
 void Harvester::checkForAnotherAbility() {
 	if (forcedHarvest == true || unit.carryAmmount == 0) {
 		forcedHarvest = false;
-		Deposit* deposit = map.lookupEntity<Deposit>(depositLookup);
+		Fixed* deposit = map.lookupEntity<Fixed>(depositLookup);
 		if (deposit) {
 			if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
 				std::list<Vec2i>path = aStar.path();
@@ -59,7 +59,7 @@ void Harvester::checkForAnotherAbility() {
 		else {
 			Entity* entity = breadthFirst.search(depositLookup.tile, depositEntityStyle, unit.unitStyle().pathableTypes);
 			if (entity) {
-				deposit = static_cast<Deposit*>(entity);
+				deposit = static_cast<Fixed*>(entity);
 				depositLookup = Lookup(*deposit);
 				if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
 					std::list<Vec2i>path = aStar.path();

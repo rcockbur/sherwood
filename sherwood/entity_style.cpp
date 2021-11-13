@@ -15,7 +15,10 @@ EntityStyle::EntityStyle(std::string&& _name) :
 
 //Fixed
 FixedStyle::FixedStyle(std::string&& _name) :
-	EntityStyle(std::move(_name))
+	EntityStyle(std::move(_name)),
+	resourceType(-1),
+	resourceCount(0),
+	maxResidents(0)
 {}
 
 Shape* FixedStyle::getShape(const Vec2f graphicalPosition) const {
@@ -30,24 +33,6 @@ Shape* FixedStyle::getOutlineShape(const Vec2f graphicalPosition) const {
 	outlineShape.setPosition(graphicalPosition);
 	return &outlineShape;
 }
-
-//Doodad
-DoodadStyle::DoodadStyle(std::string&& _name) :
-	FixedStyle(std::move(_name))
-{}
-
-//Deposit
-DepositStyle::DepositStyle(std::string&& _name) :
-	FixedStyle(std::move(_name)),
-	resourceType(0),
-	amount(0)
-{}
-
-//Building
-BuildingStyle::BuildingStyle(std::string&& _name) :
-	FixedStyle(std::move(_name)),
-	maxResidents(0)
-{}
 
 //Unit
 UnitStyle::UnitStyle(std::string&& _name) :

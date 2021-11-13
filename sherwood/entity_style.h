@@ -21,29 +21,17 @@ public:
 	static RectangleShape shape;
 	static RectangleShape outlineShape;
 
+	//deposit
+	int resourceType;
+	int resourceCount;
+
+	//building
+	Resources resources;
+	int maxResidents;
+
 	FixedStyle(std::string&& _name);
 	Shape* getShape(const Vec2f graphicalPosition) const;
 	Shape* getOutlineShape(const Vec2f graphicalPosition) const;
-};
-
-class DoodadStyle: public FixedStyle {
-public:
-	DoodadStyle(std::string&& _name);
-};
-
-class DepositStyle : public FixedStyle {
-public:
-	int resourceType;
-	int amount;
-
-	DepositStyle(std::string&& _name);
-};
-
-class BuildingStyle : public FixedStyle {
-public:
-	Resources resources;
-	int maxResidents;
-	BuildingStyle(std::string&& _name);
 };
 
 class UnitStyle : public EntityStyle {

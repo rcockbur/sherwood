@@ -32,7 +32,7 @@ void handleWorldClick(bool left, bool down) {
 		if (down) { //left down
 			if (placementBuildingStyle) {
 				if (mouseTile != Vec2i(-1, -1)) {
-					new Building(*placementBuildingStyle, mouseTile);
+					new Fixed(*placementBuildingStyle, mouseTile);
 					if (shiftIsDown == false) {
 						placementBuildingStyle = nullptr;
 					}
@@ -80,10 +80,12 @@ void handleWorldClick(bool left, bool down) {
 				for (auto entity : selectedEntities) {
 					Unit* selectedUnit = dynamic_cast<Unit*>(entity);
 					if (selectedUnit) {
-						Deposit* clickedDeposit = dynamic_cast<Deposit*>(clickedEntity);
-						Building* clickedBuilding = dynamic_cast<Building*> (clickedEntity);
-						if (clickedDeposit != nullptr)
-							unitHarvestDeposit(*selectedUnit, *clickedDeposit);
+						Fixed* clickedFixed = dynamic_cast<Fixed*>(clickedEntity);
+						if (clickedFixed != nullptr) {
+							if ((*clickedFixed).fixedStyle().resourceType != -1) {
+								unitHarvestDeposit(*selectedUnit, *clickedFixed);
+							}
+						}
 						else if (selectedUnit->tile != clickedTile) {
 							unitMoveToTile(*selectedUnit, clickedTile);
 						}
@@ -113,7 +115,7 @@ void unitMoveToTile(Unit& unit, Vec2i targetTile) {
 	}
 }
 
-void unitHarvestDeposit(Unit& unit, Deposit& deposit) {
+void unitHarvestDeposit(Unit& unit, Fixed& deposit) {
 	Harvester* harvester = new Harvester(unit, deposit);
 	if (shiftIsDown) {
 		unit.addJob(harvester);

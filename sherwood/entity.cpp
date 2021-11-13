@@ -79,70 +79,33 @@ bool Entity::operator==(const Lookup& lookup) const {
 
 //Fixed
 Fixed::Fixed(const FixedStyle& _style, const Vec2i _tile) :
-	Entity(_style, _tile)
+	Entity(_style, _tile),
+	amount(_style.resourceCount),
+	resources(_style.resources)
 {
 	map.setEntityAtTile(*this, _tile);
+
+	if (&_style == &HOUSE)
+		em.houses.insert({ id, this });
 }
 
 Fixed::~Fixed() {
 	map.removeEntityAtTile(tile);
-}
 
-void Fixed::getSelectionText(std::ostringstream& s) const {
-	Entity::getSelectionText(s);
-}
-
-const FixedStyle& Fixed::fixedStyle() const {
-	return static_cast<const FixedStyle&>(style);
-}
-
-//Doodad
-Doodad::Doodad(const DoodadStyle& _style, const Vec2i _tile) :
-	Fixed(_style, _tile)
-{}
-
-Doodad::~Doodad() {}
-
-const DoodadStyle& Doodad::doodadStyle() const {
-	return static_cast<const DoodadStyle&>(style);
-}
-
-//Deposit
-Deposit::Deposit(const DepositStyle& _style, const Vec2i _tile) :
-	Fixed(_style, _tile),
-	amount(_style.amount)
-{}
-
-Deposit::~Deposit() {}
-
-void Deposit::getSelectionText(std::ostringstream& s) const {
-	Fixed::getSelectionText(s);
-	s << std::to_string(amount) << " " << resourceNames[depositStyle().resourceType] << "\n";
-}
-
-const DepositStyle& Deposit::depositStyle() const {
-	return static_cast<const DepositStyle&>(style);
-}
-
-//Building
-Building::Building(const BuildingStyle& _style, const Vec2i _tile) :
-	Fixed(_style, _tile),
-	resources(_style.resources)
-{
-	if (&style == &HOUSE)
-		em.houses.insert({ id, this });
-}
-
-Building::~Building() {
-	if (&style == &HOUSE)
+	if (&style == &HOUSE) {
 		em.houses.erase(id);
+	}
+		
 	for (auto& it : residents) {
 		it.second->home = nullptr;
 	}
 }
 
-void Building::getSelectionText(std::ostringstream& s) const {
-	Fixed::getSelectionText(s);
+void Fixed::getSelectionText(std::ostringstream& s) const {
+	Entity::getSelectionText(s);
+	if (fixedStyle().resourceType != -1)
+		s << std::to_string(amount) << " " << resourceNames[fixedStyle().resourceType] << "\n";
+
 	s << "Resources:\n";
 	if (resources.empty() == false) {
 		for (int resourceType = 0; resourceType < NUM_RESOURCES; resourceType++) {
@@ -173,9 +136,10 @@ void Building::getSelectionText(std::ostringstream& s) const {
 	}
 }
 
-const BuildingStyle& Building::buildingStyle() const {
-	return static_cast<const BuildingStyle&>(style);
+const FixedStyle& Fixed::fixedStyle() const {
+	return static_cast<const FixedStyle&>(style);
 }
+
 
 //Unit
 Unit::Unit(const UnitStyle& _style, const Vec2i _tile) :
@@ -240,7 +204,7 @@ void Unit::destroyJobs() {
 	jobQueue.clear();
 }
 
-void Unit::setHome(Building& _home) {
+void Unit::setHome(Fixed& _home) {
 	home = &_home;
 
 	if (_home.getStyleID() != HOUSE.id)

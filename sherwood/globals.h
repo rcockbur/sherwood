@@ -30,7 +30,7 @@ extern BreadthFirst breadthFirst;
 
 //extern Entity* selectedEntity;
 extern std::set<Entity*> selectedEntities;
-extern const BuildingStyle* placementBuildingStyle;
+extern const FixedStyle* placementBuildingStyle;
 extern Vec2f mouseScreenPos;
 extern Vec2f mouseWorldPos;
 extern Vec2i mouseTile;
@@ -43,14 +43,14 @@ extern sf::Clock gameClock;
 extern sf::Time dt;
 
 extern const UnitStyle PERSON;
-extern const DoodadStyle ROCK;
-extern const BuildingStyle HOUSE;
-extern const BuildingStyle MILL;
-extern const DepositStyle BERRY_BUSH;
-extern const DepositStyle FISH;
-extern const DepositStyle TREE;
-extern const DepositStyle GOLD_MINE;
-extern const DepositStyle STONE_MINE;
+extern const FixedStyle ROCK;
+extern const FixedStyle HOUSE;
+extern const FixedStyle MILL;
+extern const FixedStyle BERRY_BUSH;
+extern const FixedStyle FISH;
+extern const FixedStyle TREE;
+extern const FixedStyle GOLD_MINE;
+extern const FixedStyle STONE_MINE;
 
 void initEntityStyles();
 void initWindow();
