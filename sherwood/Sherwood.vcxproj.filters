@@ -129,4 +129,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\map1.txt" />
+    <Text Include="data\map2.txt" />
+  </ItemGroup>
 </Project>

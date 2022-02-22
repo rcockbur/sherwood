@@ -8,8 +8,8 @@ class Ability;
 
 class Job {
 public:
-	Unit& unit;
-	Job(Unit& unit);
+	Entity& unit;
+	Job(Entity& unit);
 	bool hasStarted;
 	std::unique_ptr<Ability> ability;
 
@@ -22,8 +22,8 @@ class Harvester : public Job {
 public:
 	Lookup depositLookup;
 	bool forcedHarvest;
-	const FixedStyle& depositEntityStyle;
-	Harvester(Unit&, Fixed& deposit);
+	const EntityStyle& depositEntityStyle;
+	Harvester(Entity&, Entity& deposit);
 	void checkForAnotherAbility() override;
 };
 
@@ -31,14 +31,13 @@ class Mover : public Job {
 public:
 	const Vec2i targetTile;
 
-	Mover(Unit&, const Vec2i targetTile);
+	Mover(Entity&, const Vec2i targetTile);
 	void checkForAnotherAbility() override;
 };
 
-class Idler : public Job {
+class Garrisoner : public Job {
 public:
-	Idler(Unit&);
+	Lookup targetLookup;
+	Garrisoner(Entity&, Entity& target);
 	void checkForAnotherAbility() override;
-private:
-	int idleSince;
 };

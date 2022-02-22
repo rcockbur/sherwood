@@ -7,8 +7,9 @@
 #include "constants.h"
 
 
-Map::Map(std::string fileName) : 
-	tileCount(calculateTileCount(fileName)),
+Map::Map(std::string fileName) :
+	fileName(fileName),
+	tileCount(calculateTileCount()),
 	size((float)tileCount.x * TILE_SIZE, ((float)tileCount.y * TILE_SIZE))
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
@@ -19,9 +20,14 @@ Map::Map(std::string fileName) :
 		terrainGrid[x].resize(tileCount.y);
 		entityGrid[x].resize(tileCount.y);
 	}
-	loadMapData("data/map.txt");
+	loadMapData();
 	
 	std::cout << "Map data loaded\n";
+}
+
+void Map::setTerrainAtTile(const Vec2i tile, const int terrainType) {
+	validateWithinBounds(tile);
+	terrainGrid[tile.x][tile.y] = terrainType;
 }
 
 bool Map::isWithinBounds(Vec2i tile) const {
@@ -33,7 +39,7 @@ void Map::validateWithinBounds(const Vec2i tile) const {
 		throw std::logic_error("tile is out of bounds");
 }
 
-Vec2i Map::calculateTileCount(std::string fileName) {
+Vec2i Map::calculateTileCount() {
 	std::ifstream inFile(fileName);
 	int x = 0;
 	int y = 0;
@@ -56,7 +62,7 @@ Vec2i Map::calculateTileCount(std::string fileName) {
 	return Vec2i(x, y);
 }
 
-void Map::loadMapData(std::string fileName) {
+void Map::loadMapData() {
 	std::ifstream inFile(fileName);
 	int x = 0;
 	int y = 0;
@@ -72,6 +78,22 @@ void Map::loadMapData(std::string fileName) {
 			}
 			++y;
 		}
+	}
+}
+
+void Map::saveMapData() const {
+	std::ofstream outFile(fileName, std::ofstream::trunc);
+	if (outFile.is_open()) {
+		for (int y = 0; y < tileCount.y; ++y) {
+			for (int x = 0; x < tileCount.x; ++x) {
+				outFile << std::to_string(terrainGrid[x][y]);
+				if (x + 1 < tileCount.x) {
+					outFile << ",";
+				}
+			}
+			outFile << "\n";
+		}
+		outFile.close();
 	}
 }
 
@@ -98,4 +120,13 @@ void Map::removeEntityAtTile(const Vec2i tile) {
 void Map::validateStaticEntityGridAvailable(const Vec2i tile) {
 	if (entityGrid[tile.x][tile.y])
 		throw std::logic_error("entityGrid slot already occupied");
+}
+
+Entity* Map::lookupEntity(const Lookup lookup) const {
+	if (entityGrid[lookup.tile.x][lookup.tile.y] != nullptr) {
+		if (entityGrid[lookup.tile.x][lookup.tile.y]->id == lookup.id) {
+			return entityGrid[lookup.tile.x][lookup.tile.y];
+		}
+	}
+	return nullptr;
 }

@@ -118,8 +118,21 @@ void handleKeyPress(sf::Keyboard::Key code) {
 	case(sf::Keyboard::Add):
 		updateFPS(targetFPS + 1);
 		break;
+	case(sf::Keyboard::S):
+		map.saveMapData();
+		break;
 	case(sf::Keyboard::Subtract):
 		updateFPS(targetFPS - 1);
+		break;
+	case(sf::Keyboard::L):
+		if (map.isWithinBounds(mouseTile)) {
+			map.setTerrainAtTile(mouseTile, 1);
+		}
+		break;
+	case(sf::Keyboard::W):
+		if (map.isWithinBounds(mouseTile)) {
+			map.setTerrainAtTile(mouseTile, 0);
+		}
 		break;
 	default:
 		break;

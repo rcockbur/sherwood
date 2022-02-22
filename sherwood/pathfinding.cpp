@@ -107,7 +107,7 @@ bool AStar::search(const Vec2i& s, const Vec2i& e, std::set<int> _pathableTypes)
     if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-    printf("AStar %.3f milliseconds\n", elapsed.count() * 1e-6);
+    if (!showPathfinding) printf("AStar %.3f milliseconds\n", elapsed.count() * 1e-6);
     return pathFound;
 }
 
@@ -143,7 +143,7 @@ void AStar::clear() {
     cameFrom.clear();
 }
 
-Entity* BreadthFirst::search(const Vec2i& s, const EntityStyle& fet, std::set<int> _pathableTypes) {
+Entity* BreadthFirst::search(const Vec2i& s, const EntityStyle& targetStyle, std::set<int> _pathableTypes) {
    if (showPathfinding) renderWindow.setFramerateLimit(1000);
    pathableTypes = _pathableTypes;
     auto begin = std::chrono::high_resolution_clock::now();
@@ -160,7 +160,7 @@ Entity* BreadthFirst::search(const Vec2i& s, const EntityStyle& fet, std::set<in
         open.pop_back();
         closed.insert(best);
         Entity* entity = map.getEntityFromTile(best);
-        if (entity != nullptr && &entity->entityStyle() == &fet) {
+        if (entity != nullptr && &entity->style == &targetStyle) {
             end = best;
             result = entity;
             break;
@@ -200,7 +200,7 @@ Entity* BreadthFirst::search(const Vec2i& s, const EntityStyle& fet, std::set<in
     if (showPathfinding) renderWindow.setFramerateLimit(targetFPS);
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-    printf("Breadthfirst %.3f milliseconds\n", elapsed.count() * 1e-6);
+    if (!showPathfinding) printf("Breadthfirst %.3f milliseconds\n", elapsed.count() * 1e-6);
     return result;
 }
 

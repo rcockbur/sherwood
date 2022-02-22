@@ -1,6 +1,6 @@
 #pragma once
 #include "types.h"
-//class Fixed;
+
 class Entity;
 
 class Lookup {

@@ -78,14 +78,16 @@ void Graphics::drawGrid() {
 }
 
 void Graphics::drawEntities() {
-	for (auto& it : em.entities) {
-		Vec2f graphicalPos = getTopLeft(it.second->pos, it.second->entityStyle().size);
-		Shape* shape = it.second->entityStyle().getShape(graphicalPos);
-		renderWindow.draw(*shape);
+	for (auto& it : em.all_entities) {
+		if (it.second->isGarrisoned == false) {
+			Vec2f graphicalPos = getTopLeft(it.second->pos, it.second->style.size);
+			Shape* shape = it.second->style.getShape(graphicalPos);
+			renderWindow.draw(*shape);
+		}
 	}
 	for (auto entity : selectedEntities) {
-			Vec2f graphicalPos = getTopLeft(entity->pos, entity->entityStyle().size);
-			Shape* outlineShape = entity->entityStyle().getOutlineShape(graphicalPos);
+			Vec2f graphicalPos = getTopLeft(entity->pos, entity->style.size);
+			Shape* outlineShape = entity->style.getOutlineShape(graphicalPos);
 			renderWindow.draw(*outlineShape);
 	}
 	if (placementBuildingStyle != nullptr) {
@@ -117,8 +119,8 @@ void Graphics::drawHUD() {
 void Graphics::updateText() {
 	ui.targetFpsPanel.setString((oss() << "TargetFPS: " << targetFPS).str());
 	ui.actualFpsPanel.setString((oss() << "FPS: " << (int)(actualFPS + 0.5)).str());
-	ui.unitCountPanel.setString((oss() << "Units: " << em.units.size()).str());
-	ui.houseCountPanel.setString((oss() << "Houses: " << em.houses.size()).str());
+	ui.unitCountPanel.setString((oss() << "Units: " << em.all_units.size()).str());
+	ui.houseCountPanel.setString((oss() << "Houses: " << em.all_houses.size()).str());
 	ui.timePanel.setString((oss() << "Time: " << seconds).str());
 
 	oss entityStringStream;

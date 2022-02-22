@@ -8,9 +8,9 @@ class EntityManager {
 public:
 	EntityManager();
 	void updateEntities();
-	Unit* getUnitByID(const int id) const;
-	EntityGroup entities;
-	FixedGroup houses;
-	UnitGroup units;
+	Entity* getUnitByID(const int id) const;
+	EntityGroup all_entities;
+	EntityGroup all_houses;
+	EntityGroup all_units;
 };
 

@@ -196,6 +196,10 @@
     <ClInclude Include="utility.h" />
     <ClInclude Include="map.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\map1.txt" />
+    <Text Include="data\map2.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

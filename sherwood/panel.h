@@ -3,7 +3,7 @@
 #include <list>
 
 
-class FixedStyle;
+class EntityStyle;
 
 class Padding {
 public:
@@ -18,14 +18,14 @@ public:
 	Vec2f getPosition() const;
 	Vec2f getInnerPosition() const;
 	Vec2f getSize() const;
-	const FixedStyle* getBuildingStyle() const;
+	const EntityStyle* getBuildingStyle() const;
 	void setString(const std::string& string);
-	void setBuildingStyle(const FixedStyle* BuildingType);
+	void setBuildingStyle(const EntityStyle* BuildingType);
 	void setCallback(void (*callback)(const Panel& panel, bool left, bool down));
 	void handleClick(bool left, bool down);
 	bool containsScreenPos(const Vec2f pos);
 private:
-	const FixedStyle* buildingStyle;
+	const EntityStyle* buildingStyle;
 	std::string name;
 	void (*callback)(const Panel&, bool, bool);
 	Panel* parent;

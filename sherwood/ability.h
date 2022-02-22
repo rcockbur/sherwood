@@ -3,8 +3,6 @@
 #include <list>
 #include "lookup.h"
 
-class Unit;
-
 class Ability {
 public:
 	virtual ActivityStatus execute(bool isLastJob) = 0;
@@ -12,19 +10,18 @@ public:
 
 class Move : public Ability {
 public:
-	Move(Unit& unit, Vec2i dest, std::list<Vec2i>&& path);
+	Move(Entity& unit, Vec2i dest, std::list<Vec2i>&& path);
 	ActivityStatus execute(bool isLastJob) override;
 protected:
-	Unit& unit;
+	Entity& unit;
 	const Vec2i dest;
 	std::list<Vec2i> path;
-	//bool atFinalTile;
 	void followPath();
 };
 
 class Harvest : public Move {
 public:
-	Harvest(Unit& unit, Lookup depositLookup, std::list<Vec2i>&& path);
+	Harvest(Entity& unit, Lookup depositLookup, std::list<Vec2i>&& path);
 	ActivityStatus execute(bool isLastJob) override;
 private:
 	const Lookup depositLookup;
@@ -33,8 +30,16 @@ private:
 
 class ReturnResources : public Move {
 public :
-	ReturnResources(Unit& unit, Lookup buildingLookup, std::list<Vec2i>&& path);
+	ReturnResources(Entity& unit, Lookup buildingLookup, std::list<Vec2i>&& path);
 	ActivityStatus execute(bool isLastJob) override;
 private:
 	const Lookup houseLookup;
+};
+
+class Garrison : public Move {
+public :
+	Garrison(Entity& unit, Lookup buildingLookup, std::list < Vec2i>&& path);
+	ActivityStatus execute(bool isLastJob) override;
+private:
+	const Lookup buildingLookup;
 };

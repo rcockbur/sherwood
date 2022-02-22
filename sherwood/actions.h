@@ -2,12 +2,11 @@
 #include "types.h"
 
 class Entity;
-class Unit;
-class Fixed;
 class Panel;
 
 Entity* getEntityAtWorldPos(const Vec2f& worldPosition);
 void handleWorldClick(bool left, bool down);
 void buildingButtonClicked(const Panel& panel, bool left, bool down);
-void unitMoveToTile(Unit& unit, Vec2i targetTile);
-void unitHarvestDeposit(Unit& unit, Fixed& deposit);
+void unitMoveToTile(Entity& unit, Vec2i targetTile);
+void unitHarvestDeposit(Entity& unit, Entity& deposit);
+void unitGarrisonBuilding(Entity& unit, Entity& building);

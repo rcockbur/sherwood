@@ -7,16 +7,15 @@
 
 EntityManager::EntityManager() {
 	std::cout << "EntityManager created\n";
-	
 }
 
 void EntityManager::updateEntities() {
-	for (auto& it : units) 
+	for (auto& it : all_units) 
 		it.second->update();
 }
 
-Unit* EntityManager::getUnitByID(const int id) const {
-	auto it = em.units.find(id);
-	return (it == em.units.end()) ? nullptr : it->second;
+Entity* EntityManager::getUnitByID(const int id) const {
+	auto it = em.all_units.find(id);
+	return (it == em.all_units.end()) ? nullptr : it->second;
 }
 

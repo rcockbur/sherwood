@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "pathfinding.h"
 
-Job::Job(Unit& _unit) :
+Job::Job(Entity& _unit) :
 	unit(_unit),
 	hasStarted(false),
 	ability(nullptr)
@@ -39,29 +39,29 @@ CompleteStatus Job::execute(bool isLastJob) {
 	}
 }
 
-Harvester::Harvester(Unit& _unit, Fixed& deposit) :
+Harvester::Harvester(Entity& _unit, Entity& deposit) :
 	Job(_unit),
 	depositLookup(deposit),
 	forcedHarvest(true),
-	depositEntityStyle(deposit.fixedStyle())
+	depositEntityStyle(deposit.style)
 {}
 
 void Harvester::checkForAnotherAbility() {
 	if (forcedHarvest == true || unit.carryAmmount == 0) {
 		forcedHarvest = false;
-		Fixed* deposit = map.lookupEntity<Fixed>(depositLookup);
+		Entity* deposit = map.lookupEntity(depositLookup);
 		if (deposit) {
-			if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
+			if (aStar.search(unit.tile, deposit->tile, unit.style.pathableTypes)) {
 				std::list<Vec2i>path = aStar.path();
 				ability.reset(new Harvest(unit, depositLookup, std::move(path)));
 			}
 		}
 		else {
-			Entity* entity = breadthFirst.search(depositLookup.tile, depositEntityStyle, unit.unitStyle().pathableTypes);
+			Entity* entity = breadthFirst.search(depositLookup.tile, depositEntityStyle, unit.style.pathableTypes);
 			if (entity) {
-				deposit = static_cast<Fixed*>(entity);
+				deposit = static_cast<Entity*>(entity);
 				depositLookup = Lookup(*deposit);
-				if (aStar.search(unit.tile, deposit->tile, unit.unitStyle().pathableTypes)) {
+				if (aStar.search(unit.tile, deposit->tile, unit.style.pathableTypes)) {
 					std::list<Vec2i>path = aStar.path();
 					ability.reset(new Harvest(unit, depositLookup, std::move(path)));
 				}
@@ -69,7 +69,7 @@ void Harvester::checkForAnotherAbility() {
 		}
 	}
 	else {
-		Entity* dropoff = breadthFirst.search(unit.tile, MILL, unit.unitStyle().pathableTypes);
+		Entity* dropoff = breadthFirst.search(unit.tile, MILL, unit.style.pathableTypes);
 		if (dropoff) {
 			Lookup houseLookup = Lookup(*dropoff);
 			std::list<Vec2i> path = breadthFirst.path();
@@ -78,7 +78,7 @@ void Harvester::checkForAnotherAbility() {
 	}
 }
 
-Mover::Mover(Unit& _unit, const Vec2i _targetTile) :
+Mover::Mover(Entity& _unit, const Vec2i _targetTile) :
 	Job(_unit),
 	targetTile(_targetTile)
 {
@@ -87,7 +87,7 @@ Mover::Mover(Unit& _unit, const Vec2i _targetTile) :
 
 void Mover::checkForAnotherAbility() {
 	if (unit.tile != targetTile) {
-		if (aStar.search(unit.tile, targetTile, unit.unitStyle().pathableTypes)) {
+		if (aStar.search(unit.tile, targetTile, unit.style.pathableTypes)) {
 			std::list<Vec2i> path = aStar.path();
 			ability.reset(new Move(unit, targetTile, std::move(path)));
 		}
@@ -95,16 +95,18 @@ void Mover::checkForAnotherAbility() {
 	}
 }
 
-Idler::Idler(Unit& _unit) :
+Garrisoner::Garrisoner(Entity& _unit, Entity& target) :
 	Job(_unit),
-	idleSince(tics)
-{
+	targetLookup(target)
+{}
 
-}
-
-void Idler::checkForAnotherAbility() {
-	if (tics - idleSince > 200) {
-		idleSince = tics;
+void Garrisoner::checkForAnotherAbility() {
+	Entity* building = map.lookupEntity(targetLookup);
+	if (building) {
+		if (aStar.search(unit.tile, building->tile, unit.style.pathableTypes)) {
+			std::list<Vec2i> path = aStar.path();
+			ability.reset(new Garrison(unit, Lookup(*building), std::move(path)));
+		}
 
 	}
 }

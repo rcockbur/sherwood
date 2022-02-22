@@ -6,7 +6,7 @@
 #include "entity_style.h"
 
 Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
-	for (auto& it : em.entities) {
+	for (auto& it : em.all_entities) {
 		if (it.second->bounds.contains(worldPosition)) {
 			return it.second;
 		}
@@ -32,7 +32,7 @@ void handleWorldClick(bool left, bool down) {
 		if (down) { //left down
 			if (placementBuildingStyle) {
 				if (mouseTile != Vec2i(-1, -1)) {
-					new Fixed(*placementBuildingStyle, mouseTile);
+					new Entity(*placementBuildingStyle, mouseTile);
 					if (shiftIsDown == false) {
 						placementBuildingStyle = nullptr;
 					}
@@ -53,14 +53,14 @@ void handleWorldClick(bool left, bool down) {
 				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
 				selectedEntities.clear();
 				if (rect.height > 0 && rect.width > 0) {
-					for (auto it : em.entities) {
+					for (auto it : em.all_entities) {
 						if (it.second->bounds.intersects(rect)) {
 							it.second->select();
 						}
 					}
 				}
 				else {
-					for (auto it : em.entities) {
+					for (auto it : em.all_entities) {
 						if (it.second->bounds.contains(mouseWorldPos)) {
 							it.second->select();
 							break;
@@ -77,17 +77,18 @@ void handleWorldClick(bool left, bool down) {
 				placementBuildingStyle = nullptr;
 			}
 			else { //right up
-				for (auto entity : selectedEntities) {
-					Unit* selectedUnit = dynamic_cast<Unit*>(entity);
-					if (selectedUnit) {
-						Fixed* clickedFixed = dynamic_cast<Fixed*>(clickedEntity);
-						if (clickedFixed != nullptr) {
-							if ((*clickedFixed).fixedStyle().resourceType != -1) {
-								unitHarvestDeposit(*selectedUnit, *clickedFixed);
+				for (auto selectedEntity : selectedEntities) {
+					if (selectedEntity->style.isUnit) {
+						if (clickedEntity) {
+							if (clickedEntity->style.resourceType != -1) {
+								unitHarvestDeposit(*selectedEntity, *clickedEntity);
+							}
+							if (&(clickedEntity->style) == &HOUSE) {
+								unitGarrisonBuilding(*selectedEntity, *clickedEntity);
 							}
 						}
-						else if (selectedUnit->tile != clickedTile) {
-							unitMoveToTile(*selectedUnit, clickedTile);
+						else if (selectedEntity->tile != clickedTile) {
+							unitMoveToTile(*selectedEntity, clickedTile);
 						}
 					}
 				}
@@ -101,7 +102,7 @@ void buildingButtonClicked(const Panel& panel, bool left, bool down) {
 		placementBuildingStyle = panel.getBuildingStyle();
 }
 
-void unitMoveToTile(Unit& unit, Vec2i targetTile) {
+void unitMoveToTile(Entity& unit, Vec2i targetTile) {
 	if(unit.tileIsPathable(targetTile)) {
 		Mover* mover = new Mover(unit, targetTile);
 		if (shiftIsDown) {
@@ -115,7 +116,7 @@ void unitMoveToTile(Unit& unit, Vec2i targetTile) {
 	}
 }
 
-void unitHarvestDeposit(Unit& unit, Fixed& deposit) {
+void unitHarvestDeposit(Entity& unit, Entity& deposit) {
 	Harvester* harvester = new Harvester(unit, deposit);
 	if (shiftIsDown) {
 		unit.addJob(harvester);
@@ -124,5 +125,17 @@ void unitHarvestDeposit(Unit& unit, Fixed& deposit) {
 		ActivityStatus status = harvester->start();
 		if (status == ActivityStatus::success)
 			unit.setJob(harvester);
+	}
+}
+
+void unitGarrisonBuilding(Entity& unit, Entity& building) {
+	Garrisoner* garrisoner = new Garrisoner(unit, building);
+	if (shiftIsDown) {
+		unit.addJob(garrisoner);
+	}
+	else {
+		ActivityStatus status = garrisoner->start();
+		if (status == ActivityStatus::success)
+			unit.setJob(garrisoner);
 	}
 }

@@ -5,14 +5,15 @@
 #include "entity.h"
 
 class Entity;
-class Fixed;
 
 class Map {
 public:
 	Map(std::string fileName);
+	const std::string fileName;
 	const Vec2i tileCount;
 	const Vec2f size;
 	std::vector<std::vector<int>> terrainGrid;
+	void setTerrainAtTile(const Vec2i tile, const int terrainType);
 	bool isWithinBounds(Vec2i tile) const;
 	void validateWithinBounds(const Vec2i tile) const;
 	bool containsWorldPos(const Vec2f pos) const;
@@ -21,20 +22,10 @@ public:
 	void removeEntityAtTile(const Vec2i tile);
 	template <typename T> T* lookupEntity(const Lookup) const;
 	void validateStaticEntityGridAvailable(const Vec2i tile);
-
+	Entity* lookupEntity(const Lookup lookup) const;
+	void saveMapData() const;
 private:
 	std::vector<std::vector<Entity*>> entityGrid;
-	Vec2i calculateTileCount(std::string);
-	void loadMapData(std::string);	
+	Vec2i calculateTileCount();
+	void loadMapData();	
 };
-
-//if entity matches provided ID, then ptr is provided
-template <typename T>
-T* Map::lookupEntity(const Lookup lookup) const {
-	if (entityGrid[lookup.tile.x][lookup.tile.y] != nullptr) {
-		if (entityGrid[lookup.tile.x][lookup.tile.y]->id == lookup.id) {
-			return dynamic_cast<T*>(entityGrid[lookup.tile.x][lookup.tile.y]);
-		}
-	}
-	return nullptr;
-}

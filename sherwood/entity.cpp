@@ -19,19 +19,54 @@ Entity::Entity(const EntityStyle& style, const Vec2i _tile) :
 	pos(tileToWorld(tile)),
 	bounds(calculateBounds(pos)),
 	color(style.color),
-	isSelected(false)
+	isSelected(false),
+	isGarrisoned(false),
+	amount(style.resourceCount), //resourceAmount
+	resources(style.resources),
+	canMoveAt(0),
+	canGatherAt(0),
+	carryAmmount(0),
+	carryType(0)
 {
 	map.validateWithinBounds(tile);
 	validatePathable(tile);
-	em.entities.insert({ id, this });
+	em.all_entities.insert({ id, this });
 	
+	if (style.isUnit) {
+		em.all_units.insert({ id, this });
+	}
+	else {
+		map.setEntityAtTile(*this, tile);
+	}
+	if (&style == &HOUSE) {
+		em.all_houses.insert({ id, this });
+	}
 }
 
 Entity::~Entity() {
 	if (isSelected) {
 		selectedEntities.erase(this);
 	}
-	em.entities.erase(id);
+	em.all_entities.erase(id);
+
+	if (style.isUnit) {
+		em.all_units.erase(id);
+	}
+	else {
+		map.removeEntityAtTile(tile);
+	}
+	if (&style == &HOUSE) {
+		em.all_houses.erase(id);
+	}
+	for (auto& it : residents) {
+		it.second->home = nullptr;
+	}
+	for (Job* job : jobQueue) {
+		delete job;
+	}
+	if (home != nullptr) {
+		(*home).residents.erase(id);
+	}
 }
 
 void Entity::getSelectionText(std::ostringstream& s) const {
@@ -40,71 +75,9 @@ void Entity::getSelectionText(std::ostringstream& s) const {
 	s << "Type: " << style.name << "\n";
 	s << "ID: " << id << "\n";
 	s << "Tile: " << tile << "\n";
-}
-
-bool Entity::tileIsPathable(const Vec2i _tile) const {
-	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
-		&& map.getEntityFromTile(_tile) == nullptr);
-}
-
-void Entity::validatePathable(const Vec2i _tile) const {
-	if(style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) == style.pathableTypes.end())
-		throw std::logic_error("terrain is unpathable");
-}
-
-const int Entity::getStyleID() const {
-	return style.id;
-}
-
-void Entity::select() {
-	selectedEntities.insert(this);
-	isSelected = true;
-}
-void Entity::deselect() {
-	selectedEntities.erase(this);
-	isSelected = false;
-}
-
-const EntityStyle& Entity::entityStyle() const {
-	return style;
-}
-
-Rect Entity::calculateBounds(const Vec2f& pos) const {
-	return Rect(pos.x - style.size / 2, pos.y - style.size / 2, style.size, style.size);
-}
-
-bool Entity::operator==(const Lookup& lookup) const {
-	return (id == lookup.id);
-}
-
-//Fixed
-Fixed::Fixed(const FixedStyle& _style, const Vec2i _tile) :
-	Entity(_style, _tile),
-	amount(_style.resourceCount),
-	resources(_style.resources)
-{
-	map.setEntityAtTile(*this, _tile);
-
-	if (&_style == &HOUSE)
-		em.houses.insert({ id, this });
-}
-
-Fixed::~Fixed() {
-	map.removeEntityAtTile(tile);
-
-	if (&style == &HOUSE) {
-		em.houses.erase(id);
-	}
-		
-	for (auto& it : residents) {
-		it.second->home = nullptr;
-	}
-}
-
-void Fixed::getSelectionText(std::ostringstream& s) const {
-	Entity::getSelectionText(s);
-	if (fixedStyle().resourceType != -1)
-		s << std::to_string(amount) << " " << resourceNames[fixedStyle().resourceType] << "\n";
+	//Fixed
+	if (style.resourceType != -1)
+		s << std::to_string(amount) << " " << resourceNames[style.resourceType] << "\n";
 
 	s << "Resources:\n";
 	if (resources.empty() == false) {
@@ -134,36 +107,57 @@ void Fixed::getSelectionText(std::ostringstream& s) const {
 			s << "    -\n";
 		}
 	}
+	s << "Home: " << ((home != nullptr) ? std::to_string((*home).id) : "-") << "\n";
+	s << "JobQueue: " << jobQueue.size() << "\n";
+	s << "Carrying: ";
+	if (carryAmmount > 0)
+		s << std::to_string(carryAmmount) << " " << resourceNames[carryType] << "\n";
+	else
+		s << "-\n";
 }
 
-const FixedStyle& Fixed::fixedStyle() const {
-	return static_cast<const FixedStyle&>(style);
+bool Entity::tileIsPathable(const Vec2i _tile) const {
+	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
+		&& map.getEntityFromTile(_tile) == nullptr);
 }
 
-
-//Unit
-Unit::Unit(const UnitStyle& _style, const Vec2i _tile) :
-	Entity(_style, _tile),
-	canMoveAt(0),
-	canGatherAt(0),
-	carryAmmount(0),
-	carryType(0)
-{
-	em.units.insert({ id, this });
+void Entity::validatePathable(const Vec2i _tile) const {
+	if(style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) == style.pathableTypes.end())
+		throw std::logic_error("terrain is unpathable");
 }
 
-Unit::~Unit() {
-	for (Job* job : jobQueue) {
-		delete job;
-	}
-	if (home != nullptr)
-		(*home).residents.erase(id);
-	std::cout << em.units.size() << std::endl;
-	em.units.erase(id);
-	std::cout << em.units.size() << std::endl;
+const int Entity::getStyleID() const {
+	return style.id;
 }
 
-void Unit::update()
+void Entity::select() {
+	selectedEntities.insert(this);
+	isSelected = true;
+}
+void Entity::deselect() {
+	selectedEntities.erase(this);
+	isSelected = false;
+}
+
+void Entity::garrison(Entity& target) {
+	if(isSelected)
+		deselect();
+	isGarrisoned = true;
+}
+
+void Entity::ungarrison() {
+
+}
+
+Rect Entity::calculateBounds(const Vec2f& pos) const {
+	return Rect(pos.x - style.size / 2, pos.y - style.size / 2, style.size, style.size);
+}
+
+bool Entity::operator==(const Lookup& lookup) const {
+	return (id == lookup.id);
+}
+
+void Entity::update()
 {
 	if (jobQueue.size() > 0) {
 		Job* job = jobQueue.front();
@@ -175,36 +169,21 @@ void Unit::update()
 	}
 }
 
-void Unit::getSelectionText(std::ostringstream& s) const {
-	Entity::getSelectionText(s);
-	s << "Home: " << ((home != nullptr) ? std::to_string((*home).id) : "-") << "\n";
-	s << "JobQueue: " << jobQueue.size() << "\n";
-	s << "Carrying: ";
-	if (carryAmmount > 0)
-		s << std::to_string(carryAmmount) << " " << resourceNames[carryType] << "\n";
-	else
-		s << "-\n";
-}
-
-const UnitStyle& Unit::unitStyle() const {
-	return static_cast<const UnitStyle&>(style);
-}
-
-void Unit::addJob(Job* job) {
+void Entity::addJob(Job* job) {
 	jobQueue.push_back(job);
 }
 
-void Unit::setJob(Job* job) {
+void Entity::setJob(Job* job) {
 	destroyJobs();
 	addJob(job);
 }
 
-void Unit::destroyJobs() {
+void Entity::destroyJobs() {
 	for (auto job : jobQueue) delete job;
 	jobQueue.clear();
 }
 
-void Unit::setHome(Fixed& _home) {
+void Entity::setHome(Entity& _home) {
 	home = &_home;
 
 	if (_home.getStyleID() != HOUSE.id)
@@ -214,15 +193,15 @@ void Unit::setHome(Fixed& _home) {
 	_home.residents.insert({ id, this });
 }
 
-bool Unit::moveTowards(const Vec2i targetTile) {
+bool Entity::moveTowards(const Vec2i targetTile) {
 	Vec2f targetPos = tileToWorld(targetTile);
 	Vec2f diff = targetPos - pos;
 	float dist = (float)sqrt(pow(diff.x, 2) + pow(diff.y, 2));
 	bool reachedTarget = false;
-	if (dist > unitStyle().moveDistance) {
-		(diff /= dist) *= unitStyle().moveDistance;
+	if (dist > style.moveDistance) {
+		(diff /= dist) *= style.moveDistance;
 		pos += diff;
-		
+
 	}
 	else {
 		pos = targetPos;
@@ -236,7 +215,6 @@ bool Unit::moveTowards(const Vec2i targetTile) {
 
 		tile = targetTile;
 	}
-	
+
 	return reachedTarget;
 }
-
