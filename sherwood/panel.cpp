@@ -37,11 +37,15 @@ Panel::Panel() :
 	callback(nullptr)
 {
 	text.setFont(ui.font);
-	text.setCharacterSize(14);
+	text.setCharacterSize(12);
 	text.setFillColor(colors.white);
 
 	border.setOutlineThickness(-1);
 	border.setFillColor(colors.transparent);
+
+	borderActive.setOutlineThickness(-1);
+	borderActive.setFillColor(colors.yellow);
+	borderActive.setOutlineColor(colors.white);
 }
 
 
@@ -49,10 +53,19 @@ void Panel::draw(sf::RenderTarget& target, sf::RenderStates) const {
 	for (auto childPanel : children) {
 		target.draw(*childPanel);
 	}
+	
+	const RectangleShape* chosenShape;
+	if (setting != nullptr && *setting == true) {
+		chosenShape = &borderActive;
+	}
+	else {
+		chosenShape = &border;
+	}
+	if (drawBorder) {
+		target.draw(*chosenShape);
+	}
 	if (text.getString().getSize() > 0)
 		target.draw(text);
-
-	if (drawBorder) target.draw(border);
 }
 
 void Panel::setName(const std::string& _name) {
@@ -66,6 +79,7 @@ void Panel::setSize(const Vec2f _size) {
 	if (size.y == -1)
 		size.y = parent->size.y - parent->padding.top - parent->padding.bot - offset.y;
 	border.setSize(size);
+	borderActive.setSize(size);
 }
 
 void Panel::setParent(Panel& _parent) {
@@ -77,6 +91,7 @@ void Panel::setParent(Panel& _parent) {
 void Panel::setPosition(const Vec2f _pos) {
 	pos = _pos;
 	border.setPosition(pos);
+	borderActive.setPosition(pos);
 	for (auto child : children) {
 		child->setPosition(getInnerPosition() + child->offset);
 	}
@@ -85,6 +100,10 @@ void Panel::setPosition(const Vec2f _pos) {
 
 void Panel::setentityStyle(const EntityStyle* _entityStyle){
 	entityStyle = _entityStyle;
+}
+
+void Panel::setSetting(bool* _setting) {
+	setting = _setting;
 }
 
 void Panel::setString(const std::string& string) {

@@ -16,10 +16,10 @@
 Graphics::Graphics()
 {
 	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));
-	verticalLine.setFillColor(colors.lightGrey);
+	verticalLine.setFillColor(colors.transparentGrey);
 
 	horizontalLine.setSize(Vec2f(map.size.x + LINE_WIDTH, LINE_WIDTH));
-	horizontalLine.setFillColor(colors.lightGrey);
+	horizontalLine.setFillColor(colors.transparentGrey);
 
 	selectionShape.setFillColor(colors.transparent);
 	selectionShape.setOutlineColor(colors.green);

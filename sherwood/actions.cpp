@@ -104,6 +104,11 @@ void entityButtonClicked(const Panel& panel, bool left, bool down) {
 		placementEntityStyle = panel.getEntityStyle();
 }
 
+void settingButtonClicked(const Panel& panel, bool left, bool down) {
+	if (left && down)
+		*(panel.setting) = !*(panel.setting);
+}
+
 void unitMoveToTile(Entity& unit, Vec2i targetTile) {
 	if(unit.tileIsPathable(targetTile)) {
 		Mover* mover = new Mover(unit, targetTile);

@@ -21,9 +21,11 @@ public:
 	const EntityStyle* getEntityStyle() const;
 	void setString(const std::string& string);
 	void setentityStyle(const EntityStyle* BuildingType);
+	void setSetting(bool* setting);
 	void setCallback(void (*callback)(const Panel& panel, bool left, bool down));
 	void handleClick(bool left, bool down);
 	bool containsScreenPos(const Vec2f pos);
+	bool* setting;
 private:
 	const EntityStyle* entityStyle;
 	std::string name;
@@ -37,6 +39,7 @@ private:
 	std::list<Panel*> children;
 	sf::Text text;
 	RectangleShape border;
+	RectangleShape borderActive;
 	bool drawBorder;
 	Panel();
 	void draw(sf::RenderTarget& target, sf::RenderStates) const;

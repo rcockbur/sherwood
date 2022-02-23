@@ -21,6 +21,7 @@ struct Colors {
 	const Color darkGrey =	Color(90, 90, 90);
 	const Color lightGrey = Color(150, 150, 150);
 	const Color transparent = Color::Transparent;
+	const Color transparentGrey = Color(150, 150, 150, 100);
 	const Color brown =		Color(150, 82, 8);
 };
 
