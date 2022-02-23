@@ -73,8 +73,8 @@ UI::UI()
 	houseButton.setSize(Vec2f(70, 50));
 	houseButton.setBorderColor(colors.white);
 	houseButton.setPadding(Padding(3, 3, 3, 3));
-	houseButton.setCallback(buildingButtonClicked);
-	houseButton.setBuildingStyle(&HOUSE);
+	houseButton.setCallback(entityButtonClicked);
+	houseButton.setentityStyle(&HOUSE);
 
 	millButton.setName("millButton");
 	millButton.setParent(buttonGridPanel);
@@ -83,7 +83,17 @@ UI::UI()
 	millButton.setSize(Vec2f(70, 50));
 	millButton.setBorderColor(colors.white);
 	millButton.setPadding(Padding(3, 3, 3, 3));
-	millButton.setCallback(buildingButtonClicked);
-	millButton.setBuildingStyle(&MILL);
+	millButton.setCallback(entityButtonClicked);
+	millButton.setentityStyle(&MILL);
+
+	personButton.setName("personButton");
+	personButton.setParent(buttonGridPanel);
+	personButton.setString("Person");
+	personButton.moveBelowPanel(millButton);
+	personButton.setSize(Vec2f(70, 50));
+	personButton.setBorderColor(colors.white);
+	personButton.setPadding(Padding(3, 3, 3, 3));
+	personButton.setCallback(entityButtonClicked);
+	personButton.setentityStyle(&PERSON);
 }
 

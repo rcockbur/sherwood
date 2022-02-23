@@ -6,7 +6,7 @@ class Panel;
 
 Entity* getEntityAtWorldPos(const Vec2f& worldPosition);
 void handleWorldClick(bool left, bool down);
-void buildingButtonClicked(const Panel& panel, bool left, bool down);
+void entityButtonClicked(const Panel& panel, bool left, bool down);
 void unitMoveToTile(Entity& unit, Vec2i targetTile);
 void unitHarvestDeposit(Entity& unit, Entity& deposit);
 void unitGarrisonBuilding(Entity& unit, Entity& building);

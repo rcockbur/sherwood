@@ -30,11 +30,13 @@ void handleWorldClick(bool left, bool down) {
 	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 	if (left) {
 		if (down) { //left down
-			if (placementBuildingStyle) {
+			if (placementEntityStyle) {
 				if (mouseTile != Vec2i(-1, -1)) {
-					new Entity(*placementBuildingStyle, mouseTile);
-					if (shiftIsDown == false) {
-						placementBuildingStyle = nullptr;
+					if (placementEntityStyle->tileIsPathable(mouseTile)) {
+						new Entity(*placementEntityStyle, mouseTile);
+						if (shiftIsDown == false) {
+							placementEntityStyle = nullptr;
+						}
 					}
 				}
 			}
@@ -73,8 +75,8 @@ void handleWorldClick(bool left, bool down) {
 	}
 	else {
 		if (down) { //right down
-			if (placementBuildingStyle) {
-				placementBuildingStyle = nullptr;
+			if (placementEntityStyle) {
+				placementEntityStyle = nullptr;
 			}
 			else { //right up
 				for (auto selectedEntity : selectedEntities) {
@@ -97,9 +99,9 @@ void handleWorldClick(bool left, bool down) {
 	}
 }
 
-void buildingButtonClicked(const Panel& panel, bool left, bool down) {
+void entityButtonClicked(const Panel& panel, bool left, bool down) {
 	if (left && down)
-		placementBuildingStyle = panel.getBuildingStyle();
+		placementEntityStyle = panel.getEntityStyle();
 }
 
 void unitMoveToTile(Entity& unit, Vec2i targetTile) {

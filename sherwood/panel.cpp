@@ -26,13 +26,13 @@ Vec2f Panel::getSize() const {
 	return size;
 }
 
-const EntityStyle* Panel::getBuildingStyle() const {
-	return buildingStyle;
+const EntityStyle* Panel::getEntityStyle() const {
+	return entityStyle;
 }
 
 Panel::Panel() :
 	parent(nullptr),
-	buildingStyle(nullptr),
+	entityStyle(nullptr),
 	drawBorder(false),
 	callback(nullptr)
 {
@@ -83,8 +83,8 @@ void Panel::setPosition(const Vec2f _pos) {
 	text.setPosition(pos + padding.topLeft());
 }
 
-void Panel::setBuildingStyle(const EntityStyle* _buildingStyle){
-	buildingStyle = _buildingStyle;
+void Panel::setentityStyle(const EntityStyle* _entityStyle){
+	entityStyle = _entityStyle;
 }
 
 void Panel::setString(const std::string& string) {

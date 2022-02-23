@@ -28,7 +28,8 @@ public:
 	int gatherPeriod;
 	EntityStyle();
 	void updateShapes();
-	Shape* getShape(const Vec2f graphicalPosition) const;
+	bool tileIsPathable(const Vec2i tile) const;
+	Shape* getShape(const Vec2f graphicalPosition, bool tintRed) const;
 	Shape* getOutlineShape(const Vec2f graphicalPosition) const;
 };
 

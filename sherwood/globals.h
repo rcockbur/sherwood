@@ -27,7 +27,7 @@ extern AStar aStar;
 extern BreadthFirst breadthFirst;
 
 extern std::set<Entity*> selectedEntities;
-extern const EntityStyle* placementBuildingStyle;
+extern const EntityStyle* placementEntityStyle;
 extern Vec2f mouseScreenPos;
 extern Vec2f mouseWorldPos;
 extern Vec2i mouseTile;

@@ -31,6 +31,7 @@ enum ResourceType { food, wood, gold, stone };
 enum TerrainType { water, grass };
 enum class ActivityStatus { success, failure, inProgress };
 enum class CompleteStatus { complete, incomplete };
+//enum class TargetingMode { none, placeBuilding, editTerrain, entityCommand };
 
 std::ostream& operator<< (std::ostream& out, const Vec2i& vec);
 std::ostream& operator<< (std::ostream& out, const Vec2f& vec);

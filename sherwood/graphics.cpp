@@ -81,7 +81,7 @@ void Graphics::drawEntities() {
 	for (auto& it : em.all_entities) {
 		if (it.second->isGarrisoned == false) {
 			Vec2f graphicalPos = getTopLeft(it.second->pos, it.second->style.size);
-			Shape* shape = it.second->style.getShape(graphicalPos);
+			Shape* shape = it.second->style.getShape(graphicalPos, false);
 			renderWindow.draw(*shape);
 		}
 	}
@@ -90,11 +90,12 @@ void Graphics::drawEntities() {
 			Shape* outlineShape = entity->style.getOutlineShape(graphicalPos);
 			renderWindow.draw(*outlineShape);
 	}
-	if (placementBuildingStyle != nullptr) {
-		if (mouseWorldPos != Vec2f(-1, -1)) {
+	if (placementEntityStyle != nullptr) {
+		if (map.isWithinBounds(mouseTile)) {
 			Vec2f snappedPos = tileToWorld(worldToTile(mouseWorldPos));
-			Vec2f graphicalPos = getTopLeft(snappedPos, placementBuildingStyle->size);
-			Shape* placementShape = placementBuildingStyle->getShape(graphicalPos);
+			Vec2f graphicalPos = getTopLeft(snappedPos, placementEntityStyle->size);
+			bool tintRed = !placementEntityStyle->tileIsPathable(mouseTile);
+			Shape* placementShape = placementEntityStyle->getShape(graphicalPos, tintRed);
 			renderWindow.draw(*placementShape);
 		}
 	}

@@ -15,7 +15,7 @@ int tics = 0;
 int seconds = 0;
 float actualFPS = (float)targetFPS;
 std::set<Entity*> selectedEntities;
-const EntityStyle* placementBuildingStyle(nullptr);
+const EntityStyle* placementEntityStyle(nullptr);
 Vec2f mouseScreenPos(0, 0);
 Vec2f mouseWorldPos(-1, -1);
 Vec2i mouseTile(-1, -1);

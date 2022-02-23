@@ -41,8 +41,19 @@ void EntityStyle::updateShapes() {
 	shape->setFillColor(color);
 }
 
-Shape* EntityStyle::getShape(const Vec2f graphicalPosition) const {
+bool EntityStyle::tileIsPathable(const Vec2i _tile) const {
+	return (pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != pathableTypes.end()
+		&& map.getEntityFromTile(_tile) == nullptr);
+}
+
+Shape* EntityStyle::getShape(const Vec2f graphicalPosition, bool tintRed) const {
 	shape->setPosition(graphicalPosition);
+	if (tintRed) {
+		shape->setFillColor(colors.red);
+	}
+	else {
+		shape->setFillColor(color);
+	}
 	return shape;
 }
 

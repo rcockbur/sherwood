@@ -18,6 +18,7 @@ public:
 	Panel buttonGridPanel;
 	Panel houseButton;
 	Panel millButton;
+	Panel personButton;
 	sf::Text text;
 	sf::Font font;
 	UI();

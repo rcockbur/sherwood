@@ -100,8 +100,8 @@ void handleKeyPress(sf::Keyboard::Key code) {
 		}
 		break;
 	case(sf::Keyboard::Escape):
-		if (placementBuildingStyle) {
-			placementBuildingStyle = nullptr;
+		if (placementEntityStyle) {
+			placementEntityStyle = nullptr;
 		}
 		else {
 			for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {

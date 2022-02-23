@@ -117,8 +117,9 @@ void Entity::getSelectionText(std::ostringstream& s) const {
 }
 
 bool Entity::tileIsPathable(const Vec2i _tile) const {
-	return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
-		&& map.getEntityFromTile(_tile) == nullptr);
+	/*return (style.pathableTypes.find(map.terrainGrid[_tile.x][_tile.y]) != style.pathableTypes.end()
+		&& map.getEntityFromTile(_tile) == nullptr);*/
+	return style.tileIsPathable(_tile);
 }
 
 void Entity::validatePathable(const Vec2i _tile) const {
