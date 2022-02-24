@@ -6,12 +6,14 @@
 class Ability {
 public:
 	virtual ActivityStatus execute(bool isLastJob) = 0;
+	virtual std::list<Vec2i>* getPath() = 0;
 };
 
 class Move : public Ability {
 public:
 	Move(Entity& unit, Vec2i dest, std::list<Vec2i>&& path);
 	ActivityStatus execute(bool isLastJob) override;
+	std::list<Vec2i>* getPath();
 protected:
 	Entity& unit;
 	const Vec2i dest;

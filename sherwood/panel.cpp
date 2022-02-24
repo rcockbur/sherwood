@@ -55,7 +55,8 @@ void Panel::draw(sf::RenderTarget& target, sf::RenderStates) const {
 	}
 	
 	const RectangleShape* chosenShape;
-	if (setting != nullptr && *setting == true) {
+	if ((setting != nullptr && *setting == true) || 
+		(entityStyle != nullptr && placementEntityStyle == entityStyle)) {
 		chosenShape = &borderActive;
 	}
 	else {

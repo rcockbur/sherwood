@@ -9,6 +9,7 @@
 
 extern bool showGrid;
 extern bool showPathfinding;
+extern bool showPaths;
 extern bool hasPrinted;
 extern bool shiftIsDown;
 extern int tics;

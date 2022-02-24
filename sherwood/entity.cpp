@@ -70,10 +70,10 @@ Entity::~Entity() {
 }
 
 void Entity::getSelectionText(std::ostringstream& s) const {
-	std::string classString(typeid(*this).name());
-	classString.erase(0, 6); 
-	s << "Type: " << style.name << "\n";
+	/*std::string classString(typeid(*this).name());
+	classString.erase(0, 6); */
 	s << "ID: " << id << "\n";
+	s << "Style: " << style.name << "\n";
 	s << "Tile: " << tile << "\n";
 	//Fixed
 	if (style.resourceType != -1)

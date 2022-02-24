@@ -21,6 +21,10 @@ ActivityStatus Move::execute(bool isLastJob) {
 	return r;
 }
 
+std::list<Vec2i>* Move::getPath() {
+	return &path;
+}
+
 void Move::followPath() {
 	if (path.size() > 0) {
 		if (tics >= unit.canMoveAt) {

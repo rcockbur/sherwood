@@ -211,5 +211,15 @@ UI::UI()
 	showPathfindingButton.setPadding(Padding(3, 3, 3, 3));
 	showPathfindingButton.setCallback(settingButtonClicked);
 	showPathfindingButton.setSetting(&showPathfinding);
+
+	showPathsButton.setName("showPathsButton");
+	showPathsButton.setParent(buttonRow9);
+	showPathsButton.setString("Show\nPaths");
+	showPathsButton.moveRightOfPanel(showPathfindingButton);
+	showPathsButton.setSize(BUTTON_SIZE);
+	showPathsButton.setBorderColor(colors.white);
+	showPathsButton.setPadding(Padding(3, 3, 3, 3));
+	showPathsButton.setCallback(settingButtonClicked);
+	showPathsButton.setSetting(&showPaths);
 }
 

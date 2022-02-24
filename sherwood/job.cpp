@@ -18,6 +18,13 @@ ActivityStatus Job::start() {
 	return ActivityStatus::success;
 }
 
+std::list<Vec2i>* Job::getPath() {
+	if (ability != nullptr) {
+		return ability->getPath();
+	}
+	return nullptr;
+}
+
 CompleteStatus Job::execute(bool isLastJob) {
 	if (hasStarted == false) {
 		if (start() == ActivityStatus::failure) {

@@ -15,6 +15,7 @@ public:
 
 	CompleteStatus execute(bool isLastJob);
 	ActivityStatus start();
+	std::list<Vec2i>* getPath();
 	virtual void checkForAnotherAbility() = 0;
 };
 

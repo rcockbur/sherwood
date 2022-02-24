@@ -40,6 +40,7 @@ public:
 
 	Panel showGridButton;
 	Panel showPathfindingButton;
+	Panel showPathsButton;
 	
 	sf::Text text;
 	sf::Font font;

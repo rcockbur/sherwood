@@ -8,6 +8,7 @@
 
 bool showGrid = false;
 bool showPathfinding = false;
+bool showPaths = false;
 bool hasPrinted = false;
 bool shiftIsDown = false;
 int targetFPS = 30;

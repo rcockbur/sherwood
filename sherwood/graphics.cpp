@@ -5,6 +5,8 @@
 #include "map.h"
 #include "color.h"
 #include "entity.h"
+#include "job.h"
+//#include "ability.h"
 #include "entity_style.h"
 #include "globals.h"
 #include "entity_manager.h"
@@ -78,6 +80,19 @@ void Graphics::drawGrid() {
 }
 
 void Graphics::drawEntities() {
+	if (showPaths) {
+		for (auto& it : em.all_entities) {
+			Entity* entity_ptr = it.second;
+			if (entity_ptr->isGarrisoned == false) {
+				if (entity_ptr->jobQueue.size() > 0) {
+					Job* job_ptr = entity_ptr->jobQueue.at(0);
+					if (job_ptr->getPath() != nullptr) {
+						drawSearchPath(*job_ptr->getPath(), colors.teal);
+					}
+				}
+			}
+		}
+	}
 	for (auto& it : em.all_entities) {
 		if (it.second->isGarrisoned == false) {
 			Vec2f graphicalPos = getTopLeft(it.second->pos, it.second->style.size);
