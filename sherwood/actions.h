@@ -6,6 +6,7 @@ class Panel;
 
 Entity* getEntityAtWorldPos(const Vec2f& worldPosition);
 void handleWorldClick(bool left, bool down);
+void deselectNonPeople();
 void entityButtonClicked(const Panel& panel, bool left, bool down);
 void settingButtonClicked(const Panel& panel, bool left, bool down);
 void unitMoveToTile(Entity& unit, Vec2i targetTile);

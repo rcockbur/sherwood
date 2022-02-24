@@ -55,10 +55,17 @@ void handleWorldClick(bool left, bool down) {
 				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
 				selectedEntities.clear();
 				if (rect.height > 0 && rect.width > 0) {
+					bool personSelected = false;
 					for (auto it : em.all_entities) {
 						if (it.second->bounds.intersects(rect)) {
 							it.second->select();
+							if (it.second->getStyleID() == PERSON.id) {
+								personSelected = true;
+							}
 						}
+					}
+					if (personSelected) {
+						deselectNonPeople();
 					}
 				}
 				else {
@@ -67,9 +74,9 @@ void handleWorldClick(bool left, bool down) {
 							it.second->select();
 							break;
 						}
-					}
-					
+					}	
 				}
+
 			}
 		}
 	}
@@ -95,6 +102,14 @@ void handleWorldClick(bool left, bool down) {
 					}
 				}
 			}
+		}
+	}
+}
+
+void deselectNonPeople() {
+	for (auto it : em.all_entities) {
+		if (it.second->style.id != PERSON.id && it.second->isSelected) {
+			it.second->deselect();
 		}
 	}
 }

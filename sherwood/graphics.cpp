@@ -14,7 +14,6 @@
 #include "pathfinding.h"
 #include <algorithm>
 
-
 Graphics::Graphics()
 {
 	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));
