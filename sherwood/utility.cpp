@@ -18,4 +18,11 @@ Vec2f getTopLeft(const Vec2f center, const float size) {
 	return center - Vec2f(size / 2, size / 2);
 }
 
-//void addIDsToStringStream(std::ostringstream& s)
+Entity* getEntityAtWorldPos(const Vec2f& worldPosition) {
+	for (auto& it : em.all_entities) {
+		if (it.second->bounds.contains(worldPosition)) {
+			return it.second;
+		}
+	}
+	return nullptr;
+}

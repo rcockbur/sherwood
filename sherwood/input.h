@@ -5,4 +5,3 @@ void handleInput();
 void handleKeysDown();
 void handleMousePosition();
 void handleKeyPress(sf::Keyboard::Key);
-void updateFPS(int fps);

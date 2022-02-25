@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "utility.h"
 #include "actions.h"
+#include "entity_style.h"
 
 void handleInput()
 {
@@ -25,20 +26,10 @@ void handleInput()
 		case sf::Event::MouseButtonPressed:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
-					handleWorldClick(true, true);
-				}
-				else {
-					ui.hud.handleClick(true, true);
-				}
+				ui.hud.handleClick(true, true);
 				break;
 			case(sf::Mouse::Right):
-				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
-					handleWorldClick(false, true);
-				}
-				else {
-					ui.hud.handleClick(false, true);
-				}
+				ui.hud.handleClick(false, true);
 				break;
 			default:
 				break;
@@ -47,20 +38,10 @@ void handleInput()
 		case sf::Event::MouseButtonReleased:
 			switch (event.mouseButton.button) {
 			case(sf::Mouse::Left):
-				if (ui.viewportPanel.containsScreenPos(mouseScreenPos) || selectionRectActive) {
-					handleWorldClick(true, false);
-				}
-				else {
-					ui.hud.handleClick(true, false);
-				}
+				ui.hud.handleClick(true, false);
 				break;
 			case(sf::Mouse::Right):
-				if (ui.viewportPanel.containsScreenPos(mouseScreenPos)) {
-					handleWorldClick(false, false);
-				}
-				else {
-					ui.hud.handleClick(false, false);
-				}
+				ui.hud.handleClick(false, false);
 				break;
 			default:
 				break;
@@ -95,18 +76,14 @@ void handleKeyPress(sf::Keyboard::Key code) {
 		renderWindow.close();
 		break;
 	case(sf::Keyboard::Delete):
-		for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
-			delete* it++;
-		}
+		deleteEntities(selectedEntities);
 		break;
 	case(sf::Keyboard::Escape):
 		if (placementEntityStyle) {
 			placementEntityStyle = nullptr;
 		}
 		else {
-			for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
-				(*it++)->deselect();
-			}
+			deselectAll();
 		}
 		break;
 	case(sf::Keyboard::G):
@@ -138,11 +115,3 @@ void handleKeyPress(sf::Keyboard::Key code) {
 		break;
 	}
 }
-
-void updateFPS(int fps) {
-	if (fps > 0) {
-		targetFPS = fps;
-		renderWindow.setFramerateLimit(targetFPS);
-	}
-}
-

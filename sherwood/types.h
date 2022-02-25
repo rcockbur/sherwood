@@ -5,6 +5,7 @@
 #include <tuple>
 #include <queue>
 #include <unordered_map>
+#include <set>
 
 class Entity;
 

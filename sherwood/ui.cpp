@@ -48,7 +48,7 @@ UI::UI()
 	viewportPanel.moveBelowPanel(topPanel);
 	viewportPanel.setSize(Vec2f(900, 650));
 	viewportPanel.setBorderColor(colors.blue);
-	//viewportPanel.setCallback(handleWorldClick);
+	viewportPanel.setCallback(worldClicked);
 
 	rightPanel.setName("rightPanel");
 	rightPanel.setParent(hud);
