@@ -6,7 +6,6 @@
 #include "color.h"
 #include "entity.h"
 #include "job.h"
-//#include "ability.h"
 #include "entity_style.h"
 #include "globals.h"
 #include "entity_manager.h"
@@ -37,6 +36,28 @@ Graphics::Graphics()
 	grassRect.setFillColor(colors.darkGreen);
 	terrainShapes.push_back(grassRect);
 
+	Texture grassTexture;
+	Texture waterTexture;
+
+	terrainTextures.push_back(waterTexture);
+	terrainTextures.push_back(grassTexture);
+
+	if (!terrainTextures.at(0).loadFromFile("data/water.png")) {
+		throw std::logic_error("could not load texture");
+	}
+	if (!terrainTextures.at(1).loadFromFile("data/grass.png")) {
+		throw std::logic_error("could not load texture");
+	}
+
+	Sprite grassSprite;
+	Sprite waterSprite;
+
+	waterSprite.setTexture(terrainTextures.at(0));
+	grassSprite.setTexture(terrainTextures.at(1));
+
+	terrainSprites.push_back(waterSprite);
+	terrainSprites.push_back(grassSprite);
+
 	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2);
 }
 
@@ -60,9 +81,12 @@ void Graphics::drawWorld() {
 void Graphics::drawTerrain() {
 	for (int x = 0; x < map.terrainGrid.size(); ++x) {
 		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
-			terrainShapes.at(map.terrainGrid[x][y]).
+			/*terrainShapes.at(map.terrainGrid[x][y]).
 				setPosition(Vec2f(TILE_SIZE * float(x), TILE_SIZE * (float)y));
-			renderWindow.draw(terrainShapes.at(map.terrainGrid[x][y]));
+			renderWindow.draw(terrainShapes.at(map.terrainGrid[x][y]));*/
+			terrainSprites.at(map.terrainGrid[x][y]).
+				setPosition(Vec2f(TILE_SIZE * float(x), TILE_SIZE * (float)y));
+			renderWindow.draw(terrainSprites.at(map.terrainGrid[x][y]));
 		}
 	}
 }

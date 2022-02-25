@@ -2,6 +2,7 @@
 #include "types.h"
 #include "resources.h"
 #include <set>
+#include <SFML/Graphics/Sprite.hpp>
 
 class EntityStyle {
 public:
@@ -31,5 +32,6 @@ public:
 	bool tileIsPathable(const Vec2i tile) const;
 	Shape* getShape(const Vec2f graphicalPosition, bool tintRed) const;
 	Shape* getOutlineShape(const Vec2f graphicalPosition) const;
+	
 };
 

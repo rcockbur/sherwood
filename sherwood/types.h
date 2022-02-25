@@ -22,6 +22,8 @@ typedef sf::Vector2<unsigned int> Vec2u;
 typedef sf::Color Color;
 typedef sf::Rect<float> Rect;
 typedef sf::Shape Shape;
+typedef sf::Sprite Sprite;
+typedef sf::Texture Texture;
 typedef sf::CircleShape CircleShape;
 typedef sf::RectangleShape RectangleShape;
 typedef std::tuple<int, int, Vec2i> AStarOpenTuple;

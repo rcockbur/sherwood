@@ -17,6 +17,8 @@ private:
 	RectangleShape selectionShape;
 	CircleShape pathDebugShape;
 	std::vector<RectangleShape> terrainShapes;
+	std::vector<Sprite> terrainSprites;
+	std::vector<Texture> terrainTextures;
 
 	void drawWorld();
 	void drawTerrain();

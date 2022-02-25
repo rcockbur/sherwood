@@ -58,7 +58,7 @@ void initEntityStyles() {
 	const_cast<EntityStyle&>(PERSON) = templateUnit;
 	const_cast<EntityStyle&>(PERSON).name = "person";
 	const_cast<EntityStyle&>(PERSON).size = ENTITY_SIZE_MEDIUM;
-	const_cast<EntityStyle&>(PERSON).color = colors.lightBlue;
+	const_cast<EntityStyle&>(PERSON).color = colors.purple;
 	const_cast<EntityStyle&>(PERSON).pathableTypes.insert(1);
 	const_cast<EntityStyle&>(PERSON).movePeriod = 1;
 	const_cast<EntityStyle&>(PERSON).moveDistance = 4.0f;
