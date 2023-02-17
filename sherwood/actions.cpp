@@ -5,92 +5,23 @@
 #include "utility.h"
 #include "entity_style.h"
 
-//
-//called from Input, or UI if it's bound to a button
-//
-
-
-void unitMoveToTile(Entity& unit, Vec2i targetTile) {
-	if (unit.tileIsPathable(targetTile)) {
-		Mover* mover = new Mover(unit, targetTile);
-		if (shiftIsDown) {
-			unit.addJob(mover);
-		}
-		else {
-			ActivityStatus status = mover->start();
-			if (status == ActivityStatus::success)
-				unit.setJob(mover);
-		}
-	}
-}
-
-void unitHarvestDeposit(Entity& unit, Entity& deposit) {
-	Harvester* harvester = new Harvester(unit, deposit);
-	if (shiftIsDown) {
-		unit.addJob(harvester);
-	}
-	else {
-		ActivityStatus status = harvester->start();
-		if (status == ActivityStatus::success)
-			unit.setJob(harvester);
-	}
-}
-
-void unitGarrisonBuilding(Entity& unit, Entity& building) {
-	Garrisoner* garrisoner = new Garrisoner(unit, building);
-	if (shiftIsDown) {
-		unit.addJob(garrisoner);
-	}
-	else {
-		ActivityStatus status = garrisoner->start();
-		if (status == ActivityStatus::success)
-			unit.setJob(garrisoner);
-	}
-}
-
-void deselectAll() {
-	for (auto it : selectedEntities) {
-		for (auto it = selectedEntities.begin(); it != selectedEntities.end(); ) {
-			(*it)->deselect();
-		}
-	}
-}
-
-void deselectNonPeople() {
-	for (auto it : em.all_entities) {
-		if (it.second->style.id != PERSON.id && it.second->isSelected) {
-			it.second->deselect();
-		}
-	}
-}
-
-void deleteEntities(std::set<Entity*>& entities) {
-	for (auto it = entities.begin(); it != entities.end(); ) {
-		delete* it++;
-	}
-}
-
-void updateFPS(int fps) {
-	if (fps > 0) {
-		targetFPS = fps;
-		renderWindow.setFramerateLimit(targetFPS);
-	}
-}
-
-//called from UI
+// from mouse button directly
 void entityButtonClicked(const Panel& panel, bool left, bool down) {
 	if (left && down)
 		placementEntityStyle = panel.getEntityStyle();
 }
 
+// from mouse button directly
 void settingButtonClicked(const Panel& panel, bool left, bool down) {
 	if (left && down)
 		*(panel.setting) = !*(panel.setting);
 }
 
+// from mouse button directly
 void worldClicked(const Panel& panel, bool left, bool down) {
 	Vec2f worldPos = screenToWorld(mouseScreenPos);
 	Vec2i clickedTile = worldToTile(worldPos);
+	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 
 	bool debugMouseClicks = false;
 	if (debugMouseClicks) {
@@ -100,8 +31,6 @@ void worldClicked(const Panel& panel, bool left, bool down) {
 		std::cout << "Position: " << worldPos.x << "," << worldPos.y << " - ";
 		std::cout << "Tile: " << clickedTile.x << "," << clickedTile.y << "\n";
 	}
-
-	Entity* clickedEntity = getEntityAtWorldPos(worldPos);
 	if (left) {
 		if (down) { //left down
 			if (placementEntityStyle) {
@@ -127,7 +56,7 @@ void worldClicked(const Panel& panel, bool left, bool down) {
 				float rectTop = std::min(selectionStartPos.y, mouseWorldPos.y);
 				float rectBot = std::max(selectionStartPos.y, mouseWorldPos.y);
 				Rect rect(rectLeft, rectTop, rectRight - rectLeft, rectBot - rectTop);
-				selectedEntities.clear();
+				deselectAll();
 				if (rect.height > 0 && rect.width > 0) {
 					bool personSelected = false;
 					for (auto it : em.all_entities) {
@@ -150,7 +79,6 @@ void worldClicked(const Panel& panel, bool left, bool down) {
 						}
 					}
 				}
-
 			}
 		}
 	}
@@ -179,3 +107,88 @@ void worldClicked(const Panel& panel, bool left, bool down) {
 		}
 	}
 }
+
+// from worldClicked
+void unitMoveToTile(Entity& unit, Vec2i targetTile) {
+	if (unit.tileIsPathable(targetTile)) {
+		Mover* mover = new Mover(unit, targetTile);
+		if (shiftIsDown) {
+			unit.addJob(mover);
+		}
+		else {
+			ActivityStatus status = mover->start();
+			if (status == ActivityStatus::success)
+				unit.setJob(mover);
+		}
+	}
+}
+
+// from worldClicked
+void unitHarvestDeposit(Entity& unit, Entity& deposit) {
+	Harvester* harvester = new Harvester(unit, deposit);
+	if (shiftIsDown) {
+		unit.addJob(harvester);
+	}
+	else {
+		ActivityStatus status = harvester->start();
+		if (status == ActivityStatus::success)
+			unit.setJob(harvester);
+	}
+}
+
+// from worldClicked
+void unitGarrisonBuilding(Entity& unit, Entity& building) {
+	Garrisoner* garrisoner = new Garrisoner(unit, building);
+	if (shiftIsDown) {
+		unit.addJob(garrisoner);
+	}
+	else {
+		ActivityStatus status = garrisoner->start();
+		if (status == ActivityStatus::success)
+			unit.setJob(garrisoner);
+	}
+}
+
+//from worldClicked and ESC key
+void deselectAll() {
+	for (auto entity: selectedEntities) {
+		entity->isSelected = false;
+	}
+	selectedEntities.clear();
+}
+
+//from worldClicked
+void deselectNonPeople() {
+	for (auto it : em.all_entities) {
+		if (it.second->style.id != PERSON.id && it.second->isSelected) {
+			it.second->deselect();
+		}
+	}
+}
+
+//from del key
+void deleteEntities(std::set<Entity*>& entities) {
+	for (auto it = entities.begin(); it != entities.end(); ) {
+		delete* it++;
+	}
+}
+
+//from +/- keys
+void updateFPS(int fps) {
+	if (fps > 0) {
+		targetFPS = fps;
+		renderWindow.setFramerateLimit(targetFPS);
+	}
+}
+
+void zoomCamera(int wheelMovement) {
+	float delta_zoom = 1 - (float)wheelMovement / 20;
+	/*TILE_SIZE += zoom;
+	map.size = map.calculateSize();
+	graphics.updateShapeSizes();
+	em.updateSizes();*/
+	mapView.zoom(delta_zoom);
+	zoom = ui.viewportPanel.getSize().x / mapView.getSize().x;
+}
+
+

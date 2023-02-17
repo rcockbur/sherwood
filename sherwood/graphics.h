@@ -9,7 +9,7 @@ public:
 	void draw();
 	void drawAStar(const Vec2i* current, std::list<Vec2i>* path);
 	void drawBreadthFirst(const Vec2i* end, const Vec2i* current, std::list<Vec2i>* path);
-
+	void updateShapeSizes();
 private:
 	const Color gridColor;
 	RectangleShape verticalLine;
@@ -27,6 +27,7 @@ private:
 	void drawSelectionRect();
 	void drawHUD();
 	void updateText();
+	
 
 	void drawAStarOpen(const std::vector<AStarOpenTuple>& open, const Color& color);
 	void drawBreadthFirstOpen(const std::vector<BreadthFirstOpenTuple>& open, const Color& color);

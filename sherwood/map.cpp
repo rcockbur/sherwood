@@ -5,12 +5,13 @@
 #include <fstream>
 #include "map.h"
 #include "constants.h"
+#include "globals.h"
 
 
 Map::Map(std::string fileName) :
 	fileName(fileName),
 	tileCount(calculateTileCount()),
-	size((float)tileCount.x * TILE_SIZE, ((float)tileCount.y * TILE_SIZE))
+	size(calculateSize())
 {
 	std::cout << "Map created with size " << tileCount.x << "," << tileCount.y << "\n";
 	
@@ -23,6 +24,10 @@ Map::Map(std::string fileName) :
 	loadMapData();
 	
 	std::cout << "Map data loaded\n";
+}
+
+Vec2f Map::calculateSize() {
+	return Vec2f((float)tileCount.x * TILE_SIZE, (float)tileCount.y * TILE_SIZE);
 }
 
 void Map::setTerrainAtTile(const Vec2i tile, const int terrainType) {

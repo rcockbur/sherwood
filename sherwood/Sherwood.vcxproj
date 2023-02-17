@@ -198,7 +198,13 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\map1.txt" />
+    <Text Include="data\map1_backup.txt" />
     <Text Include="data\map2.txt" />
+    <Text Include="data\map2_backup.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\grass.png" />
+    <Image Include="data\water.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

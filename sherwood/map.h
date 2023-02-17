@@ -11,7 +11,7 @@ public:
 	Map(std::string fileName);
 	const std::string fileName;
 	const Vec2i tileCount;
-	const Vec2f size;
+	Vec2f size;
 	std::vector<std::vector<int>> terrainGrid;
 	void setTerrainAtTile(const Vec2i tile, const int terrainType);
 	bool isWithinBounds(Vec2i tile) const;
@@ -24,6 +24,7 @@ public:
 	void validateStaticEntityGridAvailable(const Vec2i tile);
 	Entity* lookupEntity(const Lookup lookup) const;
 	void saveMapData() const;
+	Vec2f calculateSize();
 private:
 	std::vector<std::vector<Entity*>> entityGrid;
 	Vec2i calculateTileCount();

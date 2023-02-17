@@ -16,6 +16,8 @@ extern int tics;
 extern int seconds;
 extern int targetFPS;
 extern float actualFPS;
+extern float TILE_SIZE;
+extern float zoom;
 
 extern sf::View mapView;
 extern sf::RenderWindow renderWindow;
@@ -39,15 +41,15 @@ extern sf::Clock deltaClock;
 extern sf::Clock gameClock;
 extern sf::Time dt;
 
-extern const EntityStyle PERSON;
-extern const EntityStyle ROCK;
-extern const EntityStyle HOUSE;
-extern const EntityStyle MILL;
-extern const EntityStyle BERRY_BUSH;
-extern const EntityStyle FISH;
-extern const EntityStyle TREE;
-extern const EntityStyle GOLD_MINE;
-extern const EntityStyle STONE_MINE;
+extern EntityStyle PERSON;
+extern EntityStyle ROCK;
+extern EntityStyle HOUSE;
+extern EntityStyle MILL;
+extern EntityStyle BERRY_BUSH;
+extern EntityStyle FISH;
+extern EntityStyle TREE;
+extern EntityStyle GOLD_MINE;
+extern EntityStyle STONE_MINE;
 
 void initEntityStyles();
 void initWindow();

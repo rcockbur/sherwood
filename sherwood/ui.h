@@ -11,6 +11,7 @@ public:
 	Panel unitCountPanel;
 	Panel houseCountPanel;
 	Panel timePanel;
+	Panel zoomPanel;
 
 	Panel viewportPanel;
 	Panel rightPanel;

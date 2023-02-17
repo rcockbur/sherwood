@@ -33,9 +33,14 @@ UI::UI()
 	timePanel.moveRightOfPanel(actualFpsPanel);
 	timePanel.setSize((Vec2f(100, -1)));
 
+	zoomPanel.setName("zoomPanel");
+	zoomPanel.setParent(topPanel);
+	zoomPanel.moveRightOfPanel(timePanel);
+	zoomPanel.setSize((Vec2f(100, -1)));
+
 	unitCountPanel.setName("unitCountPanel");
 	unitCountPanel.setParent(topPanel);
-	unitCountPanel.moveRightOfPanel(timePanel);
+	unitCountPanel.moveRightOfPanel(zoomPanel);
 	unitCountPanel.setSize((Vec2f(100, -1)));
 
 	houseCountPanel.setName("houseCountPanel");

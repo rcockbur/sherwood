@@ -8,6 +8,7 @@
 #include "utility.h"
 #include "actions.h"
 #include "entity_style.h"
+#include "SFML/Window/Event.hpp"
 
 void handleInput()
 {
@@ -47,7 +48,9 @@ void handleInput()
 				break;
 			}
 			break;
-		default:
+		case sf::Event::MouseWheelMoved:
+			int wheelMove = event.mouseWheel.delta;
+			zoomCamera(wheelMove);
 			break;
 		}
 	}
@@ -56,11 +59,11 @@ void handleInput()
 void handleKeysDown() {
 	shiftIsDown = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
-	Vec2f cameraMove(-CAMERA_SPEED, -CAMERA_SPEED);
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) cameraMove.x += CAMERA_SPEED;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) cameraMove.x += CAMERA_SPEED;
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) cameraMove.y += CAMERA_SPEED;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) cameraMove.y += CAMERA_SPEED;
+	Vec2f cameraMove(0, 0);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) cameraMove.x -= CAMERA_SPEED / zoom;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) cameraMove.x += CAMERA_SPEED / zoom;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) cameraMove.y -= CAMERA_SPEED / zoom;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) cameraMove.y += CAMERA_SPEED / zoom;
 	mapView.move(cameraMove);
 }
 
@@ -90,6 +93,9 @@ void handleKeyPress(sf::Keyboard::Key code) {
 		showGrid = !showGrid;
 		break;
 	case(sf::Keyboard::P):
+		showPaths = !showPaths;
+		break;
+	case(sf::Keyboard::F):
 		showPathfinding = !showPathfinding;
 		break;
 	case(sf::Keyboard::Add):

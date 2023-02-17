@@ -15,7 +15,7 @@
 
 Graphics::Graphics()
 {
-	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));
+	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));//updateShapeSize instead
 	verticalLine.setFillColor(colors.transparentGrey);
 
 	horizontalLine.setSize(Vec2f(map.size.x + LINE_WIDTH, LINE_WIDTH));
@@ -58,7 +58,7 @@ Graphics::Graphics()
 	terrainSprites.push_back(waterSprite);
 	terrainSprites.push_back(grassSprite);
 
-	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2);
+	pathDebugShape.setRadius(PATH_DEBUG_SIZE / 2); //TODO
 }
 
 void Graphics::draw() {
@@ -81,12 +81,12 @@ void Graphics::drawWorld() {
 void Graphics::drawTerrain() {
 	for (int x = 0; x < map.terrainGrid.size(); ++x) {
 		for (int y = 0; y < map.terrainGrid[x].size(); ++y) {
-			/*terrainShapes.at(map.terrainGrid[x][y]).
+			terrainShapes.at(map.terrainGrid[x][y]).
 				setPosition(Vec2f(TILE_SIZE * float(x), TILE_SIZE * (float)y));
-			renderWindow.draw(terrainShapes.at(map.terrainGrid[x][y]));*/
-			terrainSprites.at(map.terrainGrid[x][y]).
+			renderWindow.draw(terrainShapes.at(map.terrainGrid[x][y]));
+			/*terrainSprites.at(map.terrainGrid[x][y]).
 				setPosition(Vec2f(TILE_SIZE * float(x), TILE_SIZE * (float)y));
-			renderWindow.draw(terrainSprites.at(map.terrainGrid[x][y]));
+			renderWindow.draw(terrainSprites.at(map.terrainGrid[x][y]));*/
 		}
 	}
 }
@@ -161,6 +161,7 @@ void Graphics::updateText() {
 	ui.unitCountPanel.setString((oss() << "Units: " << em.all_units.size()).str());
 	ui.houseCountPanel.setString((oss() << "Houses: " << em.all_houses.size()).str());
 	ui.timePanel.setString((oss() << "Time: " << seconds).str());
+	ui.zoomPanel.setString((oss() << "Zoom: " << zoom).str());
 
 	oss entityStringStream;
 	entityStringStream << "Entities Selected: " << selectedEntities.size() << std::endl << std::endl;
@@ -238,4 +239,11 @@ void Graphics::drawClosed(const std::set<Vec2i, CompareVec2i>& closed, const Col
 	for (auto i = closed.begin(); i != closed.end(); i++) {
 		drawSearchTile((*i), color);
 	}
+}
+
+void Graphics::updateShapeSizes() {
+	verticalLine.setSize(Vec2f(LINE_WIDTH, map.size.y + LINE_WIDTH));
+	horizontalLine.setSize(Vec2f(map.size.x + LINE_WIDTH, LINE_WIDTH));
+	terrainShapes.at(0).setSize(Vec2f(TILE_SIZE, TILE_SIZE));
+	terrainShapes.at(1).setSize(Vec2f(TILE_SIZE, TILE_SIZE));
 }

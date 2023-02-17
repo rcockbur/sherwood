@@ -19,3 +19,9 @@ Entity* EntityManager::getUnitByID(const int id) const {
 	return (it == em.all_units.end()) ? nullptr : it->second;
 }
 
+void EntityManager::updateSizes() {
+	for (auto it : all_styles) {
+		it->updateSize();
+	}
+}
+

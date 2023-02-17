@@ -132,5 +132,15 @@
   <ItemGroup>
     <Text Include="data\map1.txt" />
     <Text Include="data\map2.txt" />
+    <Text Include="data\map1_backup.txt" />
+    <Text Include="data\map2_backup.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\water.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

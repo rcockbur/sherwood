@@ -20,7 +20,9 @@ EntityStyle::EntityStyle() :
 	gatherPeriod(0),
 	shape(nullptr),
 	outlineShape(nullptr)
-{}
+{
+	em.all_styles.insert(this);
+}
 
 void EntityStyle::updateShapes() {
 	if (isUnit) {
@@ -60,4 +62,16 @@ Shape* EntityStyle::getShape(const Vec2f graphicalPosition, bool tintRed) const 
 Shape* EntityStyle::getOutlineShape(const Vec2f graphicalPosition) const {
 	outlineShape->setPosition(graphicalPosition);
 	return outlineShape;
+}
+
+void EntityStyle::updateSize() {
+	size = TILE_SIZE;
+	if (isUnit) {
+		static_cast<CircleShape*>(shape)->setRadius(size / 2);
+		static_cast<CircleShape*>(outlineShape)->setRadius(size / 2);
+	}
+	else {
+		static_cast<RectangleShape*>(shape)->setSize(Vec2f(size, size));
+		static_cast<RectangleShape*>(outlineShape)->setSize(Vec2f(size, size));
+	}
 }
