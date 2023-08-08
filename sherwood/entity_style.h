@@ -10,6 +10,7 @@ public:
 	std::string name;
 	Color color;	
 	bool isUnit;
+	bool isCircle;
 	Shape* shape;
 	Shape* outlineShape;
 	float size;

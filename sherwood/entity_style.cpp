@@ -9,6 +9,7 @@ int EntityStyle::id_index = 0;
 //Entity
 EntityStyle::EntityStyle() : 
 	isUnit(false),
+	isCircle(false),
 	size(TILE_SIZE),
 	id(++id_index),
 	resourceType(-1),
@@ -25,7 +26,7 @@ EntityStyle::EntityStyle() :
 }
 
 void EntityStyle::updateShapes() {
-	if (isUnit) {
+	if (isCircle) {
 		shape = new CircleShape();
 		outlineShape = new CircleShape();
 		static_cast<CircleShape*>(shape)->setRadius(size / 2);
@@ -66,7 +67,7 @@ Shape* EntityStyle::getOutlineShape(const Vec2f graphicalPosition) const {
 
 void EntityStyle::updateSize() {
 	size = TILE_SIZE;
-	if (isUnit) {
+	if (isCircle) {
 		static_cast<CircleShape*>(shape)->setRadius(size / 2);
 		static_cast<CircleShape*>(outlineShape)->setRadius(size / 2);
 	}

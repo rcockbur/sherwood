@@ -54,6 +54,7 @@ EntityStyle STONE_MINE = EntityStyle();
 void initEntityStyles() {
 
 	PERSON.isUnit = true;
+	PERSON.isCircle = true;
 	PERSON.name = "person";
 	PERSON.size = ENTITY_SIZE_MEDIUM;
 	PERSON.color = colors.purple;
@@ -65,6 +66,7 @@ void initEntityStyles() {
 	PERSON.updateShapes();
 
 	ROCK.isUnit = false;
+	ROCK.isCircle = false;
 	ROCK.name = "rock";
 	ROCK.size = ENTITY_SIZE_MEDIUM;
 	ROCK.color = colors.darkGrey;
@@ -72,6 +74,7 @@ void initEntityStyles() {
 	ROCK.updateShapes();
 
 	HOUSE.isUnit = false;
+	HOUSE.isCircle = false;
 	HOUSE.name = "house";
 	HOUSE.size = ENTITY_SIZE_LARGE;
 	HOUSE.color = colors.black;
@@ -80,6 +83,7 @@ void initEntityStyles() {
 	HOUSE.updateShapes();
 	
 	MILL.isUnit = false;
+	MILL.isCircle = false;
 	MILL.name = "mill";
 	MILL.size = ENTITY_SIZE_LARGE;
 	MILL.color = colors.orange;
@@ -87,6 +91,7 @@ void initEntityStyles() {
 	MILL.updateShapes();
 
 	BERRY_BUSH.isUnit = false;
+	BERRY_BUSH.isCircle = false;
 	BERRY_BUSH.name = "berry bush";
 	BERRY_BUSH.size = ENTITY_SIZE_MEDIUM;
 	BERRY_BUSH.color = colors.red;
@@ -96,6 +101,7 @@ void initEntityStyles() {
 	BERRY_BUSH.updateShapes();
 	
 	FISH.isUnit = false;
+	FISH.isCircle = false;
 	FISH.name = "fish";
 	FISH.size = ENTITY_SIZE_SMALL;
 	FISH.color = colors.blue;
@@ -105,8 +111,9 @@ void initEntityStyles() {
 	FISH.updateShapes();
 	
 	TREE.isUnit = false;
+	TREE.isCircle = true;
 	TREE.name = "tree";
-	TREE.size = ENTITY_SIZE_MEDIUM;
+	TREE.size = ENTITY_SIZE_SMALL;
 	TREE.color = colors.brown;
 	TREE.pathableTypes.insert(1);
 	TREE.resourceType = wood;
@@ -114,6 +121,7 @@ void initEntityStyles() {
 	TREE.updateShapes();
 	
 	GOLD_MINE.isUnit = false;
+	GOLD_MINE.isCircle = false;
 	GOLD_MINE.name = "gold mine";
 	GOLD_MINE.size = ENTITY_SIZE_MEDIUM;
 	GOLD_MINE.color = colors.yellow;
@@ -123,6 +131,7 @@ void initEntityStyles() {
 	GOLD_MINE.updateShapes();
 	
 	STONE_MINE.isUnit = false;
+	STONE_MINE.isCircle = false;
 	STONE_MINE.name = "stone mine";
 	STONE_MINE.size = ENTITY_SIZE_MEDIUM;
 	STONE_MINE.color = colors.darkGrey;
